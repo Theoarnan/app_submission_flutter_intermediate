@@ -1,4 +1,8 @@
 class ConstantsName {
+  /// Base URL
+  static const String baseUrl = 'https://story-api.dicoding.dev/v1';
+
+  /// Base Asset Directory
   static String baseDirImg = 'assets/img';
   static String baseDirImgLogo = '$baseDirImg/logo';
   static String baseDirImgIlustration = '$baseDirImg/ilustration';

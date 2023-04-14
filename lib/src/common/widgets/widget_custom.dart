@@ -1,3 +1,4 @@
+import 'package:another_flushbar/flushbar.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:flutter/material.dart';
@@ -45,7 +46,7 @@ class WidgetCustom {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(
-          vertical: 16.h,
+          vertical: 12.h,
           horizontal: 58.w,
         ),
       ),
@@ -110,7 +111,7 @@ class WidgetCustom {
                 width: 2,
               ),
             ),
-            focusedBorder: OutlineInputBorder(
+            border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.sp),
               borderSide: const BorderSide(
                 color: ThemeCustom.yellowColor,
@@ -121,6 +122,7 @@ class WidgetCustom {
             prefixIcon: prefixIcon,
             suffixIcon: IconButton(
               onPressed: onTapSuffixIcon,
+              color: ThemeCustom.primaryColor,
               icon: suffixIcon ?? const SizedBox.shrink(),
             ),
             hintText: hintText,
@@ -153,6 +155,131 @@ class WidgetCustom {
       ),
       trailing: trailing,
       onTap: onTap,
+    );
+  }
+
+  /// Dialog Loading
+  static dialogLoadingState(BuildContext context) {
+    return showGeneralDialog(
+      context: context,
+      useRootNavigator: true,
+      pageBuilder: (context, __, ___) {
+        return const SizedBox.shrink();
+      },
+      transitionBuilder: (ctx, a1, a2, child) {
+        var curve = Curves.easeInOut.transform(a1.value);
+        return Transform.scale(
+          scale: curve,
+          child: Material(
+            color: Colors.transparent,
+            child: Center(
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 10.sp).copyWith(
+                  top: 12.h,
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(8.sp),
+                ),
+                width: 74.w,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      const CircularProgressIndicator.adaptive(),
+                      SizedBox(height: 12.h),
+                      Text(
+                        'Loading',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+      transitionDuration: const Duration(milliseconds: 300),
+    );
+  }
+
+  /// Base toast
+  static Future toastState(
+    BuildContext context, {
+    required IconData iconToast,
+    required Color backgroundColor,
+    required String titleText,
+    required String messageText,
+  }) {
+    return Flushbar(
+      isDismissible: true,
+      flushbarStyle: FlushbarStyle.GROUNDED,
+      flushbarPosition: FlushbarPosition.TOP,
+      duration: const Duration(seconds: 3),
+      icon: Icon(
+        iconToast,
+        color: Colors.white,
+      ),
+      backgroundColor: backgroundColor,
+      titleText: Text(
+        titleText,
+        style: Theme.of(context)
+            .textTheme
+            .bodyLarge
+            ?.copyWith(color: Colors.white, fontSize: 18.sp),
+      ),
+      messageText: Text(
+        messageText,
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(color: Colors.white, fontSize: 14.sp),
+      ),
+    ).show(context);
+  }
+
+  /// Toast No Internet
+  static Future toastNoInternetState(BuildContext context) {
+    return WidgetCustom.toastState(
+      context,
+      iconToast: Icons.warning_rounded,
+      backgroundColor: ThemeCustom.redColor,
+      titleText: "Oops,",
+      messageText: "Kamu tidak terkoneksi internet, coba cek internet mu.",
+    );
+  }
+
+  /// Toast Register Success
+  static Future toastSuccessRegisterState(BuildContext context) {
+    return WidgetCustom.toastState(
+      context,
+      iconToast: Icons.check_circle,
+      backgroundColor: ThemeCustom.greenColor,
+      titleText: "Yeyy,",
+      messageText:
+          "Kamu berhasil mendaftarkan akunmu, silahkan melakukan login.",
+    );
+  }
+
+  /// Toast Post Story Success
+  static Future toastSuccessPostState(BuildContext context) {
+    return WidgetCustom.toastState(
+      context,
+      iconToast: Icons.check_circle,
+      backgroundColor: ThemeCustom.greenColor,
+      titleText: "Yeyy,",
+      messageText: "Cerita terbarumu sudah terunggah.",
+    );
+  }
+
+  /// Toast On Error
+  static Future toastErrorState(BuildContext context, {required String error}) {
+    return WidgetCustom.toastState(
+      context,
+      iconToast: Icons.warning_rounded,
+      backgroundColor: ThemeCustom.redColor,
+      titleText: "Oops,",
+      messageText: error,
     );
   }
 }

@@ -47,6 +47,15 @@ class _SettingPageState extends State<SettingPage> {
                 trailing: const Icon(Icons.arrow_forward_ios_rounded),
                 onTap: () {},
               ),
+              WidgetCustom.listTileCustom(
+                context,
+                title: 'Logout',
+                icon: Icons.logout,
+                trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                onTap: () {
+                  WidgetCustom.dialogLoadingState(context);
+                },
+              ),
             ],
           ),
         ),
