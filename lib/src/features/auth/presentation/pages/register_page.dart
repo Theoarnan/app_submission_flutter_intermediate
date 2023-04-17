@@ -8,7 +8,6 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -65,13 +64,13 @@ class _RegisterPageState extends State<RegisterPage> {
           log('Test: $state');
           if (state is AuthLoadingState) {
             WidgetCustom.dialogLoadingState(context);
+            Navigator.of(context).pop();
           } else if (state is RegisterSuccessState) {
             Navigator.of(context)
               ..pop()
               ..pop();
             WidgetCustom.toastSuccessRegisterState(context);
           } else if (state is AuthErrorState) {
-            Navigator.pop(context);
             WidgetCustom.toastErrorState(context, error: state.error);
           }
         },
@@ -82,7 +81,7 @@ class _RegisterPageState extends State<RegisterPage> {
               vertical: 10.h,
             ),
             child: SizedBox(
-              height: 0.80.sh,
+              height: 0.93.sh,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -109,92 +108,96 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
 
                   /// Form
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0.02.sh),
-                    child: Form(
-                      key: _formGlobalKey,
-                      child: Column(
-                        children: [
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _nameField,
-                            hintText: 'Nama',
-                            validator: (value) =>
-                                ValidationFormUtil.validateNotNull(
-                                    value, 'nama'),
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _emailField,
-                            keyboardType: TextInputType.emailAddress,
-                            hintText: 'Email',
-                            validator: (value) {
-                              return ValidationFormUtil.validateEmail(value!);
-                            },
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _passswordField,
-                            suffixIcon: Icon(
-                              isObscurePass
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                  Expanded(
+                    child: Container(
+                      margin: EdgeInsets.symmetric(vertical: 0.02.sh),
+                      child: Form(
+                        key: _formGlobalKey,
+                        child: Column(
+                          children: [
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _nameField,
+                              hintText: 'Nama',
+                              validator: (value) =>
+                                  ValidationFormUtil.validateNotNull(
+                                value,
+                                'nama',
+                              ),
                             ),
-                            onTapSuffixIcon: () {
-                              setState(() {
-                                isObscurePass = !isObscurePass;
-                              });
-                            },
-                            hintText: 'Kata sandi',
-                            obscureText: isObscurePass,
-                            validator: (value) {
-                              return ValidationFormUtil.validatePassword(
-                                  value!);
-                            },
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _passswordConfirmField,
-                            suffixIcon: Icon(
-                              isObscureConfirmPass
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                            SizedBox(
+                              height: 0.02.sh,
                             ),
-                            onTapSuffixIcon: () {
-                              setState(() {
-                                isObscureConfirmPass = !isObscureConfirmPass;
-                              });
-                            },
-                            hintText: 'Konfirmasi Kata sandi',
-                            obscureText: isObscureConfirmPass,
-                            validator: (value) {
-                              if (_passswordField.text == value) {
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _emailField,
+                              keyboardType: TextInputType.emailAddress,
+                              hintText: 'Email',
+                              validator: (value) {
+                                return ValidationFormUtil.validateEmail(value!);
+                              },
+                            ),
+                            SizedBox(
+                              height: 0.02.sh,
+                            ),
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _passswordField,
+                              suffixIcon: Icon(
+                                isObscurePass
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onTapSuffixIcon: () {
+                                setState(() {
+                                  isObscurePass = !isObscurePass;
+                                });
+                              },
+                              hintText: 'Kata sandi',
+                              obscureText: isObscurePass,
+                              validator: (value) {
                                 return ValidationFormUtil.validatePassword(
-                                  value!,
-                                );
-                              } else {
-                                return '* Konfirmasi kata sandi tidak sesuai';
-                              }
-                            },
-                          ),
-                          SizedBox(
-                            height: 0.04.sh,
-                          ),
-                          WidgetCustom.elevatedButtonCustom(
-                            context,
-                            textButton: 'Register',
-                            onPressed: () => _onRegister(),
-                          ),
-                        ],
+                                    value!);
+                              },
+                            ),
+                            SizedBox(
+                              height: 0.02.sh,
+                            ),
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _passswordConfirmField,
+                              suffixIcon: Icon(
+                                isObscureConfirmPass
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onTapSuffixIcon: () {
+                                setState(() {
+                                  isObscureConfirmPass = !isObscureConfirmPass;
+                                });
+                              },
+                              hintText: 'Konfirmasi Kata sandi',
+                              obscureText: isObscureConfirmPass,
+                              validator: (value) {
+                                if (_passswordField.text == value) {
+                                  return ValidationFormUtil.validatePassword(
+                                    value!,
+                                  );
+                                } else {
+                                  return '* Konfirmasi kata sandi tidak sesuai';
+                                }
+                              },
+                            ),
+                            SizedBox(
+                              height: 0.04.sh,
+                            ),
+                            WidgetCustom.elevatedButtonCustom(
+                              context,
+                              textButton: 'Register',
+                              onPressed: () => _onRegister(),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -216,9 +219,7 @@ class _RegisterPageState extends State<RegisterPage> {
         password: _passswordConfirmField.text,
       );
       BlocProvider.of<AuthBloc>(context).add(
-        RegisterAccountEvent(
-            registerModel: RegisterModel(
-                name: 'name', email: 'email', password: 'password')),
+        RegisterAccountEvent(registerModel: data),
       );
     }
   }

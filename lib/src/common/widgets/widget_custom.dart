@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:another_flushbar/flushbar.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
@@ -8,6 +10,8 @@ class WidgetCustom {
   /// FadeInImage Custom
   static FadeInImage fadeInImageCustom({
     bool isUrl = false,
+    bool isFile = false,
+    File? file,
     required String image,
   }) {
     /// Check Network or Asset Image
@@ -15,6 +19,11 @@ class WidgetCustom {
       if (isUrl) {
         return NetworkImage(
           image,
+        );
+      }
+      if (isFile) {
+        return FileImage(
+          file!,
         );
       }
       return AssetImage(
@@ -162,7 +171,6 @@ class WidgetCustom {
   static dialogLoadingState(BuildContext context) {
     return showGeneralDialog(
       context: context,
-      useRootNavigator: true,
       pageBuilder: (context, __, ___) {
         return const SizedBox.shrink();
       },
@@ -280,6 +288,55 @@ class WidgetCustom {
       backgroundColor: ThemeCustom.redColor,
       titleText: "Oops,",
       messageText: error,
+    );
+  }
+
+  static Widget stateError(
+    BuildContext context, {
+    bool isError = true,
+    String? message,
+    required void Function()? onPressed,
+  }) {
+    final ilustrationImg = isError
+        ? ConstantsName.gifErrorIlustrationImg
+        : ConstantsName.gifNoConnectionImg;
+    final title = isError ? 'Maaf,' : 'Oops,';
+    final messageText = isError
+        ? message
+        : 'Coba periksa koneksi anda dan coba refresh kembali.';
+    return Center(
+      child: SizedBox(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Image.asset(
+              ilustrationImg,
+              fit: BoxFit.fill,
+              height: 0.5.sh,
+            ),
+            Text(
+              title,
+              style: Theme.of(context).textTheme.labelLarge,
+            ),
+            SizedBox(
+              width: 0.8.sw,
+              child: Text(
+                messageText ?? '',
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            SizedBox(
+              height: 10.h,
+            ),
+            WidgetCustom.elevatedButtonCustom(
+              context,
+              textButton: 'Coba lagi',
+              onPressed: onPressed,
+            )
+          ],
+        ),
+      ),
     );
   }
 }

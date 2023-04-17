@@ -8,7 +8,6 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:go_router/go_router.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -45,10 +44,10 @@ class _LoginPageState extends State<LoginPage> {
           if (state is AuthLoadingState) {
             WidgetCustom.dialogLoadingState(context);
           } else if (state is LoginSuccessState) {
-            context.pop();
+            Navigator.of(context).pop();
             WidgetCustom.toastSuccessPostState(context);
           } else if (state is AuthErrorState) {
-            context.pop();
+            Navigator.of(context).pop();
             WidgetCustom.toastErrorState(context, error: state.error);
           }
         },
@@ -59,7 +58,7 @@ class _LoginPageState extends State<LoginPage> {
               vertical: 10.h,
             ),
             child: SizedBox(
-              height: 0.88.sh,
+              height: 0.92.sh,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -207,7 +206,7 @@ class _LoginPageState extends State<LoginPage> {
         password: _passswordField.text,
       );
       BlocProvider.of<AuthBloc>(context).add(
-        LogginAccountEvent(loginModel: data),
+        LoginAccountEvent(loginModel: data),
       );
     }
   }

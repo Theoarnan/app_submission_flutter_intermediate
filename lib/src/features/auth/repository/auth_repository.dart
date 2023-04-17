@@ -24,12 +24,6 @@ class AuthRepository {
     return preferences.getBool(stateKey);
   }
 
-  // {
-  //   "name": "test",
-  //   "email": "abcz1@gmail.com",
-  //   "password": "a123456"
-  // }
-
   Future<RegisterResponseModel> register(
       {required RegisterModel registerModel}) async {
     final response = await http.post(
