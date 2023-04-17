@@ -24,6 +24,14 @@ dependencies:
   flutter_web_plugins:
     sdk: flutter
   email_validator: ^2.1.17
+  camera: ^0.10.4
+  camera_windows: ^0.2.1+5
+  path: ^1.8.2
+  path_provider: ^2.0.14
+  image: ^4.0.15
+  intl: ^0.18.0
+  image_picker: ^0.8.7+3
+  image_picker_windows: ^0.1.0+6
 
 dev_dependencies:
   flutter_test:

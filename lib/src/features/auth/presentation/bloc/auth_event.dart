@@ -22,9 +22,15 @@ class RegisterAccountEvent extends AuthEvent {
   List<Object> get props => [registerModel];
 }
 
-class LogginAccountEvent extends AuthEvent {
+class LoginAccountEvent extends AuthEvent {
   final LoginModel loginModel;
-  const LogginAccountEvent({required this.loginModel});
+  const LoginAccountEvent({required this.loginModel});
   @override
   List<Object> get props => [loginModel];
+}
+
+class LogoutAccountEvent extends AuthEvent {
+  const LogoutAccountEvent();
+  @override
+  List<Object> get props => [];
 }

@@ -16,7 +16,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<IsLoggedIn>((event, emit) => _checkIsLoggedIn(event, emit));
     on<SetIsLoggedIn>((event, emit) => _setIsLoggedIn(event, emit));
     on<RegisterAccountEvent>((event, emit) => _registerAccount(event, emit));
-    on<LogginAccountEvent>((event, emit) => _loginAccount(event, emit));
+    on<LoginAccountEvent>((event, emit) => _loginAccount(event, emit));
+    on<LogoutAccountEvent>((event, emit) => _logoutAccount(event, emit));
   }
 
   void _checkIsLoggedIn(
@@ -71,7 +72,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   void _loginAccount(
-    LogginAccountEvent event,
+    LoginAccountEvent event,
     Emitter<AuthState> emit,
   ) async {
     try {
@@ -81,6 +82,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         loginModel: event.loginModel,
       );
       emit(LoginSuccessState());
+    } catch (e) {
+      emit(AuthErrorState(error: e.toString()));
+    }
+  }
+
+  void _logoutAccount(
+    LogoutAccountEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    try {
+      emit(AuthLoadingState());
+      await Future.delayed(const Duration(seconds: 2));
+      await authRepository.logout();
+      emit(const UnAuthenticatedState());
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }

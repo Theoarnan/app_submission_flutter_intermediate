@@ -2,6 +2,9 @@ class ConstantsName {
   /// Base URL
   static const String baseUrl = 'https://story-api.dicoding.dev/v1';
 
+  /// Missing authentication
+  static const String missingAnthentication = '401';
+
   /// Base Asset Directory
   static String baseDirImg = 'assets/img';
   static String baseDirImgLogo = '$baseDirImg/logo';
@@ -20,4 +23,6 @@ class ConstantsName {
   /// Gif
   static String gifLoadingImg = '$baseDirImgGif/loading_image.gif';
   static String gifErrorImg = '$baseDirImgGif/no_image.gif';
+  static String gifNoConnectionImg = '$baseDirImgGif/no_connection.gif';
+  static String gifErrorIlustrationImg = '$baseDirImgGif/error.gif';
 }
