@@ -23,15 +23,8 @@ class StoriesRepository {
       };
 
   Future<StoriesResponseModel> getAllStory() async {
-    var queryParameters = {
-      'location': 1,
-      'page': 1,
-      'size': 20,
-    };
-    final url = Uri.https(
-      ConstantsName.baseUrl,
-      '/stories',
-      queryParameters,
+    final url = Uri.parse(
+      storiesEndpoint,
     );
     final response = await http.get(
       url,

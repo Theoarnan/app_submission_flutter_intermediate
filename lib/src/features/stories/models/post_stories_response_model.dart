@@ -17,5 +17,7 @@ class PostStoriesResponseModel {
   }
 
   factory PostStoriesResponseModel.fromJson(String source) =>
-      PostStoriesResponseModel.fromMap(json.decode(source));
+      PostStoriesResponseModel.fromMap(
+        json.decode(source),
+      );
 }

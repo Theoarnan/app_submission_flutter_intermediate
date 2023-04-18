@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class ThemeCustom {
-  /// Colors
   static const Color primaryColor = Color(0xFF059CEB);
   static const Color secondaryColor = Color(0xFFBDBDBD);
   static const Color yellowColor = Color(0xFFFEB100);
@@ -11,7 +10,6 @@ class ThemeCustom {
   static const Color greenColor = Color(0xFF7CB456);
   static const Color darkColor = Color(0xFF1D1E1F);
 
-  /// Typography
   static TextStyle titleTS = TextStyle(
     color: darkColor,
     fontWeight: FontWeight.bold,
@@ -38,7 +36,6 @@ class ThemeCustom {
     fontSize: 12.sp,
   );
 
-  /// ThemeData
   static ThemeData themeData() => ThemeData(
         scaffoldBackgroundColor: Colors.white,
         visualDensity: VisualDensity.adaptivePlatformDensity,

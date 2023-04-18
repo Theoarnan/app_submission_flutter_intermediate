@@ -1,5 +1,4 @@
-import 'dart:developer';
-
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
@@ -37,6 +36,7 @@ class _RegisterPageState extends State<RegisterPage> {
 
   @override
   Widget build(BuildContext context) {
+    final translate = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58.h),
@@ -51,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
           title: Text(
-            'Daftar',
+            translate.register,
             style: Theme.of(context).textTheme.labelLarge?.copyWith(
                   fontSize: 24.sp,
                 ),
@@ -61,7 +61,6 @@ class _RegisterPageState extends State<RegisterPage> {
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          log('Test: $state');
           if (state is AuthLoadingState) {
             WidgetCustom.dialogLoadingState(context);
             Navigator.of(context).pop();
@@ -95,7 +94,7 @@ class _RegisterPageState extends State<RegisterPage> {
                           height: 4.h,
                         ),
                         Text(
-                          'Silahkan masukkan nama, email, dan password kamu untuk mendaftarkan akun.',
+                          translate.subtitleRegister,
                           textAlign: TextAlign.center,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -118,12 +117,14 @@ class _RegisterPageState extends State<RegisterPage> {
                             WidgetCustom.textFormField(
                               context,
                               controller: _nameField,
-                              hintText: 'Nama',
-                              validator: (value) =>
-                                  ValidationFormUtil.validateNotNull(
-                                value,
-                                'nama',
-                              ),
+                              hintText: translate.name,
+                              validator: (value) {
+                                return ValidationFormUtil.validateNotNull(
+                                  context,
+                                  value,
+                                  translate.name.toLowerCase(),
+                                );
+                              },
                             ),
                             SizedBox(
                               height: 0.02.sh,
@@ -132,9 +133,12 @@ class _RegisterPageState extends State<RegisterPage> {
                               context,
                               controller: _emailField,
                               keyboardType: TextInputType.emailAddress,
-                              hintText: 'Email',
+                              hintText: translate.email,
                               validator: (value) {
-                                return ValidationFormUtil.validateEmail(value!);
+                                return ValidationFormUtil.validateEmail(
+                                  context,
+                                  value!,
+                                );
                               },
                             ),
                             SizedBox(
@@ -153,11 +157,13 @@ class _RegisterPageState extends State<RegisterPage> {
                                   isObscurePass = !isObscurePass;
                                 });
                               },
-                              hintText: 'Kata sandi',
+                              hintText: translate.password,
                               obscureText: isObscurePass,
                               validator: (value) {
                                 return ValidationFormUtil.validatePassword(
-                                    value!);
+                                  context,
+                                  value!,
+                                );
                               },
                             ),
                             SizedBox(
@@ -176,15 +182,16 @@ class _RegisterPageState extends State<RegisterPage> {
                                   isObscureConfirmPass = !isObscureConfirmPass;
                                 });
                               },
-                              hintText: 'Konfirmasi Kata sandi',
+                              hintText: translate.confirm_password,
                               obscureText: isObscureConfirmPass,
                               validator: (value) {
                                 if (_passswordField.text == value) {
                                   return ValidationFormUtil.validatePassword(
+                                    context,
                                     value!,
                                   );
                                 } else {
-                                  return '* Konfirmasi kata sandi tidak sesuai';
+                                  return translate.validateConfirmPassword;
                                 }
                               },
                             ),
@@ -193,7 +200,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             ),
                             WidgetCustom.elevatedButtonCustom(
                               context,
-                              textButton: 'Register',
+                              textButton: translate.register,
                               onPressed: () => _onRegister(),
                             ),
                           ],

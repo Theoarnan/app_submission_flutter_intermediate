@@ -1,0 +1,98 @@
+{
+    "titleApp": "Moments",
+    "register": "Register",
+    "subtitleRegister": "Please enter your name, email and password to register an account.",
+    "name": "Name",
+    "email": "Email",
+    "password": "Password",
+    "confirm_password": "Password confirm",
+    "welcome": "Welcome back",
+    "subtitleLogin": "Please login to continue.",
+    "login": "Login",
+    "dontHaveAccount": "Don't have an account? ",
+    "copyright": "Copyright ©️ 2023 TheoDev",
+    "validateNotNull": "* Field {fieldName} can't be empty",
+    "validateEmail": "* Your email is not valid, please check again.",
+    "validatePasswordLength": "*  The minimum password is 8 characters.",
+    "validatePasswordContainNumber": "* The password must contain numbers.",
+    "validatePasswordContainAlphabet": "* Password must contain letters.",
+    "validateConfirmPassword": "* Password confirmation does not match.",
+    "loading": "Loading",
+    "oops": "Oops,",
+    "noConnectionAlert": "You are not connected to the internet, please check your internet again.",
+    "yey": "Yeyy,",
+    "successRegistration": "You have successfully registered your account, please login.",
+    "successPostStory": "Your latest story has been uploaded.",
+    "sorry": "Sorry",
+    "noConnectionDialog": "Please check your connection and try to refresh again.",
+    "tryAgain": "Try again",
+    "justNow": "just now",
+    "second": "{valueSecond} seconds ago",
+    "@second": {
+      "placeholders": {
+        "valueSecond": {
+          "type": "String"
+        }
+      }
+    },
+    "minute": "{valueMinute} minutes ago",
+    "@minute": {
+      "placeholders": {
+        "valueMinute": {
+          "type": "String"
+        }
+      }
+    },
+    "hour": "{valueHour} hours ago",
+    "@hour": {
+      "placeholders": {
+        "valueHour": {
+          "type": "String"
+        }
+      }
+    },
+    "day": "{valueDay} day ago",
+    "@day": {
+      "placeholders": {
+        "valueDay": {
+          "type": "String"
+        }
+      }
+    },
+    "notFound": "Oops, Not found",
+    "subtitleNotFound": "The page you are looking for was not found.",
+    "back": "Back",
+    "user": "User",
+    "exception": "Failed to {valueException}",
+    "@exception": {
+      "placeholders": {
+        "valueException": {
+          "type": "String"
+        }
+      }
+    },
+    "failed": "We failed to load data {valueFailed}",
+    "@failed": {
+      "placeholders": {
+        "valueFailed": {
+          "type": "String"
+        }
+      }
+    },
+    "chooseMedia": "Choose which to use",
+    "camera": "Camera",
+    "gallery": "Gallery",
+    "showMore": "Show more",
+    "showLess": "Show less",
+    "description": "Description",
+    "takePicture": "Take Picture",
+    "postStory": "Post Stories",
+    "post": "Post",
+    "subtitlePostStory": "Please enter a description of your feelings for your story upload.",
+    "change": "Change",
+    "fieldDescription": "Write a caption...",
+    "setting": "Setting",
+    "changeLanguage": "Change language",
+    "logout": "Logout"
+
+}

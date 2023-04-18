@@ -1,8 +1,10 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/setting_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/camera_page.dart';
@@ -16,7 +18,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
-
   @override
   State<HomePage> createState() => _HomePageState();
 }
@@ -30,6 +31,9 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final translate = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58.h),
@@ -42,7 +46,14 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             IconButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const SettingPage(),
+                  ),
+                );
+              },
               icon: const Icon(
                 Icons.settings,
                 color: ThemeCustom.darkColor,
@@ -78,8 +89,8 @@ class _HomePageState extends State<HomePage> {
                         const CircularProgressIndicator.adaptive(),
                         SizedBox(height: 12.h),
                         Text(
-                          'Loading',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          translate.loading,
+                          style: textTheme.bodySmall,
                         ),
                       ],
                     ),
@@ -89,9 +100,7 @@ class _HomePageState extends State<HomePage> {
                   return WidgetCustom.stateError(
                     context,
                     isError: false,
-                    onPressed: () => BlocProvider.of<StoriesBloc>(context).add(
-                      GetAllStories(),
-                    ),
+                    onPressed: () => bloc.add(GetAllStories()),
                   );
                 }
                 if (state is StoriesErrorState) {
@@ -102,11 +111,8 @@ class _HomePageState extends State<HomePage> {
                     return WidgetCustom.stateError(
                       context,
                       isError: true,
-                      message: 'Kami gagal memuat data stories.',
-                      onPressed: () =>
-                          BlocProvider.of<StoriesBloc>(context).add(
-                        GetAllStories(),
-                      ),
+                      message: translate.failed('stories'),
+                      onPressed: () => bloc.add(GetAllStories()),
                     );
                   }
                 }
@@ -118,9 +124,7 @@ class _HomePageState extends State<HomePage> {
                       final data = state.dataStories[index];
                       return GestureDetector(
                         onTap: () {
-                          BlocProvider.of<StoriesBloc>(context).add(
-                            GetDetailStories(id: data.id),
-                          );
+                          bloc.add(GetDetailStories(id: data.id));
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -166,19 +170,19 @@ class _HomePageState extends State<HomePage> {
                           vertical: 20.h,
                         ),
                         child: Text(
-                          'Pilih yang akan digunakan',
+                          translate.chooseMedia,
                           style: Theme.of(context).textTheme.bodyLarge,
                         ),
                       ),
                       WidgetCustom.listTileCustom(
                         context,
-                        title: 'Kamera',
+                        title: translate.camera,
                         icon: Icons.photo_camera_rounded,
                         onTap: () => _onCameraView(),
                       ),
                       WidgetCustom.listTileCustom(
                         context,
-                        title: 'Galeri',
+                        title: translate.gallery,
                         icon: Icons.photo_rounded,
                         onTap: () => _onGalleryView(),
                       ),

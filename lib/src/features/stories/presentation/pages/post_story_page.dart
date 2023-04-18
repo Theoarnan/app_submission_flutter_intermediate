@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
@@ -49,6 +50,10 @@ class _PostStoryPageState extends State<PostStoryPage> {
 
   @override
   Widget build(BuildContext context) {
+    final textTheme = Theme.of(context).textTheme;
+    final blocStories = BlocProvider.of<StoriesBloc>(context);
+    final blocCamera = BlocProvider.of<CameraBlocCubit>(context);
+    final translate = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(58.h),
@@ -58,9 +63,9 @@ class _PostStoryPageState extends State<PostStoryPage> {
           leading: IconButton(
             onPressed: () {
               if (widget.isFromCamera) {
-                BlocProvider.of<CameraBlocCubit>(context).cameraInitialize();
+                blocCamera.cameraInitialize();
               } else {
-                BlocProvider.of<StoriesBloc>(context).add(GetAllStories());
+                blocStories.add(GetAllStories());
               }
               Navigator.pop(context);
             },
@@ -70,22 +75,22 @@ class _PostStoryPageState extends State<PostStoryPage> {
             ),
           ),
           title: Text(
-            'Post Cerita',
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontSize: 24.sp,
-                ),
+            translate.postStory,
+            style: textTheme.labelLarge?.copyWith(
+              fontSize: 24.sp,
+            ),
           ),
           centerTitle: true,
           actions: [
             TextButton(
               onPressed: () => _onPostStory(),
               child: Text(
-                'Post',
+                translate.post,
                 textAlign: TextAlign.left,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: ThemeCustom.primaryColor,
-                    ),
+                style: textTheme.bodyLarge?.copyWith(
+                  fontWeight: FontWeight.bold,
+                  color: ThemeCustom.primaryColor,
+                ),
               ),
             )
           ],
@@ -107,7 +112,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                 WidgetCustom.toastErrorState(context, error: state.error);
               }
             } else if (state is PostStoriesSuccessState) {
-              BlocProvider.of<StoriesBloc>(context).add(GetAllStories());
+              blocStories.add(GetAllStories());
               Navigator.pushAndRemoveUntil(
                 context,
                 MaterialPageRoute(
@@ -133,12 +138,12 @@ class _PostStoryPageState extends State<PostStoryPage> {
                     height: 14.h,
                   ),
                   Text(
-                    'Silahkan masukkan keterangan tentang perasaan untuk unggahan cerita anda',
+                    translate.subtitlePostStory,
                     textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: ThemeCustom.secondaryColor,
-                          fontWeight: FontWeight.normal,
-                        ),
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: ThemeCustom.secondaryColor,
+                      fontWeight: FontWeight.normal,
+                    ),
                   ),
                   SizedBox(
                     height: 18.h,
@@ -177,7 +182,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                                         vertical: 20.h,
                                       ),
                                       child: Text(
-                                        'Pilih yang akan digunakan',
+                                        translate.chooseMedia,
                                         style: Theme.of(context)
                                             .textTheme
                                             .bodyLarge,
@@ -185,13 +190,13 @@ class _PostStoryPageState extends State<PostStoryPage> {
                                     ),
                                     WidgetCustom.listTileCustom(
                                       context,
-                                      title: 'Kamera',
+                                      title: translate.camera,
                                       icon: Icons.photo_camera_rounded,
                                       onTap: () => _onCameraView(),
                                     ),
                                     WidgetCustom.listTileCustom(
                                       context,
-                                      title: 'Galeri',
+                                      title: translate.gallery,
                                       icon: Icons.photo_rounded,
                                       onTap: () => _onGalleryView(),
                                     ),
@@ -201,12 +206,12 @@ class _PostStoryPageState extends State<PostStoryPage> {
                             });
                       },
                       child: Text(
-                        'Ganti',
+                        translate.change,
                         textAlign: TextAlign.left,
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.bold,
-                              color: ThemeCustom.primaryColor,
-                            ),
+                        style: textTheme.bodySmall?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: ThemeCustom.primaryColor,
+                        ),
                       ),
                     ),
                   ),
@@ -220,14 +225,11 @@ class _PostStoryPageState extends State<PostStoryPage> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Keterangan',
+                            translate.description,
                             textAlign: TextAlign.left,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: textTheme.bodyMedium?.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           SizedBox(
                             height: 4.h,
@@ -236,19 +238,18 @@ class _PostStoryPageState extends State<PostStoryPage> {
                             controller: _descriptionField,
                             maxLines: 4,
                             decoration: InputDecoration(
-                              hintText: 'Tulis keterangan...',
-                              hintStyle: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: ThemeCustom.secondaryColor,
-                                  ),
+                              hintText: translate.fieldDescription,
+                              hintStyle: textTheme.bodyMedium?.copyWith(
+                                color: ThemeCustom.secondaryColor,
+                              ),
                             ),
-                            validator: (value) =>
-                                ValidationFormUtil.validateNotNull(
-                              value,
-                              'keterangan',
-                            ),
+                            validator: (value) {
+                              return ValidationFormUtil.validateNotNull(
+                                context,
+                                value,
+                                translate.description.toLowerCase(),
+                              );
+                            },
                           ),
                         ],
                       ),
