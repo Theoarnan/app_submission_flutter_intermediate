@@ -1,4 +1,5 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
@@ -31,6 +32,7 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final translate = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
@@ -78,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          'Selamat datang',
+                          translate.welcome,
                           style:
                               Theme.of(context).textTheme.labelLarge?.copyWith(
                                     fontSize: 28.sp,
@@ -88,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                           height: 4.h,
                         ),
                         Text(
-                          'Mohon login untuk melanjutkan.',
+                          translate.subtitleLogin,
                           style:
                               Theme.of(context).textTheme.bodyMedium?.copyWith(
                                     color: ThemeCustom.secondaryColor,
@@ -109,9 +111,12 @@ class _LoginPageState extends State<LoginPage> {
                           WidgetCustom.textFormField(
                             context,
                             controller: _emailField,
-                            hintText: 'Email',
+                            hintText: translate.email,
                             validator: (value) {
-                              return ValidationFormUtil.validateEmail(value!);
+                              return ValidationFormUtil.validateEmail(
+                                context,
+                                value!,
+                              );
                             },
                           ),
                           SizedBox(
@@ -130,11 +135,13 @@ class _LoginPageState extends State<LoginPage> {
                                 isObscurePass = !isObscurePass;
                               });
                             },
-                            hintText: 'Kata sandi',
+                            hintText: translate.password,
                             obscureText: isObscurePass,
                             validator: (value) {
                               return ValidationFormUtil.validatePassword(
-                                  value!);
+                                context,
+                                value!,
+                              );
                             },
                           ),
                           SizedBox(
@@ -142,7 +149,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                           WidgetCustom.elevatedButtonCustom(
                             context,
-                            textButton: 'Masuk',
+                            textButton: translate.login,
                             onPressed: () => _onLogin(),
                           ),
                         ],
@@ -157,7 +164,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Tidak punya akun? ',
+                          translate.dontHaveAccount,
                           style: Theme.of(context).textTheme.bodyMedium,
                         ),
                         GestureDetector(
@@ -167,7 +174,7 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => const RegisterPage(),
                               )),
                           child: Text(
-                            "Daftar",
+                            translate.register,
                             style: Theme.of(context)
                                 .textTheme
                                 .bodyMedium
@@ -183,7 +190,7 @@ class _LoginPageState extends State<LoginPage> {
                   const Spacer(),
                   Center(
                     child: Text(
-                      'Copyright ©️ 2023 TheoDev',
+                      translate.copyright,
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: ThemeCustom.secondaryColor,
                           ),

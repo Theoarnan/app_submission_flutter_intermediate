@@ -1,3 +1,4 @@
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
@@ -12,6 +13,9 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final translate = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.h),
@@ -30,8 +34,8 @@ class DetailPage extends StatelessWidget {
                   const CircularProgressIndicator.adaptive(),
                   SizedBox(height: 12.h),
                   Text(
-                    'Loading',
-                    style: Theme.of(context).textTheme.bodySmall,
+                    translate.loading,
+                    style: textTheme.bodySmall,
                   ),
                 ],
               ),
@@ -41,23 +45,20 @@ class DetailPage extends StatelessWidget {
             return WidgetCustom.stateError(
               context,
               isError: false,
-              onPressed: () => BlocProvider.of<StoriesBloc>(context).add(
-                GetAllStories(),
-              ),
+              onPressed: () => bloc.add(GetAllStories()),
             );
           }
           if (state is StoriesErrorState) {
             if (UtilHelper.checkUnauthorized(state.error)) {
-              BlocProvider.of<AuthBloc>(context)
-                  .add(const LogoutAccountEvent());
+              BlocProvider.of<AuthBloc>(context).add(
+                const LogoutAccountEvent(),
+              );
             } else {
               return WidgetCustom.stateError(
                 context,
                 isError: true,
-                message: 'Kami gagal memuat data detail stories.',
-                onPressed: () => BlocProvider.of<StoriesBloc>(context).add(
-                  GetAllStories(),
-                ),
+                message: translate.failed('stories'),
+                onPressed: () => bloc.add(GetAllStories()),
               );
             }
           }
@@ -87,9 +88,7 @@ class DetailPage extends StatelessWidget {
                           left: 16.w,
                           child: GestureDetector(
                             onTap: () {
-                              BlocProvider.of<StoriesBloc>(context).add(
-                                GetAllStories(),
-                              );
+                              bloc.add(GetAllStories());
                               Navigator.pop(context);
                             },
                             child: Container(
@@ -99,17 +98,20 @@ class DetailPage extends StatelessWidget {
                                 color: Colors.white.withOpacity(0.7),
                                 shape: BoxShape.circle,
                               ),
-                              child: const Icon(Icons.arrow_back_ios_new,
-                                  size: 20),
+                              child: const Icon(
+                                Icons.arrow_back_ios_new,
+                                size: 20,
+                              ),
                             ),
                           ),
                         ),
                       ],
                     ),
                     Container(
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h)
-                              .copyWith(top: 8.h),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 14.h,
+                      ).copyWith(top: 8.h),
                       child: Row(
                         children: <Widget>[
                           CircleAvatar(
@@ -130,26 +132,23 @@ class DetailPage extends StatelessWidget {
                             children: [
                               Text(
                                 data.name,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                                style: textTheme.bodyMedium?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                               SizedBox(
                                 height: 4.h,
                               ),
                               Text(
-                                UtilHelper.convertToAgo(data.createdAt),
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodySmall
-                                    ?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      fontSize: 10.sp,
-                                      color: ThemeCustom.secondaryColor,
-                                    ),
+                                UtilHelper.convertToAgo(
+                                  context,
+                                  data.createdAt,
+                                ),
+                                style: textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  fontSize: 10.sp,
+                                  color: ThemeCustom.secondaryColor,
+                                ),
                               )
                             ],
                           ),
@@ -162,11 +161,11 @@ class DetailPage extends StatelessWidget {
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
-                        'Deskripsi',
-                        style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: ThemeCustom.darkColor,
-                              fontWeight: FontWeight.bold,
-                            ),
+                        translate.description,
+                        style: textTheme.bodySmall?.copyWith(
+                          color: ThemeCustom.darkColor,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
                     ),
                     SizedBox(
@@ -177,12 +176,9 @@ class DetailPage extends StatelessWidget {
                       child: SizedBox(
                         child: Text(
                           data.description,
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: ThemeCustom.darkColor.withOpacity(0.6),
-                              ),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: ThemeCustom.darkColor.withOpacity(0.6),
+                          ),
                         ),
                       ),
                     ),
@@ -191,7 +187,6 @@ class DetailPage extends StatelessWidget {
               ),
             );
           }
-
           return const SizedBox.shrink();
         },
       ),

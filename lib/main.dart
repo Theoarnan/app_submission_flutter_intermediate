@@ -1,8 +1,11 @@
 import 'dart:developer';
 
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
+import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_bloc_cubit.dart';
+import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_state_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/home_page.dart';
@@ -37,21 +40,31 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider(
           create: (context) => CameraBlocCubit(),
-        )
+        ),
+        BlocProvider(
+          create: (context) => SettingBlocCubit(),
+        ),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => log('Test state auth: $state'),
-        child: MaterialApp(
-          title: 'Moments',
-          debugShowCheckedModeBanner: false,
-          builder: (context, child) {
-            ScreenUtil.init(context);
-            return Theme(
-              data: ThemeCustom.themeData(),
-              child: child!,
+        child: BlocBuilder<SettingBlocCubit, SettingStateCubit>(
+          builder: (context, state) {
+            return MaterialApp(
+              title: 'Moments',
+              debugShowCheckedModeBanner: false,
+              locale: BlocProvider.of<SettingBlocCubit>(context).locale,
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              builder: (context, child) {
+                ScreenUtil.init(context);
+                return Theme(
+                  data: ThemeCustom.themeData(),
+                  child: child!,
+                );
+              },
+              home: const HomePage(),
             );
           },
-          home: const HomePage(),
         ),
       ),
     );

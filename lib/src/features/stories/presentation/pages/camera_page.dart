@@ -1,3 +1,4 @@
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CameraPage extends StatefulWidget {
   const CameraPage({super.key});
-
   @override
   State<CameraPage> createState() => _CameraPageState();
 }
@@ -40,6 +40,8 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final translate = AppLocalizations.of(context)!;
+    final bloc = BlocProvider.of<CameraBlocCubit>(context);
     return BlocConsumer<CameraBlocCubit, CameraStateCubit>(
       listener: (context, state) {
         if (state is CameraCaptureSuccess) {
@@ -61,7 +63,7 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
           data: ThemeData.dark(),
           child: Scaffold(
             appBar: AppBar(
-              title: const Text("Ambil Gambar"),
+              title: Text(translate.takePicture),
               actions: [
                 IconButton(
                   onPressed: () => _onCameraSwitch(),
@@ -74,19 +76,20 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
                 alignment: Alignment.center,
                 children: [
                   state is CameraReady
-                      ? CameraPreview(BlocProvider.of<CameraBlocCubit>(context)
-                          .getController()!)
+                      ? CameraPreview(bloc.getController()!)
                       : state is CameraFailure
-                          ? Column(children: [
-                              Text(state.error),
-                            ])
+                          ? Column(
+                              children: [
+                                Text(state.error),
+                              ],
+                            )
                           : const Center(
                               child: CircularProgressIndicator(),
                             ),
                   Align(
                     alignment: const Alignment(0, 0.95),
                     child: state is CameraReady
-                        ? _actionWidget()
+                        ? _actionWidget(context)
                         : const SizedBox.shrink(),
                   ),
                 ],
@@ -98,13 +101,13 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
     );
   }
 
-  Widget _actionWidget() {
+  Widget _actionWidget(BuildContext context) {
+    final bloc = BlocProvider.of<CameraBlocCubit>(context);
     return FloatingActionButton(
       backgroundColor: ThemeCustom.primaryColor,
       heroTag: "take-picture",
-      tooltip: "Ambil Gambar",
-      onPressed: () =>
-          BlocProvider.of<CameraBlocCubit>(context).cameraCapture(),
+      tooltip: AppLocalizations.of(context)!.takePicture,
+      onPressed: () => bloc.cameraCapture(),
       child: const Icon(
         Icons.camera_alt,
         color: Colors.white,

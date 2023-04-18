@@ -12,6 +12,7 @@ class WidgetMomentsCustom {
     BuildContext context, {
     required StoriesModel stories,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -39,20 +40,20 @@ class WidgetMomentsCustom {
                   children: [
                     Text(
                       stories.name,
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            fontWeight: FontWeight.w500,
-                          ),
+                      style: textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                     SizedBox(
                       height: 4.h,
                     ),
                     Text(
-                      UtilHelper.convertToAgo(stories.createdAt),
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w400,
-                            fontSize: 10.sp,
-                            color: ThemeCustom.secondaryColor,
-                          ),
+                      UtilHelper.convertToAgo(context, stories.createdAt),
+                      style: textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.w400,
+                        fontSize: 10.sp,
+                        color: ThemeCustom.secondaryColor,
+                      ),
                     )
                   ],
                 ),
@@ -63,19 +64,24 @@ class WidgetMomentsCustom {
             width: 1.sw,
             height: 1.sw,
             child: WidgetCustom.fadeInImageCustom(
-                isUrl: true, image: stories.photoUrl.toString()),
+              isUrl: true,
+              image: stories.photoUrl.toString(),
+            ),
           ),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 14.h,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   '${stories.name} ',
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 14.sp,
-                      ),
+                  style: textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 14.sp,
+                  ),
                 ),
                 SizedBox(
                   height: 2.h,
@@ -89,19 +95,19 @@ class WidgetMomentsCustom {
                     trimMode: TrimMode.Line,
                     trimCollapsedText: ' Show more',
                     trimExpandedText: ' Show less',
-                    lessStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.sp,
-                          color: ThemeCustom.primaryColor,
-                        ),
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.sp,
-                        ),
-                    moreStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w400,
-                          fontSize: 12.sp,
-                        ),
+                    lessStyle: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12.sp,
+                      color: ThemeCustom.primaryColor,
+                    ),
+                    style: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12.sp,
+                    ),
+                    moreStyle: textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w400,
+                      fontSize: 12.sp,
+                    ),
                   ),
                 ),
               ],

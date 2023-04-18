@@ -2,19 +2,18 @@ import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class WidgetCustom {
-  /// FadeInImage Custom
   static FadeInImage fadeInImageCustom({
     bool isUrl = false,
     bool isFile = false,
     File? file,
     required String image,
   }) {
-    /// Check Network or Asset Image
     ImageProvider<Object> checkUrl() {
       if (isUrl) {
         return NetworkImage(
@@ -46,12 +45,12 @@ class WidgetCustom {
     );
   }
 
-  /// Elevated Button
   static ElevatedButton elevatedButtonCustom(
     BuildContext context, {
     required String textButton,
     required void Function()? onPressed,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(
@@ -62,15 +61,14 @@ class WidgetCustom {
       onPressed: onPressed,
       child: Text(
         textButton,
-        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        style: textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+          fontWeight: FontWeight.bold,
+        ),
       ),
     );
   }
 
-  /// TextFormField
   static Widget textFormField(
     BuildContext context, {
     bool obscureText = false,
@@ -82,14 +80,15 @@ class WidgetCustom {
     required TextEditingController controller,
     String? Function(String?)? validator,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           hintText,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
+          style: textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         SizedBox(
           height: 10.h,
@@ -135,9 +134,9 @@ class WidgetCustom {
               icon: suffixIcon ?? const SizedBox.shrink(),
             ),
             hintText: hintText,
-            hintStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: ThemeCustom.secondaryColor,
-                ),
+            hintStyle: textTheme.bodyMedium?.copyWith(
+              color: ThemeCustom.secondaryColor,
+            ),
           ),
           validator: validator,
         ),
@@ -145,7 +144,6 @@ class WidgetCustom {
     );
   }
 
-  /// List Tile Custom
   static ListTile listTileCustom(
     BuildContext context, {
     required String title,
@@ -153,21 +151,41 @@ class WidgetCustom {
     Widget? trailing,
     required void Function() onTap,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return ListTile(
       leading: Icon(icon),
       title: Text(
         title,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(fontWeight: FontWeight.w400),
+        style: textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w400,
+        ),
       ),
       trailing: trailing,
       onTap: onTap,
     );
   }
 
-  /// Dialog Loading
+  static ExpansionTile expansionListLite(
+    BuildContext context, {
+    required String title,
+    required IconData icon,
+    Widget? trailing,
+    required List<Widget> children,
+  }) {
+    final textTheme = Theme.of(context).textTheme;
+    return ExpansionTile(
+      leading: Icon(icon),
+      title: Text(
+        title,
+        style: textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w400,
+        ),
+      ),
+      childrenPadding: EdgeInsets.only(left: 16.w),
+      children: children,
+    );
+  }
+
   static dialogLoadingState(BuildContext context) {
     return showGeneralDialog(
       context: context,
@@ -182,7 +200,9 @@ class WidgetCustom {
             color: Colors.transparent,
             child: Center(
               child: Container(
-                padding: EdgeInsets.symmetric(vertical: 10.sp).copyWith(
+                padding: EdgeInsets.symmetric(
+                  vertical: 10.sp,
+                ).copyWith(
                   top: 12.h,
                 ),
                 decoration: BoxDecoration(
@@ -196,7 +216,7 @@ class WidgetCustom {
                       const CircularProgressIndicator.adaptive(),
                       SizedBox(height: 12.h),
                       Text(
-                        'Loading',
+                        AppLocalizations.of(context)!.loading,
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ],
@@ -211,7 +231,6 @@ class WidgetCustom {
     );
   }
 
-  /// Base toast
   static Future toastState(
     BuildContext context, {
     required IconData iconToast,
@@ -219,6 +238,7 @@ class WidgetCustom {
     required String titleText,
     required String messageText,
   }) {
+    final textTheme = Theme.of(context).textTheme;
     return Flushbar(
       isDismissible: true,
       flushbarStyle: FlushbarStyle.GROUNDED,
@@ -231,62 +251,57 @@ class WidgetCustom {
       backgroundColor: backgroundColor,
       titleText: Text(
         titleText,
-        style: Theme.of(context)
-            .textTheme
-            .bodyLarge
-            ?.copyWith(color: Colors.white, fontSize: 18.sp),
+        style: textTheme.bodyLarge?.copyWith(
+          color: Colors.white,
+          fontSize: 18.sp,
+        ),
       ),
       messageText: Text(
         messageText,
-        style: Theme.of(context)
-            .textTheme
-            .bodyMedium
-            ?.copyWith(color: Colors.white, fontSize: 14.sp),
+        style: textTheme.bodyMedium?.copyWith(
+          color: Colors.white,
+          fontSize: 14.sp,
+        ),
       ),
     ).show(context);
   }
 
-  /// Toast No Internet
   static Future toastNoInternetState(BuildContext context) {
     return WidgetCustom.toastState(
       context,
       iconToast: Icons.warning_rounded,
       backgroundColor: ThemeCustom.redColor,
-      titleText: "Oops,",
-      messageText: "Kamu tidak terkoneksi internet, coba cek internet mu.",
+      titleText: AppLocalizations.of(context)!.oops,
+      messageText: AppLocalizations.of(context)!.noConnectionAlert,
     );
   }
 
-  /// Toast Register Success
   static Future toastSuccessRegisterState(BuildContext context) {
     return WidgetCustom.toastState(
       context,
       iconToast: Icons.check_circle,
       backgroundColor: ThemeCustom.greenColor,
-      titleText: "Yeyy,",
-      messageText:
-          "Kamu berhasil mendaftarkan akunmu, silahkan melakukan login.",
+      titleText: AppLocalizations.of(context)!.yey,
+      messageText: AppLocalizations.of(context)!.successRegistration,
     );
   }
 
-  /// Toast Post Story Success
   static Future toastSuccessPostState(BuildContext context) {
     return WidgetCustom.toastState(
       context,
       iconToast: Icons.check_circle,
       backgroundColor: ThemeCustom.greenColor,
-      titleText: "Yeyy,",
-      messageText: "Cerita terbarumu sudah terunggah.",
+      titleText: AppLocalizations.of(context)!.yey,
+      messageText: AppLocalizations.of(context)!.successPostStory,
     );
   }
 
-  /// Toast On Error
   static Future toastErrorState(BuildContext context, {required String error}) {
     return WidgetCustom.toastState(
       context,
       iconToast: Icons.warning_rounded,
       backgroundColor: ThemeCustom.redColor,
-      titleText: "Oops,",
+      titleText: AppLocalizations.of(context)!.oops,
       messageText: error,
     );
   }
@@ -297,13 +312,12 @@ class WidgetCustom {
     String? message,
     required void Function()? onPressed,
   }) {
+    final translate = AppLocalizations.of(context)!;
     final ilustrationImg = isError
         ? ConstantsName.gifErrorIlustrationImg
         : ConstantsName.gifNoConnectionImg;
-    final title = isError ? 'Maaf,' : 'Oops,';
-    final messageText = isError
-        ? message
-        : 'Coba periksa koneksi anda dan coba refresh kembali.';
+    final title = isError ? translate.sorry : translate.oops;
+    final messageText = isError ? message : translate.noConnectionDialog;
     return Center(
       child: SizedBox(
         child: Column(
@@ -331,7 +345,7 @@ class WidgetCustom {
             ),
             WidgetCustom.elevatedButtonCustom(
               context,
-              textButton: 'Coba lagi',
+              textButton: translate.tryAgain,
               onPressed: onPressed,
             )
           ],

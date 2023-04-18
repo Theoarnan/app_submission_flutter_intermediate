@@ -1,4 +1,3 @@
-import 'package:app_submission_flutter_intermediate/src/common/connection/connection_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
@@ -26,7 +25,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   ) async {
     try {
       emit(StoriesLoadingState());
-      if (await ConnectionHelper.isConnected() == false) {
+      if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
       await Future.delayed(const Duration(seconds: 3));
@@ -47,7 +46,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   ) async {
     try {
       emit(StoriesLoadingState());
-      if (await ConnectionHelper.isConnected() == false) {
+      if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
       await Future.delayed(const Duration(seconds: 3));
@@ -68,7 +67,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   ) async {
     try {
       emit(StoriesLoadingState());
-      if (await ConnectionHelper.isConnected() == false) {
+      if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
       final fileName = event.image.name;

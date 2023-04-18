@@ -15,7 +15,9 @@ class DetailStoriesResponseModel {
     return DetailStoriesResponseModel(
       error: map['error'] ?? false,
       message: map['message'] ?? '',
-      dataStory: StoriesModel.fromMap(map['story']),
+      dataStory: StoriesModel.fromMap(
+        map['story'],
+      ),
     );
   }
 }
