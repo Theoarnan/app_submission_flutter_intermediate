@@ -3,12 +3,12 @@ import 'dart:developer';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/splash_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_state_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/home_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,12 +38,8 @@ class MyApp extends StatelessWidget {
             storiesRepository: StoriesRepository(),
           ),
         ),
-        BlocProvider(
-          create: (context) => CameraBlocCubit(),
-        ),
-        BlocProvider(
-          create: (context) => SettingBlocCubit(),
-        ),
+        BlocProvider(create: (context) => CameraBlocCubit()),
+        BlocProvider(create: (context) => SettingBlocCubit()),
       ],
       child: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) => log('Test state auth: $state'),
@@ -62,7 +58,7 @@ class MyApp extends StatelessWidget {
                   child: child!,
                 );
               },
-              home: const HomePage(),
+              home: const SplashPage(),
             );
           },
         ),
