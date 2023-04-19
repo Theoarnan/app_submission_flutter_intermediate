@@ -5,8 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:path/path.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
 class UtilHelper {
@@ -54,11 +52,6 @@ class UtilHelper {
     );
     return CameraController(camera, resolutionPreset, enableAudio: false);
   }
-
-  static Future<String> getPath() async => join(
-        (await getTemporaryDirectory()).path,
-        '${DateTime.now()}.png',
-      );
 
   static Future<List<int>> compressImage(Uint8List bytes) async {
     int imageLength = bytes.length;

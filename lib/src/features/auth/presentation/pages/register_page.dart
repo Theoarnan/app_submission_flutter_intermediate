@@ -37,27 +37,30 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     final translate = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58.h),
-        child: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          leading: IconButton(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: IconButton(
             onPressed: () => Navigator.pop(context),
+            iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,
               color: ThemeCustom.darkColor,
             ),
           ),
-          title: Text(
-            translate.register,
-            style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                  fontSize: 24.sp,
-                ),
-          ),
-          centerTitle: true,
         ),
+        title: Text(
+          translate.register,
+          style: textTheme.labelLarge?.copyWith(
+            fontSize: 24.sp,
+          ),
+        ),
+        toolbarHeight: 58.h,
+        centerTitle: true,
       ),
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
@@ -84,7 +87,6 @@ class _RegisterPageState extends State<RegisterPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Greetings
                   Container(
                     alignment: Alignment.center,
                     margin: EdgeInsets.only(top: 2.h),
@@ -96,17 +98,14 @@ class _RegisterPageState extends State<RegisterPage> {
                         Text(
                           translate.subtitleRegister,
                           textAlign: TextAlign.center,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: ThemeCustom.secondaryColor,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: ThemeCustom.secondaryColor,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ],
                     ),
                   ),
-
-                  /// Form
                   Expanded(
                     child: Container(
                       margin: EdgeInsets.symmetric(vertical: 0.02.sh),

@@ -13,8 +13,6 @@ class ConstantsName {
   static String imgLogo3 = '$baseDirImgLogo/logo3.png';
   static String imgLogo4 = '$baseDirImgLogo/logo4.png';
 
-  static String imgTemp1 = '$baseDirImgLogo/img_temp1.png';
-
   static String gifLoadingImg = '$baseDirImgGif/loading_image.gif';
   static String gifErrorImg = '$baseDirImgGif/no_image.gif';
   static String gifNoConnectionImg = '$baseDirImgGif/no_connection.gif';

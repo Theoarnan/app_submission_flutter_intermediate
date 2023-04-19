@@ -33,6 +33,8 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     final translate = AppLocalizations.of(context)!;
+    final textTheme = Theme.of(context).textTheme;
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
@@ -60,128 +62,119 @@ class _LoginPageState extends State<LoginPage> {
               vertical: 10.h,
             ),
             child: SizedBox(
-              height: 0.92.sh,
+              height: size.height - 44,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  /// Logo
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.symmetric(vertical: 20.h),
-                    child: Image.asset(
-                      ConstantsName.imgLogo2,
-                      width: 0.8.sw,
+                  Expanded(
+                    flex: 1,
+                    child: Container(
+                      alignment: Alignment.center,
+                      child: Image.asset(
+                        ConstantsName.imgLogo2,
+                      ),
                     ),
                   ),
-
-                  /// Greetings
-                  SizedBox(
+                  Expanded(
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           translate.welcome,
-                          style:
-                              Theme.of(context).textTheme.labelLarge?.copyWith(
-                                    fontSize: 28.sp,
-                                  ),
+                          style: textTheme.labelLarge?.copyWith(
+                            fontSize: 28.sp,
+                          ),
                         ),
-                        SizedBox(
-                          height: 4.h,
-                        ),
+                        SizedBox(height: 4.h),
                         Text(
                           translate.subtitleLogin,
-                          style:
-                              Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                    color: ThemeCustom.secondaryColor,
-                                    fontWeight: FontWeight.normal,
-                                  ),
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: ThemeCustom.secondaryColor,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ],
                     ),
                   ),
-
-                  /// Form
-                  Container(
-                    margin: EdgeInsets.symmetric(vertical: 0.03.sh),
-                    child: Form(
-                      key: _formGlobalKey,
-                      child: Column(
-                        children: [
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _emailField,
-                            hintText: translate.email,
-                            validator: (value) {
-                              return ValidationFormUtil.validateEmail(
-                                context,
-                                value!,
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          WidgetCustom.textFormField(
-                            context,
-                            controller: _passswordField,
-                            suffixIcon: Icon(
-                              isObscurePass
-                                  ? Icons.visibility
-                                  : Icons.visibility_off,
+                  Expanded(
+                    flex: 3,
+                    child: SizedBox(
+                      child: Form(
+                        key: _formGlobalKey,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _emailField,
+                              hintText: translate.email,
+                              validator: (value) {
+                                return ValidationFormUtil.validateEmail(
+                                  context,
+                                  value!,
+                                );
+                              },
                             ),
-                            onTapSuffixIcon: () {
-                              setState(() {
-                                isObscurePass = !isObscurePass;
-                              });
-                            },
-                            hintText: translate.password,
-                            obscureText: isObscurePass,
-                            validator: (value) {
-                              return ValidationFormUtil.validatePassword(
+                            SizedBox(height: 12.h),
+                            WidgetCustom.textFormField(
+                              context,
+                              controller: _passswordField,
+                              suffixIcon: Icon(
+                                isObscurePass
+                                    ? Icons.visibility
+                                    : Icons.visibility_off,
+                              ),
+                              onTapSuffixIcon: () {
+                                setState(() {
+                                  isObscurePass = !isObscurePass;
+                                });
+                              },
+                              hintText: translate.password,
+                              obscureText: isObscurePass,
+                              validator: (value) {
+                                return ValidationFormUtil.validatePassword(
+                                  context,
+                                  value!,
+                                );
+                              },
+                            ),
+                            SizedBox(height: 12.h),
+                            Center(
+                              child: WidgetCustom.elevatedButtonCustom(
                                 context,
-                                value!,
-                              );
-                            },
-                          ),
-                          SizedBox(
-                            height: 0.02.sh,
-                          ),
-                          WidgetCustom.elevatedButtonCustom(
-                            context,
-                            textButton: translate.login,
-                            onPressed: () => _onLogin(),
-                          ),
-                        ],
+                                textButton: translate.login,
+                                onPressed: () => _onLogin(),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
-
-                  /// REGISTER
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12.h),
+                  SizedBox(
                     child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           translate.dontHaveAccount,
-                          style: Theme.of(context).textTheme.bodyMedium,
+                          style: textTheme.bodyMedium,
                         ),
                         GestureDetector(
                           onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const RegisterPage(),
-                              )),
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const RegisterPage(),
+                            ),
+                          ),
                           child: Text(
                             translate.register,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium
-                                ?.copyWith(
-                                  color: ThemeCustom.yellowColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: textTheme.bodyMedium?.copyWith(
+                              color: ThemeCustom.yellowColor,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         )
                       ],
@@ -191,9 +184,9 @@ class _LoginPageState extends State<LoginPage> {
                   Center(
                     child: Text(
                       translate.copyright,
-                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: ThemeCustom.secondaryColor,
-                          ),
+                      style: textTheme.bodySmall?.copyWith(
+                        color: ThemeCustom.secondaryColor,
+                      ),
                     ),
                   ),
                 ],
@@ -205,7 +198,6 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  /// On Register Form
   void _onLogin() {
     if (_formGlobalKey.currentState!.validate()) {
       final data = LoginModel(

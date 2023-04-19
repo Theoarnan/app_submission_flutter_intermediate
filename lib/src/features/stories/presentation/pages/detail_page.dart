@@ -115,38 +115,34 @@ class DetailPage extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           CircleAvatar(
-                            radius: 18.sp,
-                            backgroundColor: ThemeCustom.secondaryColor,
+                            radius: 24.sp,
+                            backgroundColor:
+                                ThemeCustom.secondaryColor.withOpacity(
+                              0.4,
+                            ),
                             child: Text(
                               UtilHelper.generateInitialText(data.name),
-                              style: const TextStyle(
-                                color: ThemeCustom.darkColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: textTheme.bodyLarge,
                             ),
                           ),
-                          SizedBox(width: 14.w),
+                          SizedBox(width: 8.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 data.name,
-                                style: textTheme.bodyMedium?.copyWith(
+                                style: textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(
-                                height: 4.h,
-                              ),
+                              SizedBox(height: 4.h),
                               Text(
                                 UtilHelper.convertToAgo(
                                   context,
                                   data.createdAt,
                                 ),
-                                style: textTheme.bodySmall?.copyWith(
+                                style: textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 10.sp,
                                   color: ThemeCustom.secondaryColor,
                                 ),
                               )
@@ -155,28 +151,24 @@ class DetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 4.h,
-                    ),
+                    SizedBox(height: 4.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
                         translate.description,
-                        style: textTheme.bodySmall?.copyWith(
+                        style: textTheme.bodyLarge?.copyWith(
                           color: ThemeCustom.darkColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 6.h,
-                    ),
+                    SizedBox(height: 6.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: SizedBox(
                         child: Text(
                           data.description,
-                          style: textTheme.bodyMedium?.copyWith(
+                          style: textTheme.bodyLarge?.copyWith(
                             color: ThemeCustom.darkColor.withOpacity(0.6),
                           ),
                         ),

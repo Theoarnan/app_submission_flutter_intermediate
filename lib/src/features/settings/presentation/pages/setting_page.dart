@@ -19,32 +19,34 @@ class _SettingPageState extends State<SettingPage> {
     final translate = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58.h),
-        child: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          leading: IconButton(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: IconButton(
             onPressed: () => Navigator.pop(context),
+            iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,
               color: ThemeCustom.darkColor,
             ),
           ),
-          title: Text(
-            translate.setting,
-            style: textTheme.labelLarge?.copyWith(
-              fontSize: 24.sp,
-            ),
-          ),
-          centerTitle: true,
         ),
+        title: Text(
+          translate.setting,
+          style: textTheme.labelLarge?.copyWith(
+            fontSize: 24.sp,
+          ),
+        ),
+        toolbarHeight: 58.h,
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: 5.h,
-            horizontal: 10.w,
+            horizontal: 4.w,
           ),
           child: Column(
             children: [
@@ -61,7 +63,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     title: Text(
                       'Indonesia',
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -77,7 +79,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     title: Text(
                       'English',
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w400,
                       ),
                     ),

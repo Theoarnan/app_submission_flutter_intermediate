@@ -55,12 +55,13 @@ class _PostStoryPageState extends State<PostStoryPage> {
     final blocCamera = BlocProvider.of<CameraBlocCubit>(context);
     final translate = AppLocalizations.of(context)!;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58.h),
-        child: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          leading: IconButton(
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        titleSpacing: 0,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: IconButton(
             onPressed: () {
               if (widget.isFromCamera) {
                 blocCamera.cameraInitialize();
@@ -69,20 +70,25 @@ class _PostStoryPageState extends State<PostStoryPage> {
               }
               Navigator.pop(context);
             },
+            iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,
               color: ThemeCustom.darkColor,
             ),
           ),
-          title: Text(
-            translate.postStory,
-            style: textTheme.labelLarge?.copyWith(
-              fontSize: 24.sp,
-            ),
+        ),
+        title: Text(
+          translate.postStory,
+          style: textTheme.labelLarge?.copyWith(
+            fontSize: 24.sp,
           ),
-          centerTitle: true,
-          actions: [
-            TextButton(
+        ),
+        toolbarHeight: 58.h,
+        centerTitle: true,
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: TextButton(
               onPressed: () => _onPostStory(),
               child: Text(
                 translate.post,
@@ -92,9 +98,9 @@ class _PostStoryPageState extends State<PostStoryPage> {
                   color: ThemeCustom.primaryColor,
                 ),
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
       body: SafeArea(
         child: BlocConsumer<StoriesBloc, StoriesState>(
@@ -134,26 +140,29 @@ class _PostStoryPageState extends State<PostStoryPage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(
-                    height: 14.h,
-                  ),
-                  Text(
-                    translate.subtitlePostStory,
-                    textAlign: TextAlign.center,
-                    style: textTheme.bodyMedium?.copyWith(
-                      color: ThemeCustom.secondaryColor,
-                      fontWeight: FontWeight.normal,
+                  SizedBox(height: 10.h),
+                  Center(
+                    child: Text(
+                      translate.subtitlePostStory,
+                      textAlign: TextAlign.center,
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: ThemeCustom.secondaryColor,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ),
-                  SizedBox(
-                    height: 18.h,
-                  ),
+                  SizedBox(height: 18.h),
                   Center(
                     child: Container(
                       height: 0.3.sh,
                       width: 0.5.sw,
-                      padding: const EdgeInsets.all(2),
-                      color: Colors.grey,
+                      clipBehavior: Clip.hardEdge,
+                      decoration: BoxDecoration(
+                        color: Colors.grey,
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(8.sp),
+                        ),
+                      ),
                       child: WidgetCustom.fadeInImageCustom(
                         isFile: true,
                         file: File(fileImage.path.toString()),
@@ -161,9 +170,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 6.h,
-                  ),
+                  SizedBox(height: 6.h),
                   Center(
                     child: TextButton(
                       onPressed: () {
@@ -183,9 +190,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                                       ),
                                       child: Text(
                                         translate.chooseMedia,
-                                        style: Theme.of(context)
-                                            .textTheme
-                                            .bodyLarge,
+                                        style: textTheme.bodyLarge,
                                       ),
                                     ),
                                     WidgetCustom.listTileCustom(
@@ -208,16 +213,14 @@ class _PostStoryPageState extends State<PostStoryPage> {
                       child: Text(
                         translate.change,
                         textAlign: TextAlign.left,
-                        style: textTheme.bodySmall?.copyWith(
+                        style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,
                           color: ThemeCustom.primaryColor,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: 6.h,
-                  ),
+                  SizedBox(height: 6.h),
                   SizedBox(
                     child: Form(
                       key: _formGlobalKey,
@@ -227,20 +230,19 @@ class _PostStoryPageState extends State<PostStoryPage> {
                           Text(
                             translate.description,
                             textAlign: TextAlign.left,
-                            style: textTheme.bodyMedium?.copyWith(
+                            style: textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          SizedBox(
-                            height: 4.h,
-                          ),
+                          SizedBox(height: 4.h),
                           TextFormField(
                             controller: _descriptionField,
                             maxLines: 4,
                             decoration: InputDecoration(
                               hintText: translate.fieldDescription,
-                              hintStyle: textTheme.bodyMedium?.copyWith(
+                              hintStyle: textTheme.bodyLarge?.copyWith(
                                 color: ThemeCustom.secondaryColor,
+                                fontWeight: FontWeight.normal,
                               ),
                             ),
                             validator: (value) {
@@ -264,7 +266,6 @@ class _PostStoryPageState extends State<PostStoryPage> {
     );
   }
 
-  /// On Post Story
   void _onPostStory() {
     if (_formGlobalKey.currentState!.validate()) {
       BlocProvider.of<StoriesBloc>(context).add(

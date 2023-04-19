@@ -35,11 +35,13 @@ class WidgetCustom {
       placeholder: AssetImage(
         ConstantsName.gifLoadingImg,
       ),
+      filterQuality: FilterQuality.high,
       fit: BoxFit.cover,
       placeholderFit: BoxFit.cover,
       imageErrorBuilder: (context, error, stackTrace) {
         return Image.asset(
           ConstantsName.gifErrorImg,
+          filterQuality: FilterQuality.high,
         );
       },
     );
@@ -54,8 +56,8 @@ class WidgetCustom {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(
-          vertical: 12.h,
-          horizontal: 58.w,
+          vertical: 14.h,
+          horizontal: 54.w,
         ),
       ),
       onPressed: onPressed,
@@ -90,16 +92,14 @@ class WidgetCustom {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(
-          height: 10.h,
-        ),
+        SizedBox(height: 10.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureText,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
-              vertical: 0,
+              vertical: 0.h,
               horizontal: 16.sp,
             ),
             fillColor: ThemeCustom.secondaryColor,
@@ -108,7 +108,7 @@ class WidgetCustom {
               borderSide: const BorderSide(
                 color: ThemeCustom.redColor,
                 style: BorderStyle.solid,
-                width: 2,
+                width: 1,
               ),
               borderRadius: BorderRadius.circular(5.sp),
             ),
@@ -116,14 +116,14 @@ class WidgetCustom {
               borderRadius: BorderRadius.circular(5.sp),
               borderSide: const BorderSide(
                 color: ThemeCustom.secondaryColor,
-                width: 2,
+                width: 1,
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.sp),
               borderSide: const BorderSide(
                 color: ThemeCustom.yellowColor,
-                width: 2,
+                width: 1,
               ),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -153,10 +153,14 @@ class WidgetCustom {
   }) {
     final textTheme = Theme.of(context).textTheme;
     return ListTile(
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 10.h,
+      ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: textTheme.bodyMedium?.copyWith(
+        style: textTheme.bodyLarge?.copyWith(
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -174,10 +178,14 @@ class WidgetCustom {
   }) {
     final textTheme = Theme.of(context).textTheme;
     return ExpansionTile(
+      tilePadding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 10.h,
+      ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: textTheme.bodyMedium?.copyWith(
+        style: textTheme.bodyLarge?.copyWith(
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -201,7 +209,7 @@ class WidgetCustom {
             child: Center(
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  vertical: 10.sp,
+                  vertical: 10.h,
                 ).copyWith(
                   top: 12.h,
                 ),

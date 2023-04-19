@@ -14,11 +14,11 @@ class StoriesRepository {
   /// Endpoint
   final String storiesEndpoint = '${ConstantsName.baseUrl}/stories';
   final String getDetailStoriesEndpoint = '${ConstantsName.baseUrl}/stories';
-  final testToken =
+  final String testToken =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLXpSSEtfQ3c5QWtITkdSaGciLCJpYXQiOjE2ODE0OTk5MTd9.GfXJkB9FRCysC-ITJEE-TQlsQ0aBGQvZkPUU_063XeU';
   Map<String, String> header({required String token}) => {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer $token',
+        'Authorization': 'Bearer $testToken',
       };
 
   Future<StoriesResponseModel> getAllStory() async {

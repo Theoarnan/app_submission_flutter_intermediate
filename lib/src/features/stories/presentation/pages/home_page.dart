@@ -35,17 +35,24 @@ class _HomePageState extends State<HomePage> {
     final textTheme = Theme.of(context).textTheme;
     final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58.h),
-        child: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          title: Image.asset(
-            ConstantsName.imgLogo3,
+      appBar: AppBar(
+        toolbarHeight: 58.h,
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        titleSpacing: 0,
+        title: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: SizedBox(
             height: 38.h,
+            child: Image.asset(
+              ConstantsName.imgLogo3,
+            ),
           ),
-          actions: [
-            IconButton(
+        ),
+        actions: [
+          Padding(
+            padding: EdgeInsets.only(right: 16.w),
+            child: IconButton(
               onPressed: () {
                 Navigator.push(
                   context,
@@ -54,13 +61,14 @@ class _HomePageState extends State<HomePage> {
                   ),
                 );
               },
+              iconSize: 24.sp,
               icon: const Icon(
                 Icons.settings,
                 color: ThemeCustom.darkColor,
               ),
-            )
-          ],
-        ),
+            ),
+          )
+        ],
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -147,49 +155,47 @@ class _HomePageState extends State<HomePage> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: const Color.fromARGB(255, 244, 244, 244),
-        elevation: 2,
+        backgroundColor: Colors.white,
+        elevation: 5,
         child: Image.asset(
           ConstantsName.imgLogo4,
           fit: BoxFit.fill,
-          width: 40.w,
+          height: 38.h,
         ),
         onPressed: () {
           showModalBottomSheet(
-              context: context,
-              builder: (context) {
-                return Padding(
-                  padding: EdgeInsets.only(bottom: 20.h),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: <Widget>[
-                      Padding(
-                        padding: EdgeInsets.symmetric(
-                          horizontal: 16.w,
-                          vertical: 20.h,
-                        ),
-                        child: Text(
-                          translate.chooseMedia,
-                          style: Theme.of(context).textTheme.bodyLarge,
-                        ),
-                      ),
-                      WidgetCustom.listTileCustom(
-                        context,
-                        title: translate.camera,
-                        icon: Icons.photo_camera_rounded,
-                        onTap: () => _onCameraView(),
-                      ),
-                      WidgetCustom.listTileCustom(
-                        context,
-                        title: translate.gallery,
-                        icon: Icons.photo_rounded,
-                        onTap: () => _onGalleryView(),
-                      ),
-                    ],
+            context: context,
+            builder: (context) {
+              return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 20.h,
+                    ),
+                    child: Text(
+                      translate.chooseMedia,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
                   ),
-                );
-              });
+                  WidgetCustom.listTileCustom(
+                    context,
+                    title: translate.camera,
+                    icon: Icons.photo_camera_rounded,
+                    onTap: () => _onCameraView(),
+                  ),
+                  WidgetCustom.listTileCustom(
+                    context,
+                    title: translate.gallery,
+                    icon: Icons.photo_rounded,
+                    onTap: () => _onGalleryView(),
+                  ),
+                ],
+              );
+            },
+          );
         },
       ),
     );
@@ -216,5 +222,6 @@ class _HomePageState extends State<HomePage> {
     final isLinux = defaultTargetPlatform == TargetPlatform.linux;
     if (isMacOS || isLinux) return;
     BlocProvider.of<StoriesBloc>(context).add(SelectImageGallery());
+    BlocProvider.of<StoriesBloc>(context).add(GetAllStories());
   }
 }

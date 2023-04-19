@@ -10,11 +10,9 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class AuthRepository {
-  /// Endpoint
   final String registerEndpoint = '${ConstantsName.baseUrl}/register';
   final String loginEndpoint = '${ConstantsName.baseUrl}/login';
 
-  /// Key Preference
   final String stateKey = 'state';
   final String tokenKey = 'token';
 

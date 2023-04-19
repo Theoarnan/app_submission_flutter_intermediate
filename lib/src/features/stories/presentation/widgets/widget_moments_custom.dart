@@ -7,7 +7,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:readmore/readmore.dart';
 
 class WidgetMomentsCustom {
-  /// Card Story
   static Widget cardStory(
     BuildContext context, {
     required StoriesModel stories,
@@ -18,40 +17,37 @@ class WidgetMomentsCustom {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 14.h)
-                .copyWith(top: 8.h),
+            padding: EdgeInsets.symmetric(
+              horizontal: 16.w,
+              vertical: 14.h,
+            ),
             child: Row(
               children: <Widget>[
                 CircleAvatar(
-                  radius: 18.sp,
-                  backgroundColor: ThemeCustom.secondaryColor,
+                  radius: 24.sp,
+                  backgroundColor: ThemeCustom.secondaryColor.withOpacity(
+                    0.4,
+                  ),
                   child: Text(
                     UtilHelper.generateInitialText(stories.name),
-                    style: const TextStyle(
-                      color: ThemeCustom.darkColor,
-                      fontSize: 14,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    style: textTheme.bodyLarge,
                   ),
                 ),
-                SizedBox(width: 14.w),
+                SizedBox(width: 8.w),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       stories.name,
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    SizedBox(
-                      height: 4.h,
-                    ),
+                    SizedBox(height: 4.h),
                     Text(
                       UtilHelper.convertToAgo(context, stories.createdAt),
                       style: textTheme.bodySmall?.copyWith(
                         fontWeight: FontWeight.w400,
-                        fontSize: 10.sp,
                         color: ThemeCustom.secondaryColor,
                       ),
                     )
@@ -60,9 +56,18 @@ class WidgetMomentsCustom {
               ],
             ),
           ),
-          SizedBox(
+          Container(
             width: 1.sw,
-            height: 1.sw,
+            height: 0.6.sw,
+            clipBehavior: Clip.hardEdge,
+            margin: EdgeInsets.symmetric(
+              horizontal: 16.w,
+            ),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.all(
+                Radius.circular(8.sp),
+              ),
+            ),
             child: WidgetCustom.fadeInImageCustom(
               isUrl: true,
               image: stories.photoUrl.toString(),
@@ -78,14 +83,11 @@ class WidgetMomentsCustom {
               children: [
                 Text(
                   '${stories.name} ',
-                  style: textTheme.bodyMedium?.copyWith(
+                  style: textTheme.bodyLarge?.copyWith(
                     fontWeight: FontWeight.w500,
-                    fontSize: 14.sp,
                   ),
                 ),
-                SizedBox(
-                  height: 2.h,
-                ),
+                SizedBox(height: 2.h),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: ReadMoreText(
@@ -97,16 +99,16 @@ class WidgetMomentsCustom {
                     trimExpandedText: ' Show less',
                     lessStyle: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                       color: ThemeCustom.primaryColor,
                     ),
                     style: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                     ),
                     moreStyle: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
-                      fontSize: 12.sp,
+                      fontSize: 14.sp,
                     ),
                   ),
                 ),
