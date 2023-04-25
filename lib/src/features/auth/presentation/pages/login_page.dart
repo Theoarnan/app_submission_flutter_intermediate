@@ -5,23 +5,33 @@ import 'package:app_submission_flutter_intermediate/src/common/utils/validate_fo
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/login/login_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/register_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatefulWidget {
-  const LoginPage({super.key});
+  final Function() onRegister;
+  final Function() onRegisterSuccess;
+  const LoginPage({
+    super.key,
+    required this.onRegister,
+    required this.onRegisterSuccess,
+  });
   @override
   State<LoginPage> createState() => _LoginPageState();
 }
 
 class _LoginPageState extends State<LoginPage> {
   final _formGlobalKey = GlobalKey<FormState>();
-  final _emailField = TextEditingController();
-  final _passswordField = TextEditingController();
+  final _emailField = TextEditingController(text: 'abcz1@gmail.com');
+  final _passswordField = TextEditingController(text: 'a123456');
 
   bool isObscurePass = true;
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   void dispose() {
@@ -47,8 +57,12 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) {
           if (state is AuthLoadingState) {
             WidgetCustom.dialogLoadingState(context);
+          } else if (state is RegisterSuccessState) {
+            Navigator.of(context)
+              ..pop()
+              ..pop();
+            WidgetCustom.toastSuccessRegisterState(context);
           } else if (state is LoginSuccessState) {
-            Navigator.of(context).pop();
             WidgetCustom.toastSuccessPostState(context);
           } else if (state is AuthErrorState) {
             Navigator.of(context).pop();
@@ -163,12 +177,7 @@ class _LoginPageState extends State<LoginPage> {
                           style: textTheme.bodyMedium,
                         ),
                         GestureDetector(
-                          onTap: () => Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const RegisterPage(),
-                            ),
-                          ),
+                          onTap: () => widget.onRegister(),
                           child: Text(
                             translate.register,
                             style: textTheme.bodyMedium?.copyWith(
@@ -199,14 +208,14 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onLogin() {
-    if (_formGlobalKey.currentState!.validate()) {
-      final data = LoginModel(
-        email: _emailField.text,
-        password: _passswordField.text,
-      );
-      BlocProvider.of<AuthBloc>(context).add(
-        LoginAccountEvent(loginModel: data),
-      );
-    }
+    // if (_formGlobalKey.currentState!.validate()) {
+    final data = LoginModel(
+      email: _emailField.text,
+      password: _passswordField.text,
+    );
+    context.read<AuthBloc>().add(
+          LoginAccountEvent(loginModel: data),
+        );
+    // }
   }
 }

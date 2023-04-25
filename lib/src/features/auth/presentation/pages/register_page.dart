@@ -10,7 +10,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
-
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -42,9 +41,12 @@ class _RegisterPageState extends State<RegisterPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
-        leading: Padding(
-          padding: EdgeInsets.only(left: 16.w),
+        titleSpacing: 0,
+        automaticallyImplyLeading: true,
+        leading: Container(
+          margin: EdgeInsets.only(left: 16.w),
           child: IconButton(
+            padding: EdgeInsets.zero,
             onPressed: () => Navigator.pop(context),
             iconSize: 24.sp,
             icon: const Icon(
@@ -62,153 +64,138 @@ class _RegisterPageState extends State<RegisterPage> {
         toolbarHeight: 58.h,
         centerTitle: true,
       ),
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is AuthLoadingState) {
-            WidgetCustom.dialogLoadingState(context);
-            Navigator.of(context).pop();
-          } else if (state is RegisterSuccessState) {
-            Navigator.of(context)
-              ..pop()
-              ..pop();
-            WidgetCustom.toastSuccessRegisterState(context);
-          } else if (state is AuthErrorState) {
-            WidgetCustom.toastErrorState(context, error: state.error);
-          }
-        },
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: EdgeInsets.symmetric(
-              horizontal: 16.w,
-              vertical: 10.h,
-            ),
-            child: SizedBox(
-              height: 0.93.sh,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Container(
-                    alignment: Alignment.center,
-                    margin: EdgeInsets.only(top: 2.h),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 4.h,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.symmetric(
+            horizontal: 16.w,
+            vertical: 10.h,
+          ),
+          child: SizedBox(
+            height: 0.93.sh,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  alignment: Alignment.center,
+                  margin: EdgeInsets.only(top: 2.h),
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 4.h,
+                      ),
+                      Text(
+                        translate.subtitleRegister,
+                        textAlign: TextAlign.center,
+                        style: textTheme.bodyMedium?.copyWith(
+                          color: ThemeCustom.secondaryColor,
+                          fontWeight: FontWeight.normal,
                         ),
-                        Text(
-                          translate.subtitleRegister,
-                          textAlign: TextAlign.center,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: ThemeCustom.secondaryColor,
-                            fontWeight: FontWeight.normal,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
-                  Expanded(
-                    child: Container(
-                      margin: EdgeInsets.symmetric(vertical: 0.02.sh),
-                      child: Form(
-                        key: _formGlobalKey,
-                        child: Column(
-                          children: [
-                            WidgetCustom.textFormField(
-                              context,
-                              controller: _nameField,
-                              hintText: translate.name,
-                              validator: (value) {
-                                return ValidationFormUtil.validateNotNull(
-                                  context,
-                                  value,
-                                  translate.name.toLowerCase(),
-                                );
-                              },
+                ),
+                Expanded(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 0.02.sh),
+                    child: Form(
+                      key: _formGlobalKey,
+                      child: Column(
+                        children: [
+                          WidgetCustom.textFormField(
+                            context,
+                            controller: _nameField,
+                            hintText: translate.name,
+                            validator: (value) {
+                              return ValidationFormUtil.validateNotNull(
+                                context,
+                                value,
+                                translate.name.toLowerCase(),
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            height: 0.02.sh,
+                          ),
+                          WidgetCustom.textFormField(
+                            context,
+                            controller: _emailField,
+                            keyboardType: TextInputType.emailAddress,
+                            hintText: translate.email,
+                            validator: (value) {
+                              return ValidationFormUtil.validateEmail(
+                                context,
+                                value!,
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            height: 0.02.sh,
+                          ),
+                          WidgetCustom.textFormField(
+                            context,
+                            controller: _passswordField,
+                            suffixIcon: Icon(
+                              isObscurePass
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
-                            SizedBox(
-                              height: 0.02.sh,
+                            onTapSuffixIcon: () {
+                              setState(() {
+                                isObscurePass = !isObscurePass;
+                              });
+                            },
+                            hintText: translate.password,
+                            obscureText: isObscurePass,
+                            validator: (value) {
+                              return ValidationFormUtil.validatePassword(
+                                context,
+                                value!,
+                              );
+                            },
+                          ),
+                          SizedBox(
+                            height: 0.02.sh,
+                          ),
+                          WidgetCustom.textFormField(
+                            context,
+                            controller: _passswordConfirmField,
+                            suffixIcon: Icon(
+                              isObscureConfirmPass
+                                  ? Icons.visibility
+                                  : Icons.visibility_off,
                             ),
-                            WidgetCustom.textFormField(
-                              context,
-                              controller: _emailField,
-                              keyboardType: TextInputType.emailAddress,
-                              hintText: translate.email,
-                              validator: (value) {
-                                return ValidationFormUtil.validateEmail(
-                                  context,
-                                  value!,
-                                );
-                              },
-                            ),
-                            SizedBox(
-                              height: 0.02.sh,
-                            ),
-                            WidgetCustom.textFormField(
-                              context,
-                              controller: _passswordField,
-                              suffixIcon: Icon(
-                                isObscurePass
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onTapSuffixIcon: () {
-                                setState(() {
-                                  isObscurePass = !isObscurePass;
-                                });
-                              },
-                              hintText: translate.password,
-                              obscureText: isObscurePass,
-                              validator: (value) {
+                            onTapSuffixIcon: () {
+                              setState(() {
+                                isObscureConfirmPass = !isObscureConfirmPass;
+                              });
+                            },
+                            hintText: translate.confirm_password,
+                            obscureText: isObscureConfirmPass,
+                            validator: (value) {
+                              if (_passswordField.text == value) {
                                 return ValidationFormUtil.validatePassword(
                                   context,
                                   value!,
                                 );
-                              },
-                            ),
-                            SizedBox(
-                              height: 0.02.sh,
-                            ),
-                            WidgetCustom.textFormField(
-                              context,
-                              controller: _passswordConfirmField,
-                              suffixIcon: Icon(
-                                isObscureConfirmPass
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              onTapSuffixIcon: () {
-                                setState(() {
-                                  isObscureConfirmPass = !isObscureConfirmPass;
-                                });
-                              },
-                              hintText: translate.confirm_password,
-                              obscureText: isObscureConfirmPass,
-                              validator: (value) {
-                                if (_passswordField.text == value) {
-                                  return ValidationFormUtil.validatePassword(
-                                    context,
-                                    value!,
-                                  );
-                                } else {
-                                  return translate.validateConfirmPassword;
-                                }
-                              },
-                            ),
-                            SizedBox(
-                              height: 0.04.sh,
-                            ),
-                            WidgetCustom.elevatedButtonCustom(
-                              context,
-                              textButton: translate.register,
-                              onPressed: () => _onRegister(),
-                            ),
-                          ],
-                        ),
+                              } else {
+                                return translate.validateConfirmPassword;
+                              }
+                            },
+                          ),
+                          SizedBox(
+                            height: 0.04.sh,
+                          ),
+                          WidgetCustom.elevatedButtonCustom(
+                            context,
+                            textButton: translate.register,
+                            onPressed: () => _onRegister(),
+                          ),
+                        ],
                       ),
                     ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
@@ -218,15 +205,15 @@ class _RegisterPageState extends State<RegisterPage> {
 
   /// On Register Form
   void _onRegister() {
-    if (_formGlobalKey.currentState!.validate()) {
-      final data = RegisterModel(
-        name: _nameField.text,
-        email: _emailField.text,
-        password: _passswordConfirmField.text,
-      );
-      BlocProvider.of<AuthBloc>(context).add(
-        RegisterAccountEvent(registerModel: data),
-      );
-    }
+    // if (_formGlobalKey.currentState!.validate()) {
+    final data = RegisterModel(
+      name: _nameField.text,
+      email: _emailField.text,
+      password: _passswordConfirmField.text,
+    );
+    BlocProvider.of<AuthBloc>(context).add(
+      RegisterAccountEvent(registerModel: data),
+    );
+    // }
   }
 }

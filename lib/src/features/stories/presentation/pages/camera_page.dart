@@ -1,15 +1,19 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_state_cubit.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/post_story_page.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CameraPage extends StatefulWidget {
-  const CameraPage({super.key});
+  final Function() toBackPostStory;
+  const CameraPage({
+    super.key,
+    required this.toBackPostStory,
+  });
   @override
   State<CameraPage> createState() => _CameraPageState();
 }
@@ -45,15 +49,8 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
     return BlocConsumer<CameraBlocCubit, CameraStateCubit>(
       listener: (context, state) {
         if (state is CameraCaptureSuccess) {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (_) => PostStoryPage(
-                imagePost: state.image,
-                isFromCamera: true,
-              ),
-            ),
-          );
+          context.read<PageManager>().returnDataImage(state.image);
+          widget.toBackPostStory();
         } else if (state is CameraCaptureFailure) {
           WidgetCustom.toastErrorState(context, error: state.error);
         }
@@ -78,14 +75,8 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
                   state is CameraReady
                       ? CameraPreview(bloc.getController()!)
                       : state is CameraFailure
-                          ? Column(
-                              children: [
-                                Text(state.error),
-                              ],
-                            )
-                          : const Center(
-                              child: CircularProgressIndicator(),
-                            ),
+                          ? Column(children: [Text(state.error)])
+                          : const Center(child: CircularProgressIndicator()),
                   Align(
                     alignment: const Alignment(0, 0.95),
                     child: state is CameraReady

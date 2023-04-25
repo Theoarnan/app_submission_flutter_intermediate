@@ -1,48 +1,56 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WidgetCustom {
-  static FadeInImage fadeInImageCustom({
+  static Widget fadeInImageCustom({
+    XFile? imageData,
     bool isUrl = false,
     bool isFile = false,
-    File? file,
     required String image,
   }) {
-    ImageProvider<Object> checkUrl() {
-      if (isUrl) {
-        return NetworkImage(
-          image,
-        );
-      }
+    Future<ImageProvider<Object>> checkUrl() async {
+      if (isUrl) return NetworkImage(image);
       if (isFile) {
-        return FileImage(
-          file!,
-        );
+        if (kIsWeb && imageData != null) {
+          final webImage = await imageData.readAsBytes();
+          return MemoryImage(webImage);
+        }
+        return FileImage(File(imageData!.path.toString()));
       }
-      return AssetImage(
-        image,
-      );
+      return AssetImage(image);
     }
 
-    return FadeInImage(
-      image: checkUrl(),
-      placeholder: AssetImage(
-        ConstantsName.gifLoadingImg,
-      ),
-      filterQuality: FilterQuality.high,
-      fit: BoxFit.cover,
-      placeholderFit: BoxFit.cover,
-      imageErrorBuilder: (context, error, stackTrace) {
-        return Image.asset(
-          ConstantsName.gifErrorImg,
-          filterQuality: FilterQuality.high,
-        );
+    return FutureBuilder<ImageProvider<Object>>(
+      future: checkUrl(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return FadeInImage(
+            image: snapshot.data!,
+            placeholder: AssetImage(
+              ConstantsName.gifLoadingImg,
+            ),
+            filterQuality: FilterQuality.high,
+            fit: BoxFit.cover,
+            placeholderFit: BoxFit.cover,
+            imageErrorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                ConstantsName.gifErrorImg,
+                filterQuality: FilterQuality.high,
+                fit: BoxFit.cover,
+              );
+            },
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }
@@ -200,7 +208,7 @@ class WidgetCustom {
       pageBuilder: (context, __, ___) {
         return const SizedBox.shrink();
       },
-      transitionBuilder: (ctx, a1, a2, child) {
+      transitionBuilder: (context, a1, a2, child) {
         var curve = Curves.easeInOut.transform(a1.value);
         return Transform.scale(
           scale: curve,

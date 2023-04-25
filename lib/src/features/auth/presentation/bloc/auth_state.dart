@@ -10,7 +10,12 @@ class AuthInitialState extends AuthState {}
 
 class AuthLoadingState extends AuthState {}
 
-class RegisterSuccessState extends AuthState {}
+class RegisterSuccessState extends AuthState {
+  final LoginModel data;
+  const RegisterSuccessState({required this.data});
+  @override
+  List<Object?> get props => [data];
+}
 
 class LoginSuccessState extends AuthState {}
 

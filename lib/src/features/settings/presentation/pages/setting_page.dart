@@ -2,6 +2,7 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_bloc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -96,6 +97,7 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icons.logout,
                 onTap: () {
                   WidgetCustom.dialogLoadingState(context);
+                  context.read<AuthBloc>().add(const LogoutAccountEvent());
                 },
               ),
             ],

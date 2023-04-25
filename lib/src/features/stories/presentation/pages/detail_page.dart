@@ -8,8 +8,25 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+class DetailPage extends StatefulWidget {
+  final String idStory;
+  const DetailPage({
+    super.key,
+    required this.idStory,
+  });
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<StoriesBloc>(context).add(
+      GetDetailStories(id: widget.idStory),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +62,9 @@ class DetailPage extends StatelessWidget {
             return WidgetCustom.stateError(
               context,
               isError: false,
-              onPressed: () => bloc.add(GetAllStories()),
+              onPressed: () => bloc.add(
+                GetDetailStories(id: widget.idStory),
+              ),
             );
           }
           if (state is StoriesErrorState) {
@@ -58,7 +77,9 @@ class DetailPage extends StatelessWidget {
                 context,
                 isError: true,
                 message: translate.failed('stories'),
-                onPressed: () => bloc.add(GetAllStories()),
+                onPressed: () => bloc.add(
+                  GetDetailStories(id: widget.idStory),
+                ),
               );
             }
           }
@@ -75,12 +96,9 @@ class DetailPage extends StatelessWidget {
                           height: 0.4.sh,
                           width: MediaQuery.of(context).size.width,
                           margin: const EdgeInsets.only(bottom: 8),
-                          child: Hero(
-                            tag: data.id,
-                            child: WidgetCustom.fadeInImageCustom(
-                              isUrl: true,
-                              image: data.photoUrl,
-                            ),
+                          child: WidgetCustom.fadeInImageCustom(
+                            isUrl: true,
+                            image: data.photoUrl,
                           ),
                         ),
                         Positioned(
