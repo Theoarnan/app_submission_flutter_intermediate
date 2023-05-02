@@ -12,6 +12,7 @@ import 'package:app_submission_flutter_intermediate/src/features/settings/presen
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -19,8 +20,6 @@ import 'package:provider/provider.dart';
 
 void main() async {
   usePathUrlStrategy();
-  ScreenUtil.ensureScreenSize();
-  WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesHelper().init();
   runApp(const MyApp());
 }
@@ -38,12 +37,13 @@ class _MyAppState extends State<MyApp> {
   late RouteInformationParserCustom routeInformationParserCustom;
 
   @override
-  void initState() {
+  void initState() async {
     super.initState();
     final authRepository = AuthRepository();
     routerDelegateCustom = RouterDelegateCustom(authRepository);
     routeInformationParserCustom = RouteInformationParserCustom();
     pageManager = PageManager();
+    if (!kIsWeb) await ScreenUtil.ensureScreenSize();
   }
 
   @override
