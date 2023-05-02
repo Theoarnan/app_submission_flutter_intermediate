@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
@@ -21,10 +20,7 @@ class WidgetCustom {
     Future<ImageProvider<Object>> checkUrl() async {
       if (isUrl) return NetworkImage(image);
       if (isFile) {
-        log('Sinii ??');
         if (kIsWeb && imageData != null) {
-          log('Sinii');
-          log('Sinii: $imageData');
           final webImage = await imageData.readAsBytes();
           return MemoryImage(webImage);
         }
