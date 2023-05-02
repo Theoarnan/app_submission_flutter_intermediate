@@ -46,7 +46,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final blocStories = context.read<StoriesBloc>();
+    final blocStories = BlocProvider.of<StoriesBloc>(context);
     final translate = AppLocalizations.of(context)!;
     return Scaffold(
       appBar: AppBar(
@@ -74,13 +74,16 @@ class _PostStoryPageState extends State<PostStoryPage> {
           Padding(
             padding: EdgeInsets.only(right: 16.w),
             child: TextButton(
-              onPressed: () => _onPostStory(),
+              onPressed: () =>
+                  blocStories.imageFile == null ? null : _onPostStory(),
               child: Text(
                 translate.post,
                 textAlign: TextAlign.left,
                 style: textTheme.bodyLarge?.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: ThemeCustom.primaryColor,
+                  color: blocStories.imageFile != null
+                      ? ThemeCustom.primaryColor
+                      : ThemeCustom.secondaryColor,
                 ),
               ),
             ),
@@ -89,22 +92,22 @@ class _PostStoryPageState extends State<PostStoryPage> {
       ),
       body: SafeArea(
         child: BlocListener<StoriesBloc, StoriesState>(
-          listener: (context, state) {
-            if (state is StoriesLoadingState) {
-              WidgetCustom.dialogLoadingState(context);
+          listener: (context, state) async {
+            if (state is PostStoriesLoadingState) {
+              await WidgetCustom.dialogLoadingState(context);
             } else if (state is PostStoriesSuccessState) {
-              WidgetCustom.toastSuccessPostState(context);
+              await WidgetCustom.toastSuccessPostState(context);
               blocStories.add(GetAllStories());
               widget.toHome();
             } else if (state is NoInternetState) {
-              Navigator.of(context).pop();
+              Navigator.pop(context);
               WidgetCustom.toastNoInternetState(context);
             } else if (state is StoriesErrorState) {
               if (UtilHelper.checkUnauthorized(state.error)) {
                 BlocProvider.of<AuthBloc>(context)
                     .add(const LogoutAccountEvent());
               } else {
-                Navigator.of(context).pop();
+                Navigator.pop(context);
                 WidgetCustom.toastErrorState(context, error: state.error);
               }
             }
@@ -254,13 +257,8 @@ class _PostStoryPageState extends State<PostStoryPage> {
 
   _onCameraView() async {
     Navigator.pop(context);
-    final storiesBloc = context.read<StoriesBloc>();
+    final storiesBloc = BlocProvider.of<StoriesBloc>(context);
     final pageManager = context.read<PageManager>();
-    final isAndroid = defaultTargetPlatform == TargetPlatform.android;
-    final isiOS = defaultTargetPlatform == TargetPlatform.iOS;
-    final isNotMobile = !(isAndroid || isiOS);
-    if (isNotMobile) return;
-    context.read<CameraBlocCubit>().cameraInitialize();
     widget.toCamera();
     final resultImageFile = await pageManager.waitForResultImage();
     if (resultImageFile != null) {
@@ -273,7 +271,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
     final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
     final isLinux = defaultTargetPlatform == TargetPlatform.linux;
     if (isMacOS || isLinux) return;
-    final storiesBloc = context.read<StoriesBloc>();
+    final storiesBloc = BlocProvider.of<StoriesBloc>(context);
     final ImagePicker picker = ImagePicker();
     final XFile? pickedFile = await picker.pickImage(
       source: ImageSource.gallery,

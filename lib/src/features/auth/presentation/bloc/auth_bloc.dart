@@ -25,12 +25,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
+      await Future.delayed(const Duration(milliseconds: 300));
       final bool? data = await authRepository.isLoggedIn();
-      if (data == true) {
-        emit(AuthenticatedState());
-      } else {
-        emit(UnAuthenticatedState(isLoggedIn: data));
-      }
+      if (data == true) return emit(AuthenticatedState());
+      emit(UnAuthenticatedState(isLoggedIn: data));
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }
@@ -54,6 +52,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
       final data = await authRepository.register(
         registerModel: event.registerModel,
       );
@@ -77,8 +76,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
       await authRepository.login(loginModel: event.loginModel);
-      emit(LoginSuccessState());
+      emit(AuthenticatedState());
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }

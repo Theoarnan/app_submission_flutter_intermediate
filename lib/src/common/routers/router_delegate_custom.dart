@@ -7,6 +7,8 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/splash_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/setting_page.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/camera_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/detail_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/home_page.dart';
@@ -24,8 +26,6 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   ) : _navigatorKey = GlobalKey<NavigatorState>();
 
   String? selectStory;
-  bool isForm = false;
-
   List<Page> historyStack = [];
   bool? isLoggedIn;
   bool isRegister = false;
@@ -49,16 +49,21 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
               isRegister = true;
               notifyListeners();
             },
-            onRegisterSuccess: () {
+            backOnLogin: () {
               isRegister = false;
               notifyListeners();
             },
           ),
         ),
         if (isRegister)
-          const MaterialPage(
-            key: ValueKey("RegisterPage"),
-            child: RegisterPage(),
+          MaterialPage(
+            key: const ValueKey("RegisterPage"),
+            child: RegisterPage(
+              onBackLogin: () {
+                isRegister = false;
+                notifyListeners();
+              },
+            ),
           ),
       ];
 
@@ -74,22 +79,31 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
               isPostStory = true;
               notifyListeners();
             },
-            toDetailStory: (String stroyId) {
-              selectStory = stroyId;
+            toDetailStory: (String storyId) {
+              selectStory = storyId;
               notifyListeners();
             },
           ),
         ),
         if (isSetting)
-          const MaterialPage(
-            key: ValueKey("SettingPage"),
-            child: SettingPage(),
+          MaterialPage(
+            key: const ValueKey("SettingPage"),
+            child: SettingPage(
+              toHomePage: () {
+                isSetting = false;
+                notifyListeners();
+              },
+            ),
           ),
         if (selectStory != null)
           MaterialPage(
             key: ValueKey("DetailPage-$selectStory"),
             child: DetailPage(
               idStory: selectStory!,
+              toHomePage: () {
+                selectStory = null;
+                notifyListeners();
+              },
             ),
           ),
         if (isPostStory)
@@ -123,12 +137,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state is AuthenticatedState || state is LoginSuccessState) {
+        if (state is AuthenticatedState) {
           isLoggedIn = true;
-          isSetting = false;
-          selectStory = null;
-          isPostStory = false;
-          isCamera = false;
           notifyListeners();
         } else if (state is UnAuthenticatedState) {
           if (state.isLoggedIn == null) {
@@ -162,8 +172,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isRegister = false;
           isSetting = false;
           selectStory = null;
-          isPostStory = false;
           isCamera = false;
+          isPostStory = false;
           notifyListeners();
           return true;
         },
@@ -176,41 +186,49 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
 
   @override
   Future<void> setNewRoutePath(PageConfigurationModel configuration) async {
+    log('Test idStory: ${configuration.storyId}');
     if (configuration.isUnknownPage) {
       isUnknown = true;
       isRegister = false;
-    } else if (configuration.isSplashPage) {
-      isLoggedIn = null;
     } else if (configuration.isRegisterPage) {
       isRegister = true;
-    } else if (configuration.isHomePage) {
+    } else if (configuration.isHomePage ||
+        configuration.isLogginPage ||
+        configuration.isSplashPage) {
       isUnknown = false;
-      isLoggedIn = true;
+      isRegister = false;
       isSetting = false;
       isPostStory = false;
       selectStory = null;
       isCamera = false;
     } else if (configuration.isSetting) {
       isUnknown = false;
-      isLoggedIn = true;
+      isRegister = false;
       isSetting = true;
       selectStory = null;
       isPostStory = false;
       isCamera = false;
     } else if (configuration.isDetailStoryPage) {
       isUnknown = false;
-      isLoggedIn = true;
+      isRegister = false;
       isSetting = false;
       isPostStory = false;
       isCamera = false;
       selectStory = configuration.storyId.toString();
     } else if (configuration.isPostStory) {
       isUnknown = false;
-      isLoggedIn = true;
+      isRegister = false;
       isSetting = false;
       selectStory = null;
       isPostStory = true;
       isCamera = false;
+    } else if (configuration.isCamera) {
+      isUnknown = false;
+      isRegister = false;
+      isSetting = false;
+      selectStory = null;
+      isPostStory = true;
+      isCamera = true;
     } else {
       log(' Could not set new route');
     }
@@ -221,27 +239,42 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   PageConfigurationModel? get currentConfiguration {
     if (isLoggedIn == null) {
       return PageConfigurationModel.splash();
-    } else if (isRegister == true) {
+    } else if (isRegister) {
       return PageConfigurationModel.register();
     } else if (!isLoggedIn!) {
       return PageConfigurationModel.login();
     } else if (isLoggedIn! &&
         selectStory == null &&
         !isSetting &&
-        !isPostStory) {
+        !isPostStory &&
+        !isCamera) {
+      _navigatorKey.currentContext!.read<StoriesBloc>().add(GetAllStories());
       return PageConfigurationModel.home();
     } else if (isLoggedIn! &&
         isSetting &&
         selectStory == null &&
-        !isPostStory) {
+        !isPostStory &&
+        !isCamera) {
       return PageConfigurationModel.setting();
-    } else if (isLoggedIn! && selectStory != null && !isPostStory) {
+    } else if (isLoggedIn! &&
+        !isSetting &&
+        selectStory != null &&
+        !isPostStory &&
+        !isCamera) {
       return PageConfigurationModel.detailStory(selectStory!);
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
-        selectStory == null) {
+        selectStory == null &&
+        !isCamera) {
+      _navigatorKey.currentContext!.read<CameraBlocCubit>().cameraStopped();
       return PageConfigurationModel.postStory();
+    } else if (isLoggedIn! &&
+        isPostStory &&
+        !isSetting &&
+        selectStory == null &&
+        isCamera) {
+      return PageConfigurationModel.camera();
     } else if (isUnknown!) {
       return PageConfigurationModel.unknown();
     } else {

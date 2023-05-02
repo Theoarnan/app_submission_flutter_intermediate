@@ -17,8 +17,6 @@ class RegisterSuccessState extends AuthState {
   List<Object?> get props => [data];
 }
 
-class LoginSuccessState extends AuthState {}
-
 class AuthErrorState extends AuthState {
   final String error;
   const AuthErrorState({required this.error});

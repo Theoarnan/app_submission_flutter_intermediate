@@ -11,11 +11,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatefulWidget {
   final Function() onRegister;
-  final Function() onRegisterSuccess;
+  final Function() backOnLogin;
   const LoginPage({
     super.key,
     required this.onRegister,
-    required this.onRegisterSuccess,
+    required this.backOnLogin,
   });
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -54,19 +54,15 @@ class _LoginPageState extends State<LoginPage> {
         ),
       ),
       body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
+        listener: (context, state) async {
           if (state is AuthLoadingState) {
-            WidgetCustom.dialogLoadingState(context);
+            await WidgetCustom.dialogLoadingState(context);
           } else if (state is RegisterSuccessState) {
-            Navigator.of(context)
-              ..pop()
-              ..pop();
-            WidgetCustom.toastSuccessRegisterState(context);
-          } else if (state is LoginSuccessState) {
-            WidgetCustom.toastSuccessPostState(context);
+            await WidgetCustom.toastSuccessRegisterState(context);
+            widget.backOnLogin();
           } else if (state is AuthErrorState) {
-            Navigator.of(context).pop();
-            WidgetCustom.toastErrorState(context, error: state.error);
+            Navigator.pop(context);
+            await WidgetCustom.toastErrorState(context, error: state.error);
           }
         },
         child: SafeArea(
@@ -208,14 +204,13 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   void _onLogin() {
-    // if (_formGlobalKey.currentState!.validate()) {
-    final data = LoginModel(
-      email: _emailField.text,
-      password: _passswordField.text,
-    );
-    context.read<AuthBloc>().add(
-          LoginAccountEvent(loginModel: data),
-        );
-    // }
+    if (_formGlobalKey.currentState!.validate()) {
+      final data = LoginModel(
+        email: _emailField.text,
+        password: _passswordField.text,
+      );
+      final blocAuth = context.read<AuthBloc>();
+      blocAuth.add(LoginAccountEvent(loginModel: data));
+    }
   }
 }

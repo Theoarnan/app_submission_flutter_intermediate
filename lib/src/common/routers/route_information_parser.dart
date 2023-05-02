@@ -19,25 +19,29 @@ class RouteInformationParserCustom
         return PageConfigurationModel.login();
       } else if (first == 'register') {
         return PageConfigurationModel.register();
-      } else {
-        return PageConfigurationModel.unknown();
       }
+      return PageConfigurationModel.unknown();
     } else if (uri.pathSegments.length == 2) {
       final first = uri.pathSegments[0].toLowerCase();
-      final second = uri.pathSegments[1].toLowerCase();
-      final quoteId = int.tryParse(second) ?? 0;
-      if (first == 'moments' && (quoteId >= 1 && quoteId <= 5)) {
-        return PageConfigurationModel.detailStory(second);
-      } else if (first == 'moments' && second == 'setting') {
+      final second = uri.pathSegments[1];
+      if (first == 'moments' && second == 'setting') {
         return PageConfigurationModel.setting();
       } else if (first == 'moments' && second == 'post') {
         return PageConfigurationModel.postStory();
-      } else {
-        return PageConfigurationModel.unknown();
       }
-    } else {
+      return PageConfigurationModel.unknown();
+    } else if (uri.pathSegments.length == 3) {
+      final first = uri.pathSegments[0].toLowerCase();
+      final second = uri.pathSegments[1].toLowerCase();
+      final third = uri.pathSegments[2];
+      if (first == 'moments' && second == 'detail' && third.isNotEmpty) {
+        return PageConfigurationModel.detailStory(third);
+      } else if (first == 'moments' && second == 'post' && third == 'camera') {
+        return PageConfigurationModel.camera();
+      }
       return PageConfigurationModel.unknown();
     }
+    return PageConfigurationModel.unknown();
   }
 
   @override
@@ -55,12 +59,14 @@ class RouteInformationParserCustom
       return const RouteInformation(location: '/moments');
     } else if (configuration.isDetailStoryPage) {
       return RouteInformation(
-        location: 'moments/${configuration.storyId}',
+        location: 'moments/detail/${configuration.storyId}',
       );
     } else if (configuration.isSettingPage) {
       return const RouteInformation(location: '/moments/setting');
     } else if (configuration.isPostStoryPage) {
       return const RouteInformation(location: '/moments/post');
+    } else if (configuration.isCamera) {
+      return const RouteInformation(location: '/moments/post/camera');
     } else {
       return null;
     }

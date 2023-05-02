@@ -26,6 +26,8 @@ class GetDetailStoriesSuccessState extends StoriesState {
 
 class PostStoriesSuccessState extends StoriesState {}
 
+class PostStoriesLoadingState extends StoriesState {}
+
 class StoriesErrorState extends StoriesState {
   final String error;
   const StoriesErrorState({required this.error});

@@ -9,7 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingPage extends StatefulWidget {
-  const SettingPage({super.key});
+  final Function() toHomePage;
+  const SettingPage({
+    super.key,
+    required this.toHomePage,
+  });
   @override
   State<SettingPage> createState() => _SettingPageState();
 }
@@ -23,10 +27,11 @@ class _SettingPageState extends State<SettingPage> {
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         elevation: 0,
+        automaticallyImplyLeading: true,
         leading: Padding(
           padding: EdgeInsets.only(left: 16.w),
           child: IconButton(
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => widget.toHomePage(),
             iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,

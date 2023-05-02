@@ -9,7 +9,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class RegisterPage extends StatefulWidget {
-  const RegisterPage({super.key});
+  final Function() onBackLogin;
+  const RegisterPage({
+    super.key,
+    required this.onBackLogin,
+  });
   @override
   State<RegisterPage> createState() => _RegisterPageState();
 }
@@ -47,7 +51,7 @@ class _RegisterPageState extends State<RegisterPage> {
           margin: EdgeInsets.only(left: 16.w),
           child: IconButton(
             padding: EdgeInsets.zero,
-            onPressed: () => Navigator.pop(context),
+            onPressed: () => widget.onBackLogin(),
             iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,
@@ -211,9 +215,8 @@ class _RegisterPageState extends State<RegisterPage> {
       email: _emailField.text,
       password: _passswordConfirmField.text,
     );
-    BlocProvider.of<AuthBloc>(context).add(
-      RegisterAccountEvent(registerModel: data),
-    );
+    final blocAuth = context.read<AuthBloc>();
+    blocAuth.add(RegisterAccountEvent(registerModel: data));
     // }
   }
 }

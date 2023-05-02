@@ -10,9 +10,11 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class DetailPage extends StatefulWidget {
   final String idStory;
+  final Function() toHomePage;
   const DetailPage({
     super.key,
     required this.idStory,
+    required this.toHomePage,
   });
 
   @override
@@ -30,9 +32,9 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StoriesBloc>(context);
     final translate = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.h),
@@ -106,8 +108,7 @@ class _DetailPageState extends State<DetailPage> {
                           left: 16.w,
                           child: GestureDetector(
                             onTap: () {
-                              bloc.add(GetAllStories());
-                              Navigator.pop(context);
+                              widget.toHomePage();
                             },
                             child: Container(
                               height: 40.sp,
@@ -187,6 +188,7 @@ class _DetailPageState extends State<DetailPage> {
                         child: Text(
                           data.description,
                           style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w500,
                             color: ThemeCustom.darkColor.withOpacity(0.6),
                           ),
                         ),

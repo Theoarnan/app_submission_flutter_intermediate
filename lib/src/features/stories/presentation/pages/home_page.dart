@@ -14,6 +14,7 @@ class HomePage extends StatefulWidget {
   final Function() toSetting;
   final Function() toPostStory;
   final Function(String) toDetailStory;
+
   const HomePage({
     super.key,
     required this.toSetting,
@@ -25,17 +26,18 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  late StoriesBloc bloc;
+
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<StoriesBloc>(context).add(GetAllStories());
+    bloc = BlocProvider.of<StoriesBloc>(context);
   }
 
   @override
   Widget build(BuildContext context) {
     final translate = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 58.h,

@@ -68,15 +68,14 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) async {
     try {
-      emit(StoriesLoadingState());
-      await Future.delayed(const Duration(seconds: 1));
+      emit(PostStoriesLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
       if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
       final fileName = imageFile!.name;
       final bytes = await imageFile!.readAsBytes();
       final newBytes = await UtilHelper.compressImage(bytes);
-      await Future.delayed(const Duration(seconds: 2));
       final data = await storiesRepository.postStory(
         bytes: newBytes,
         fileName: fileName,

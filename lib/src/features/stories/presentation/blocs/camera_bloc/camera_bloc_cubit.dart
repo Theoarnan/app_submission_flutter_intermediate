@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_state_cubit.dart';
 import 'package:camera/camera.dart';
@@ -9,7 +11,7 @@ class CameraBlocCubit extends Cubit<CameraStateCubit> {
 
   CameraBlocCubit({
     this.resolutionPreset = ResolutionPreset.max,
-    this.cameraLensDirection = CameraLensDirection.back,
+    this.cameraLensDirection = CameraLensDirection.front,
   }) : super(CameraInitial());
 
   CameraController? _controller;
@@ -18,16 +20,19 @@ class CameraBlocCubit extends Cubit<CameraStateCubit> {
 
   void cameraInitialize() async {
     try {
+      final previousCameraController = _controller;
       _controller = await UtilHelper.getCameraController(
         resolutionPreset,
-        cameraLensDirection,
       );
+      await previousCameraController?.dispose();
       await _controller!.initialize();
       emit(CameraReady());
     } on CameraException catch (error) {
+      log('Sinii');
       _controller?.dispose();
       emit(CameraFailure(error: error.description.toString()));
     } catch (error) {
+      log('Sinii 2');
       emit(CameraFailure(error: error.toString()));
     }
   }

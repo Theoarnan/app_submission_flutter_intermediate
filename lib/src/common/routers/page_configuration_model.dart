@@ -4,6 +4,7 @@ class PageConfigurationModel {
   final bool isRegister;
   final bool isSetting;
   final bool isPostStory;
+  final bool isCamera;
   final String? storyId;
 
   PageConfigurationModel.splash()
@@ -12,6 +13,7 @@ class PageConfigurationModel {
         isLoggin = null,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.login()
@@ -20,6 +22,7 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.register()
@@ -28,6 +31,7 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.home()
@@ -36,6 +40,7 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.detailStory(String id)
@@ -44,6 +49,7 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = id,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.setting()
@@ -52,6 +58,7 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = true,
+        isCamera = false,
         isPostStory = false;
 
   PageConfigurationModel.postStory()
@@ -60,6 +67,7 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = true;
 
   PageConfigurationModel.unknown()
@@ -68,7 +76,17 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isCamera = false,
         isPostStory = false;
+
+  PageConfigurationModel.camera()
+      : isUnknownPage = false,
+        isRegister = false,
+        isLoggin = true,
+        storyId = null,
+        isSetting = false,
+        isCamera = true,
+        isPostStory = true;
 
   bool get isSplashPage =>
       isUnknownPage == false &&
@@ -76,6 +94,7 @@ class PageConfigurationModel {
       isLoggin == null &&
       storyId == null &&
       isSetting == false &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isLogginPage =>
@@ -84,6 +103,7 @@ class PageConfigurationModel {
       isLoggin == false &&
       storyId == null &&
       isSetting == false &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isRegisterPage =>
@@ -92,6 +112,7 @@ class PageConfigurationModel {
       isLoggin == false &&
       storyId == null &&
       isSetting == false &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isHomePage =>
@@ -100,6 +121,7 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isDetailStoryPage =>
@@ -108,6 +130,7 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId != null &&
       isSetting == false &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isSettingPage =>
@@ -116,6 +139,7 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == true &&
+      isCamera == false &&
       isPostStory == false;
 
   bool get isPostStoryPage =>
@@ -124,5 +148,15 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isCamera == false &&
+      isPostStory == true;
+
+  bool get isCameraPage =>
+      isUnknownPage == false &&
+      isRegister == false &&
+      isLoggin == true &&
+      storyId == null &&
+      isSetting == false &&
+      isCamera == true &&
       isPostStory == true;
 }
