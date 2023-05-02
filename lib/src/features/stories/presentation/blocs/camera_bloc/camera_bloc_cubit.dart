@@ -21,6 +21,7 @@ class CameraBlocCubit extends Cubit<CameraStateCubit> {
       final previousCameraController = _controller;
       _controller = await UtilHelper.getCameraController(
         resolutionPreset,
+        cameraLensDirection,
       );
       await previousCameraController?.dispose();
       await _controller!.initialize();

@@ -44,9 +44,19 @@ class UtilHelper {
 
   static Future<CameraController> getCameraController(
     ResolutionPreset resolutionPreset,
+    CameraLensDirection cameraLensDirection,
   ) async {
     final cameras = await availableCameras();
-    final camera = cameras.first;
+    List<bool> isAvailable =
+        cameras.map((e) => e.lensDirection == cameraLensDirection).toList();
+    CameraDescription camera;
+    if (isAvailable.contains(true)) {
+      camera = cameras.firstWhere(
+        (camera) => camera.lensDirection == cameraLensDirection,
+      );
+    } else {
+      camera = cameras.first;
+    }
     return CameraController(camera, resolutionPreset, enableAudio: false);
   }
 
