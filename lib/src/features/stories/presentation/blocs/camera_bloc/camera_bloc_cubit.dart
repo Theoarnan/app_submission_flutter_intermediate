@@ -9,7 +9,7 @@ class CameraBlocCubit extends Cubit<CameraStateCubit> {
 
   CameraBlocCubit({
     this.resolutionPreset = ResolutionPreset.max,
-    this.cameraLensDirection = CameraLensDirection.back,
+    this.cameraLensDirection = CameraLensDirection.front,
   }) : super(CameraInitial());
 
   CameraController? _controller;
@@ -18,10 +18,11 @@ class CameraBlocCubit extends Cubit<CameraStateCubit> {
 
   void cameraInitialize() async {
     try {
+      final previousCameraController = _controller;
       _controller = await UtilHelper.getCameraController(
         resolutionPreset,
-        cameraLensDirection,
       );
+      await previousCameraController?.dispose();
       await _controller!.initialize();
       emit(CameraReady());
     } on CameraException catch (error) {

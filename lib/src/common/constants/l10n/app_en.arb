@@ -93,6 +93,7 @@
     "fieldDescription": "Write a caption...",
     "setting": "Setting",
     "changeLanguage": "Change language",
-    "logout": "Logout"
-
+    "logout": "Logout",
+    "story": "Story",
+    "choose_photo": "Choose Photo"
 }

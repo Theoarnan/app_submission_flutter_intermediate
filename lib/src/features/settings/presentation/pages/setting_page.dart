@@ -2,13 +2,18 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_bloc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class SettingPage extends StatefulWidget {
-  const SettingPage({super.key});
+  final Function() toHomePage;
+  const SettingPage({
+    super.key,
+    required this.toHomePage,
+  });
   @override
   State<SettingPage> createState() => _SettingPageState();
 }
@@ -19,32 +24,35 @@ class _SettingPageState extends State<SettingPage> {
     final translate = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(58.h),
-        child: AppBar(
-          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-          elevation: 0,
-          leading: IconButton(
-            onPressed: () => Navigator.pop(context),
+      appBar: AppBar(
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        elevation: 0,
+        automaticallyImplyLeading: true,
+        leading: Padding(
+          padding: EdgeInsets.only(left: 16.w),
+          child: IconButton(
+            onPressed: () => widget.toHomePage(),
+            iconSize: 24.sp,
             icon: const Icon(
               Icons.arrow_back,
               color: ThemeCustom.darkColor,
             ),
           ),
-          title: Text(
-            translate.setting,
-            style: textTheme.labelLarge?.copyWith(
-              fontSize: 24.sp,
-            ),
-          ),
-          centerTitle: true,
         ),
+        title: Text(
+          translate.setting,
+          style: textTheme.labelLarge?.copyWith(
+            fontSize: 24.sp,
+          ),
+        ),
+        toolbarHeight: 58.h,
+        centerTitle: true,
       ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(
             vertical: 5.h,
-            horizontal: 10.w,
+            horizontal: 4.w,
           ),
           child: Column(
             children: [
@@ -61,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     title: Text(
                       'Indonesia',
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -77,7 +85,7 @@ class _SettingPageState extends State<SettingPage> {
                     ),
                     title: Text(
                       'English',
-                      style: textTheme.bodyMedium?.copyWith(
+                      style: textTheme.bodyLarge?.copyWith(
                         fontWeight: FontWeight.w400,
                       ),
                     ),
@@ -94,6 +102,7 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icons.logout,
                 onTap: () {
                   WidgetCustom.dialogLoadingState(context);
+                  context.read<AuthBloc>().add(const LogoutAccountEvent());
                 },
               ),
             ],

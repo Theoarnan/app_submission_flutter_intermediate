@@ -25,6 +25,7 @@ class _SplashPageState extends State<SplashPage> {
           child: Image.asset(
             ConstantsName.imgLogo1,
             width: 0.8.sw,
+            height: 0.5.sh,
           ),
         ),
       ),

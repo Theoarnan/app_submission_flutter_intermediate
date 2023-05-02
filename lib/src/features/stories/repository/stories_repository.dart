@@ -1,38 +1,35 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/detail_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/post_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_response_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
-import 'package:shared_preferences/shared_preferences.dart';
 
 class StoriesRepository {
   /// Endpoint
   final String storiesEndpoint = '${ConstantsName.baseUrl}/stories';
   final String getDetailStoriesEndpoint = '${ConstantsName.baseUrl}/stories';
-  final testToken =
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiJ1c2VyLXpSSEtfQ3c5QWtITkdSaGciLCJpYXQiOjE2ODE0OTk5MTd9.GfXJkB9FRCysC-ITJEE-TQlsQ0aBGQvZkPUU_063XeU';
   Map<String, String> header({required String token}) => {
         "Content-Type": "application/json",
-        'Authorization': 'Bearer $testToken',
+        'Authorization': 'Bearer $token',
       };
 
   Future<StoriesResponseModel> getAllStory() async {
     final url = Uri.parse(
       storiesEndpoint,
     );
+    final token = await getToken();
     final response = await http.get(
       url,
       headers: header(
-        token: testToken,
+        token: token,
       ),
     );
-    log('Test status code: ${response.statusCode}');
     if (response.statusCode == HttpStatus.ok) {
       final data = StoriesResponseModel.fromMap(json.decode(response.body));
       return data;
@@ -51,11 +48,12 @@ class StoriesRepository {
   Future<DetailStoriesResponseModel> getDetailStory({
     required String id,
   }) async {
+    final token = await getToken();
     final url = Uri.encodeFull('$getDetailStoriesEndpoint/$id');
     final response = await http.get(
       Uri.parse(url),
       headers: header(
-        token: testToken,
+        token: token,
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
@@ -101,7 +99,7 @@ class StoriesRepository {
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
-      'Authorization': 'Bearer $testToken',
+      'Authorization': 'Bearer $token',
     };
     request.files.add(multiPartFile);
     request.fields.addAll(fields);
@@ -127,7 +125,6 @@ class StoriesRepository {
   }
 
   Future<String> getToken() async {
-    final preferences = await SharedPreferences.getInstance();
-    return preferences.getString('token') ?? '';
+    return SharedPreferencesHelper().token;
   }
 }

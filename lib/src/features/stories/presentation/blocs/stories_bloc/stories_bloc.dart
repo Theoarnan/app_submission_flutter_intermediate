@@ -10,14 +10,17 @@ part 'stories_state.dart';
 
 class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   final StoriesRepository storiesRepository;
+
   StoriesBloc({
     required this.storiesRepository,
   }) : super(StoriesInitialState()) {
     on<GetAllStories>((event, emit) => _getAllStories(event, emit));
     on<GetDetailStories>((event, emit) => _getDetailStories(event, emit));
     on<PostStories>((event, emit) => _postStories(event, emit));
-    on<SelectImageGallery>((event, emit) => _selectImageGallery(event, emit));
+    on<SetImageFile>((event, emit) => _setImageFile(event, emit));
   }
+
+  XFile? imageFile;
 
   void _getAllStories(
     GetAllStories event,
@@ -28,7 +31,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
       if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
-      await Future.delayed(const Duration(seconds: 3));
+      imageFile = null;
       final data = await storiesRepository.getAllStory();
       if (data.error != true) {
         emit(GetAllStoriesSuccessState(dataStories: data.dataStory));
@@ -49,7 +52,6 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
       if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
-      await Future.delayed(const Duration(seconds: 3));
       final data = await storiesRepository.getDetailStory(id: event.id);
       if (data.error != true) {
         emit(GetDetailStoriesSuccessState(dataStories: data.dataStory));
@@ -66,14 +68,14 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) async {
     try {
-      emit(StoriesLoadingState());
+      emit(PostStoriesLoadingState());
+      await Future.delayed(const Duration(milliseconds: 300));
       if (await UtilHelper.isConnected() == false) {
         return emit(NoInternetState());
       }
-      final fileName = event.image.name;
-      final bytes = await event.image.readAsBytes();
+      final fileName = imageFile!.name;
+      final bytes = await imageFile!.readAsBytes();
       final newBytes = await UtilHelper.compressImage(bytes);
-      await Future.delayed(const Duration(seconds: 3));
       final data = await storiesRepository.postStory(
         bytes: newBytes,
         fileName: fileName,
@@ -89,21 +91,11 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     }
   }
 
-  void _selectImageGallery(
-    SelectImageGallery event,
+  void _setImageFile(
+    SetImageFile event,
     Emitter<StoriesState> emit,
   ) async {
-    emit(StoriesLoadingState());
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile = await picker.pickImage(
-        source: ImageSource.gallery,
-      );
-      if (pickedFile != null) {
-        emit(GetImageGallerySuccess(fileImage: pickedFile));
-      }
-    } catch (error) {
-      emit(StoriesErrorState(error: error.toString()));
-    }
+    imageFile = event.image;
+    emit(GetImageGallerySuccess(fileImage: imageFile));
   }
 }

@@ -8,14 +8,33 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class DetailPage extends StatelessWidget {
-  const DetailPage({super.key});
+class DetailPage extends StatefulWidget {
+  final String idStory;
+  final Function() toHomePage;
+  const DetailPage({
+    super.key,
+    required this.idStory,
+    required this.toHomePage,
+  });
+
+  @override
+  State<DetailPage> createState() => _DetailPageState();
+}
+
+class _DetailPageState extends State<DetailPage> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<StoriesBloc>(context).add(
+      GetDetailStories(id: widget.idStory),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
+    final bloc = BlocProvider.of<StoriesBloc>(context);
     final translate = AppLocalizations.of(context)!;
     final textTheme = Theme.of(context).textTheme;
-    final bloc = BlocProvider.of<StoriesBloc>(context);
     return Scaffold(
       appBar: PreferredSize(
         preferredSize: Size.fromHeight(0.h),
@@ -45,7 +64,9 @@ class DetailPage extends StatelessWidget {
             return WidgetCustom.stateError(
               context,
               isError: false,
-              onPressed: () => bloc.add(GetAllStories()),
+              onPressed: () => bloc.add(
+                GetDetailStories(id: widget.idStory),
+              ),
             );
           }
           if (state is StoriesErrorState) {
@@ -57,8 +78,10 @@ class DetailPage extends StatelessWidget {
               return WidgetCustom.stateError(
                 context,
                 isError: true,
-                message: translate.failed('stories'),
-                onPressed: () => bloc.add(GetAllStories()),
+                message: translate.failed(translate.story.toLowerCase()),
+                onPressed: () => bloc.add(
+                  GetDetailStories(id: widget.idStory),
+                ),
               );
             }
           }
@@ -75,12 +98,9 @@ class DetailPage extends StatelessWidget {
                           height: 0.4.sh,
                           width: MediaQuery.of(context).size.width,
                           margin: const EdgeInsets.only(bottom: 8),
-                          child: Hero(
-                            tag: data.id,
-                            child: WidgetCustom.fadeInImageCustom(
-                              isUrl: true,
-                              image: data.photoUrl,
-                            ),
+                          child: WidgetCustom.fadeInImageCustom(
+                            isUrl: true,
+                            image: data.photoUrl,
                           ),
                         ),
                         Positioned(
@@ -88,8 +108,7 @@ class DetailPage extends StatelessWidget {
                           left: 16.w,
                           child: GestureDetector(
                             onTap: () {
-                              bloc.add(GetAllStories());
-                              Navigator.pop(context);
+                              widget.toHomePage();
                             },
                             child: Container(
                               height: 40.sp,
@@ -115,38 +134,34 @@ class DetailPage extends StatelessWidget {
                       child: Row(
                         children: <Widget>[
                           CircleAvatar(
-                            radius: 18.sp,
-                            backgroundColor: ThemeCustom.secondaryColor,
+                            radius: 24.sp,
+                            backgroundColor:
+                                ThemeCustom.secondaryColor.withOpacity(
+                              0.4,
+                            ),
                             child: Text(
                               UtilHelper.generateInitialText(data.name),
-                              style: const TextStyle(
-                                color: ThemeCustom.darkColor,
-                                fontSize: 14,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: textTheme.bodyLarge,
                             ),
                           ),
-                          SizedBox(width: 14.w),
+                          SizedBox(width: 8.w),
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
                                 data.name,
-                                style: textTheme.bodyMedium?.copyWith(
+                                style: textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w500,
                                 ),
                               ),
-                              SizedBox(
-                                height: 4.h,
-                              ),
+                              SizedBox(height: 4.h),
                               Text(
                                 UtilHelper.convertToAgo(
                                   context,
                                   data.createdAt,
                                 ),
-                                style: textTheme.bodySmall?.copyWith(
+                                style: textTheme.bodyLarge?.copyWith(
                                   fontWeight: FontWeight.w400,
-                                  fontSize: 10.sp,
                                   color: ThemeCustom.secondaryColor,
                                 ),
                               )
@@ -155,28 +170,25 @@ class DetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    SizedBox(
-                      height: 4.h,
-                    ),
+                    SizedBox(height: 4.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: Text(
                         translate.description,
-                        style: textTheme.bodySmall?.copyWith(
+                        style: textTheme.bodyLarge?.copyWith(
                           color: ThemeCustom.darkColor,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
-                    SizedBox(
-                      height: 6.h,
-                    ),
+                    SizedBox(height: 6.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: SizedBox(
                         child: Text(
                           data.description,
-                          style: textTheme.bodyMedium?.copyWith(
+                          style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w500,
                             color: ThemeCustom.darkColor.withOpacity(0.6),
                           ),
                         ),

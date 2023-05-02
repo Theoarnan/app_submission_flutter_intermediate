@@ -16,14 +16,19 @@ class GetDetailStories extends StoriesEvent {
 }
 
 class PostStories extends StoriesEvent {
-  final XFile image;
   final String description;
   const PostStories({
-    required this.image,
     required this.description,
   });
   @override
-  List<Object> get props => [image, description];
+  List<Object> get props => [description];
 }
 
 class SelectImageGallery extends StoriesEvent {}
+
+class SetImageFile extends StoriesEvent {
+  final XFile image;
+  const SetImageFile({required this.image});
+  @override
+  List<Object> get props => [image];
+}

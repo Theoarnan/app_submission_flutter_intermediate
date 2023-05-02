@@ -1,9 +1,9 @@
+import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/login/login_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/register/register_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 part 'auth_state.dart';
 part 'auth_event.dart';
@@ -24,12 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     IsLoggedIn event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoadingState());
     try {
-      final data = await authRepository.isLoggedIn();
-      if (data == true) {
-        emit(AuthenticatedState());
-      }
+      await Future.delayed(const Duration(milliseconds: 300));
+      final bool? data = await authRepository.isLoggedIn();
+      if (data == true) return emit(AuthenticatedState());
       emit(UnAuthenticatedState(isLoggedIn: data));
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
@@ -40,11 +38,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SetIsLoggedIn event,
     Emitter<AuthState> emit,
   ) async {
-    emit(AuthLoadingState());
     try {
-      final preferences = await SharedPreferences.getInstance();
-      await Future.delayed(const Duration(seconds: 3));
-      preferences.setBool('state', false);
+      SharedPreferencesHelper().state = event.stateKey;
       add(IsLoggedIn());
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
@@ -57,15 +52,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthLoadingState());
-      await Future.delayed(const Duration(seconds: 2));
+      await Future.delayed(const Duration(milliseconds: 300));
       final data = await authRepository.register(
         registerModel: event.registerModel,
       );
-      if (data.error) {
-        emit(AuthErrorState(error: data.message));
-      } else {
-        emit(RegisterSuccessState());
-      }
+      if (data.error) return emit(AuthErrorState(error: data.message));
+      emit(
+        RegisterSuccessState(
+          data: LoginModel(
+            email: event.registerModel.email,
+            password: event.registerModel.password,
+          ),
+        ),
+      );
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }
@@ -77,11 +76,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthLoadingState());
-      await Future.delayed(const Duration(seconds: 2));
-      await authRepository.login(
-        loginModel: event.loginModel,
-      );
-      emit(LoginSuccessState());
+      await Future.delayed(const Duration(milliseconds: 300));
+      await authRepository.login(loginModel: event.loginModel);
+      emit(AuthenticatedState());
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }
@@ -93,9 +90,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   ) async {
     try {
       emit(AuthLoadingState());
-      await Future.delayed(const Duration(seconds: 2));
       await authRepository.logout();
-      emit(const UnAuthenticatedState());
+      emit(const UnAuthenticatedState(isLoggedIn: false));
     } catch (e) {
       emit(AuthErrorState(error: e.toString()));
     }

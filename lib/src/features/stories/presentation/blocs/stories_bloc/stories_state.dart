@@ -26,6 +26,8 @@ class GetDetailStoriesSuccessState extends StoriesState {
 
 class PostStoriesSuccessState extends StoriesState {}
 
+class PostStoriesLoadingState extends StoriesState {}
+
 class StoriesErrorState extends StoriesState {
   final String error;
   const StoriesErrorState({required this.error});
@@ -36,7 +38,7 @@ class StoriesErrorState extends StoriesState {
 class NoInternetState extends StoriesState {}
 
 class GetImageGallerySuccess extends StoriesState {
-  final XFile fileImage;
+  final XFile? fileImage;
   const GetImageGallerySuccess({required this.fileImage});
   @override
   List<Object?> get props => [fileImage];

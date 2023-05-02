@@ -1,46 +1,56 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:another_flushbar/flushbar.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:image_picker/image_picker.dart';
 
 class WidgetCustom {
-  static FadeInImage fadeInImageCustom({
+  static Widget fadeInImageCustom({
+    XFile? imageData,
     bool isUrl = false,
     bool isFile = false,
-    File? file,
     required String image,
   }) {
-    ImageProvider<Object> checkUrl() {
-      if (isUrl) {
-        return NetworkImage(
-          image,
-        );
-      }
+    Future<ImageProvider<Object>> checkUrl() async {
+      if (isUrl) return NetworkImage(image);
       if (isFile) {
-        return FileImage(
-          file!,
-        );
+        if (kIsWeb && imageData != null) {
+          final webImage = await imageData.readAsBytes();
+          return MemoryImage(webImage);
+        }
+        return FileImage(File(imageData!.path.toString()));
       }
-      return AssetImage(
-        image,
-      );
+      return AssetImage(image);
     }
 
-    return FadeInImage(
-      image: checkUrl(),
-      placeholder: AssetImage(
-        ConstantsName.gifLoadingImg,
-      ),
-      fit: BoxFit.cover,
-      placeholderFit: BoxFit.cover,
-      imageErrorBuilder: (context, error, stackTrace) {
-        return Image.asset(
-          ConstantsName.gifErrorImg,
-        );
+    return FutureBuilder<ImageProvider<Object>>(
+      future: checkUrl(),
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return FadeInImage(
+            image: snapshot.data!,
+            placeholder: AssetImage(
+              ConstantsName.gifLoadingImg,
+            ),
+            filterQuality: FilterQuality.high,
+            fit: BoxFit.cover,
+            placeholderFit: BoxFit.cover,
+            imageErrorBuilder: (context, error, stackTrace) {
+              return Image.asset(
+                ConstantsName.gifErrorImg,
+                filterQuality: FilterQuality.high,
+                fit: BoxFit.cover,
+              );
+            },
+          );
+        }
+        return const SizedBox.shrink();
       },
     );
   }
@@ -54,8 +64,8 @@ class WidgetCustom {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         padding: EdgeInsets.symmetric(
-          vertical: 12.h,
-          horizontal: 58.w,
+          vertical: 14.h,
+          horizontal: 54.w,
         ),
       ),
       onPressed: onPressed,
@@ -90,16 +100,14 @@ class WidgetCustom {
             fontWeight: FontWeight.bold,
           ),
         ),
-        SizedBox(
-          height: 10.h,
-        ),
+        SizedBox(height: 10.h),
         TextFormField(
           controller: controller,
           keyboardType: keyboardType,
           obscureText: obscureText,
           decoration: InputDecoration(
             contentPadding: EdgeInsets.symmetric(
-              vertical: 0,
+              vertical: 0.h,
               horizontal: 16.sp,
             ),
             fillColor: ThemeCustom.secondaryColor,
@@ -108,7 +116,7 @@ class WidgetCustom {
               borderSide: const BorderSide(
                 color: ThemeCustom.redColor,
                 style: BorderStyle.solid,
-                width: 2,
+                width: 1,
               ),
               borderRadius: BorderRadius.circular(5.sp),
             ),
@@ -116,14 +124,14 @@ class WidgetCustom {
               borderRadius: BorderRadius.circular(5.sp),
               borderSide: const BorderSide(
                 color: ThemeCustom.secondaryColor,
-                width: 2,
+                width: 1,
               ),
             ),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(5.sp),
               borderSide: const BorderSide(
                 color: ThemeCustom.yellowColor,
-                width: 2,
+                width: 1,
               ),
             ),
             floatingLabelBehavior: FloatingLabelBehavior.never,
@@ -153,10 +161,14 @@ class WidgetCustom {
   }) {
     final textTheme = Theme.of(context).textTheme;
     return ListTile(
+      contentPadding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 10.h,
+      ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: textTheme.bodyMedium?.copyWith(
+        style: textTheme.bodyLarge?.copyWith(
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -174,10 +186,14 @@ class WidgetCustom {
   }) {
     final textTheme = Theme.of(context).textTheme;
     return ExpansionTile(
+      tilePadding: EdgeInsets.symmetric(
+        horizontal: 16.w,
+        vertical: 10.h,
+      ),
       leading: Icon(icon),
       title: Text(
         title,
-        style: textTheme.bodyMedium?.copyWith(
+        style: textTheme.bodyLarge?.copyWith(
           fontWeight: FontWeight.w400,
         ),
       ),
@@ -192,7 +208,7 @@ class WidgetCustom {
       pageBuilder: (context, __, ___) {
         return const SizedBox.shrink();
       },
-      transitionBuilder: (ctx, a1, a2, child) {
+      transitionBuilder: (context, a1, a2, child) {
         var curve = Curves.easeInOut.transform(a1.value);
         return Transform.scale(
           scale: curve,
@@ -201,7 +217,7 @@ class WidgetCustom {
             child: Center(
               child: Container(
                 padding: EdgeInsets.symmetric(
-                  vertical: 10.sp,
+                  vertical: 10.h,
                 ).copyWith(
                   top: 12.h,
                 ),
