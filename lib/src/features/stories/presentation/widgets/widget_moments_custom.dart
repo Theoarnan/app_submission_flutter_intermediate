@@ -1,3 +1,4 @@
+import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
@@ -95,8 +96,10 @@ class WidgetMomentsCustom {
                     trimLines: 2,
                     colorClickableText: ThemeCustom.primaryColor,
                     trimMode: TrimMode.Line,
-                    trimCollapsedText: ' Show more',
-                    trimExpandedText: ' Show less',
+                    trimCollapsedText:
+                        ' ${AppLocalizations.of(context)!.showMore}',
+                    trimExpandedText:
+                        ' ${AppLocalizations.of(context)!.showLess}',
                     lessStyle: textTheme.bodyMedium?.copyWith(
                       fontWeight: FontWeight.w400,
                       fontSize: 14.sp,

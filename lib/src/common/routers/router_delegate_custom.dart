@@ -234,7 +234,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   PageConfigurationModel? get currentConfiguration {
     if (isLoggedIn == null) {
       return PageConfigurationModel.splash();
-    } else if (isRegister) {
+    } else if (isRegister && !isLoggedIn!) {
       return PageConfigurationModel.register();
     } else if (!isLoggedIn!) {
       return PageConfigurationModel.login();

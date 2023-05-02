@@ -19,6 +19,7 @@ import 'package:provider/provider.dart';
 
 void main() async {
   usePathUrlStrategy();
+  ScreenUtil.ensureScreenSize();
   WidgetsFlutterBinding.ensureInitialized();
   await SharedPreferencesHelper().init();
   runApp(const MyApp());
