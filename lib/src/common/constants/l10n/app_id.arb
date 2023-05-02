@@ -100,5 +100,7 @@
     "fieldDescription": "Tulis keterangan...",
     "setting": "Pengaturan",
     "changeLanguage": "Ganti bahasa",
-    "logout": "Keluar"
+    "logout": "Keluar",
+    "story": "Cerita",
+    "choose_photo": "Pilih Foto"
 }

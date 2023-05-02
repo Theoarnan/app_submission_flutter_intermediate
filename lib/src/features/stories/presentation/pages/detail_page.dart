@@ -78,7 +78,7 @@ class _DetailPageState extends State<DetailPage> {
               return WidgetCustom.stateError(
                 context,
                 isError: true,
-                message: translate.failed('stories'),
+                message: translate.failed(translate.story.toLowerCase()),
                 onPressed: () => bloc.add(
                   GetDetailStories(id: widget.idStory),
                 ),

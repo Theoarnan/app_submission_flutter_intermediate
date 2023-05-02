@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
@@ -95,11 +93,7 @@ class _CameraPageState extends State<CameraPage> with WidgetsBindingObserver {
                   state is CameraReady
                       ? CameraPreview(bloc.getController()!)
                       : state is CameraFailure
-                          ? Column(
-                              children: [
-                                Text(state.error),
-                              ],
-                            )
+                          ? Column(children: [Text(state.error)])
                           : const Center(child: CircularProgressIndicator()),
                   Align(
                     alignment: const Alignment(0, 0.95),

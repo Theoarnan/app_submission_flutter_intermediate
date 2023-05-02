@@ -31,7 +31,7 @@ class ValidationFormUtil {
     final isNull = validateNotNull(
       context,
       password,
-      AppLocalizations.of(context)!.password,
+      AppLocalizations.of(context)!.password.toLowerCase(),
     );
     if (isNull == null) {
       if (password.length < 6) {

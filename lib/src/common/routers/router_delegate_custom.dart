@@ -49,10 +49,6 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
               isRegister = true;
               notifyListeners();
             },
-            backOnLogin: () {
-              isRegister = false;
-              notifyListeners();
-            },
           ),
         ),
         if (isRegister)
@@ -186,7 +182,6 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
 
   @override
   Future<void> setNewRoutePath(PageConfigurationModel configuration) async {
-    log('Test idStory: ${configuration.storyId}');
     if (configuration.isUnknownPage) {
       isUnknown = true;
       isRegister = false;

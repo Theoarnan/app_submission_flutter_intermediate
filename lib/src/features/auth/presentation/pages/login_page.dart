@@ -11,11 +11,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class LoginPage extends StatefulWidget {
   final Function() onRegister;
-  final Function() backOnLogin;
   const LoginPage({
     super.key,
     required this.onRegister,
-    required this.backOnLogin,
   });
   @override
   State<LoginPage> createState() => _LoginPageState();
@@ -57,9 +55,6 @@ class _LoginPageState extends State<LoginPage> {
         listener: (context, state) async {
           if (state is AuthLoadingState) {
             await WidgetCustom.dialogLoadingState(context);
-          } else if (state is RegisterSuccessState) {
-            await WidgetCustom.toastSuccessRegisterState(context);
-            widget.backOnLogin();
           } else if (state is AuthErrorState) {
             Navigator.pop(context);
             await WidgetCustom.toastErrorState(context, error: state.error);
@@ -144,9 +139,10 @@ class _LoginPageState extends State<LoginPage> {
                               hintText: translate.password,
                               obscureText: isObscurePass,
                               validator: (value) {
-                                return ValidationFormUtil.validatePassword(
+                                return ValidationFormUtil.validateNotNull(
                                   context,
                                   value!,
+                                  translate.password.toLowerCase(),
                                 );
                               },
                             ),

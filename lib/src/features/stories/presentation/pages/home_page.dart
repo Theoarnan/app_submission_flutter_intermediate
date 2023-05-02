@@ -103,7 +103,7 @@ class _HomePageState extends State<HomePage> {
                     return WidgetCustom.stateError(
                       context,
                       isError: true,
-                      message: translate.failed('stories'),
+                      message: translate.failed(translate.story.toLowerCase()),
                       onPressed: () => bloc.add(GetAllStories()),
                     );
                   }

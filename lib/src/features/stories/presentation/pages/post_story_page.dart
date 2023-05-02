@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
@@ -6,7 +8,6 @@ import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -144,8 +145,8 @@ class _PostStoryPageState extends State<PostStoryPage> {
                       ),
                     ),
                     child: WidgetCustom.fadeInImageCustom(
-                      imageData: blocStories.imageFile,
-                      isFile: blocStories.imageFile != null,
+                      imageData: context.watch<StoriesBloc>().imageFile,
+                      isFile: context.watch<StoriesBloc>().imageFile != null,
                       image: ConstantsName.gifLoadingImg,
                     ),
                   ),
@@ -194,7 +195,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                     child: Text(
                       blocStories.imageFile != null
                           ? translate.change
-                          : 'Pilih Foto',
+                          : translate.choose_photo,
                       textAlign: TextAlign.left,
                       style: textTheme.bodyMedium?.copyWith(
                         fontWeight: FontWeight.bold,
