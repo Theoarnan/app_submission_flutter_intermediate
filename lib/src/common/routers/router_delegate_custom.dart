@@ -13,6 +13,7 @@ import 'package:app_submission_flutter_intermediate/src/features/stories/present
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/detail_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/home_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/post_story_page.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/widgets/choose_media.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -32,6 +33,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   bool isSetting = false;
   bool isPostStory = false;
   bool isCamera = false;
+  bool isChooseMedia = false;
   bool? isUnknown;
 
   List<Page> get _splashStack => const [
@@ -110,11 +112,30 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
                 isCamera = true;
                 notifyListeners();
               },
+              onCloseMedia: () {
+                isChooseMedia = false;
+                notifyListeners();
+              },
+              toChooseMedia: () {
+                isChooseMedia = true;
+                notifyListeners();
+              },
               toHome: () {
                 isPostStory = false;
                 notifyListeners();
               },
             ),
+          ),
+        if (isChooseMedia)
+          ChooseMedia(
+            onCloseChoose: () {
+              isChooseMedia = false;
+              notifyListeners();
+            },
+            toCamera: () {
+              isCamera = true;
+              notifyListeners();
+            },
           ),
         if (isCamera)
           MaterialPage(
@@ -146,6 +167,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           selectStory = null;
           isPostStory = false;
           isCamera = false;
+          isChooseMedia = false;
           isLoggedIn = state.isLoggedIn;
           notifyListeners();
         }
@@ -168,8 +190,9 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isRegister = false;
           isSetting = false;
           selectStory = null;
-          isCamera = false;
           isPostStory = false;
+          isChooseMedia = false;
+          isCamera = false;
           notifyListeners();
           return true;
         },
@@ -196,33 +219,46 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isPostStory = false;
       selectStory = null;
       isCamera = false;
-    } else if (configuration.isSetting) {
+      isChooseMedia = false;
+    } else if (configuration.isSettingPage) {
       isUnknown = false;
       isRegister = false;
       isSetting = true;
       selectStory = null;
       isPostStory = false;
       isCamera = false;
+      isChooseMedia = false;
     } else if (configuration.isDetailStoryPage) {
       isUnknown = false;
       isRegister = false;
       isSetting = false;
       isPostStory = false;
       isCamera = false;
+      isChooseMedia = false;
       selectStory = configuration.storyId.toString();
-    } else if (configuration.isPostStory) {
+    } else if (configuration.isPostStoryPage) {
       isUnknown = false;
       isRegister = false;
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      isChooseMedia = false;
       isCamera = false;
-    } else if (configuration.isCamera) {
+    } else if (configuration.isChooseMediaPage) {
       isUnknown = false;
       isRegister = false;
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      isChooseMedia = true;
+      isCamera = false;
+    } else if (configuration.isCameraPage) {
+      isUnknown = false;
+      isRegister = false;
+      isSetting = false;
+      selectStory = null;
+      isPostStory = true;
+      isChooseMedia = true;
       isCamera = true;
     } else {
       log(' Could not set new route');
@@ -242,6 +278,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         selectStory == null &&
         !isSetting &&
         !isPostStory &&
+        !isChooseMedia &&
         !isCamera) {
       _navigatorKey.currentContext!.read<StoriesBloc>().add(GetAllStories());
       return PageConfigurationModel.home();
@@ -249,18 +286,21 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isSetting &&
         selectStory == null &&
         !isPostStory &&
+        !isChooseMedia &&
         !isCamera) {
       return PageConfigurationModel.setting();
     } else if (isLoggedIn! &&
         !isSetting &&
         selectStory != null &&
         !isPostStory &&
+        !isChooseMedia &&
         !isCamera) {
       return PageConfigurationModel.detailStory(selectStory!);
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        !isChooseMedia &&
         !isCamera) {
       _navigatorKey.currentContext!.read<CameraBlocCubit>().cameraStopped();
       return PageConfigurationModel.postStory();
@@ -268,6 +308,14 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        isChooseMedia &&
+        !isCamera) {
+      return PageConfigurationModel.chooseMedia();
+    } else if (isLoggedIn! &&
+        isPostStory &&
+        !isSetting &&
+        selectStory == null &&
+        isChooseMedia &&
         isCamera) {
       return PageConfigurationModel.camera();
     } else if (isUnknown!) {

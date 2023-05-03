@@ -1,13 +1,11 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
-import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,10 +14,14 @@ import 'package:image_picker/image_picker.dart';
 class PostStoryPage extends StatefulWidget {
   final Function() toCamera;
   final Function() toHome;
+  final Function() onCloseMedia;
+  final Function() toChooseMedia;
   const PostStoryPage({
     super.key,
     required this.toCamera,
     required this.toHome,
+    required this.toChooseMedia,
+    required this.onCloseMedia,
   });
 
   @override
@@ -163,44 +165,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                   SizedBox(height: 6.h),
                   Center(
                     child: TextButton(
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) {
-                            return Padding(
-                              padding: EdgeInsets.only(bottom: 20.h),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 16.w,
-                                      vertical: 20.h,
-                                    ),
-                                    child: Text(
-                                      translate.chooseMedia,
-                                      style: textTheme.bodyLarge,
-                                    ),
-                                  ),
-                                  WidgetCustom.listTileCustom(
-                                    context,
-                                    title: translate.camera,
-                                    icon: Icons.photo_camera_rounded,
-                                    onTap: () => _onCameraView(),
-                                  ),
-                                  WidgetCustom.listTileCustom(
-                                    context,
-                                    title: translate.gallery,
-                                    icon: Icons.photo_rounded,
-                                    onTap: () => _onGalleryView(),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
+                      onPressed: () => widget.toChooseMedia(),
                       child: Text(
                         blocStories.imageFile != null
                             ? translate.change
@@ -263,30 +228,6 @@ class _PostStoryPageState extends State<PostStoryPage> {
     if (_formGlobalKey.currentState!.validate()) {
       final storiesBloc = context.read<StoriesBloc>();
       storiesBloc.add(PostStories(description: _descriptionField.text));
-    }
-  }
-
-  _onCameraView() async {
-    final storiesBloc = BlocProvider.of<StoriesBloc>(context);
-    final pageManager = context.read<PageManager>();
-    widget.toCamera();
-    final resultImageFile = await pageManager.waitForResultImage();
-    if (resultImageFile != null) {
-      storiesBloc.add(SetImageFile(image: resultImageFile));
-    }
-  }
-
-  _onGalleryView() async {
-    final isMacOS = defaultTargetPlatform == TargetPlatform.macOS;
-    final isLinux = defaultTargetPlatform == TargetPlatform.linux;
-    if (isMacOS || isLinux) return;
-    final storiesBloc = BlocProvider.of<StoriesBloc>(context);
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(
-      source: ImageSource.gallery,
-    );
-    if (pickedFile != null) {
-      storiesBloc.add(SetImageFile(image: pickedFile));
     }
   }
 }

@@ -36,7 +36,19 @@ class RouteInformationParserCustom
       final third = uri.pathSegments[2];
       if (first == 'moments' && second == 'detail' && third.isNotEmpty) {
         return PageConfigurationModel.detailStory(third);
-      } else if (first == 'moments' && second == 'post' && third == 'camera') {
+      } else if (first == 'moments' && second == 'post' && third == 'choose') {
+        return PageConfigurationModel.chooseMedia();
+      }
+      return PageConfigurationModel.unknown();
+    } else if (uri.pathSegments.length == 4) {
+      final first = uri.pathSegments[0].toLowerCase();
+      final second = uri.pathSegments[1].toLowerCase();
+      final third = uri.pathSegments[2].toLowerCase();
+      final fourth = uri.pathSegments[3].toLowerCase();
+      if (first == 'moments' &&
+          second == 'post' &&
+          third == 'choose' &&
+          fourth == 'camera') {
         return PageConfigurationModel.camera();
       }
       return PageConfigurationModel.unknown();
@@ -65,8 +77,10 @@ class RouteInformationParserCustom
       return const RouteInformation(location: '/moments/setting');
     } else if (configuration.isPostStoryPage) {
       return const RouteInformation(location: '/moments/post');
-    } else if (configuration.isCamera) {
-      return const RouteInformation(location: '/moments/post/camera');
+    } else if (configuration.isChooseMediaPage) {
+      return const RouteInformation(location: '/moments/post/choose');
+    } else if (configuration.isCameraPage) {
+      return const RouteInformation(location: '/moments/post/choose/camera');
     } else {
       return null;
     }
