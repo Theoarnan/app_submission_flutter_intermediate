@@ -40,7 +40,7 @@ class _MyAppState extends State<MyApp> {
   late RouteInformationParserCustom routeInformationParserCustom;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     final authRepository = AuthRepository();
     routerDelegateCustom = RouterDelegateCustom(authRepository);

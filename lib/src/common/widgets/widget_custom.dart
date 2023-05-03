@@ -256,10 +256,12 @@ class WidgetCustom {
   }) {
     final textTheme = Theme.of(context).textTheme;
     return Flushbar(
-      isDismissible: true,
+      isDismissible: false,
+      blockBackgroundInteraction: true,
+      showProgressIndicator: true,
       flushbarStyle: FlushbarStyle.GROUNDED,
       flushbarPosition: FlushbarPosition.TOP,
-      duration: const Duration(seconds: 3),
+      duration: const Duration(seconds: 1),
       icon: Icon(
         iconToast,
         color: Colors.white,
