@@ -29,6 +29,7 @@ class ChooseMedia extends Page {
       final resultImageFile = await pageManager.waitForResultImage();
       if (resultImageFile != null) {
         storiesBloc.add(SetImageFile(image: resultImageFile));
+        onCloseChoose();
       }
     }
 
@@ -43,6 +44,7 @@ class ChooseMedia extends Page {
       );
       if (pickedFile != null) {
         storiesBloc.add(SetImageFile(image: pickedFile));
+        onCloseChoose();
       }
     }
 
