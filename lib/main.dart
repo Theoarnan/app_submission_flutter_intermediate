@@ -20,6 +20,9 @@ import 'package:provider/provider.dart';
 
 void main() async {
   usePathUrlStrategy();
+  if (!kIsWeb) {
+    await ScreenUtil.ensureScreenSize();
+  }
   await SharedPreferencesHelper().init();
   runApp(const MyApp());
 }
@@ -43,7 +46,6 @@ class _MyAppState extends State<MyApp> {
     routerDelegateCustom = RouterDelegateCustom(authRepository);
     routeInformationParserCustom = RouteInformationParserCustom();
     pageManager = PageManager();
-    if (!kIsWeb) await ScreenUtil.ensureScreenSize();
   }
 
   @override
