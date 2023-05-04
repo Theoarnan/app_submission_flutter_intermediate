@@ -8,6 +8,7 @@ https://drive.google.com/file/d/1JG_CLw7DmzCqyxqy7F2fkkWI_GwzEqRY/view?usp=share
 
 ## Description
 ### Create Story App
+<img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%">
 ##### *Note :
 - Navigation with Declarative Navigation with Page API and Router API.
 - Can run on web platform 😍
