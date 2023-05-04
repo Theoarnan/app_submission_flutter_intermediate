@@ -12,8 +12,9 @@ class SharedPreferencesHelper {
     _sharedPrefs = await SharedPreferences.getInstance();
   }
 
-  String get token => _sharedPrefs.getString('token') ?? "";
+  String get token => _sharedPrefs.getString('token') ?? '';
   bool get state => _sharedPrefs.getBool('state') ?? false;
+  String get language => _sharedPrefs.getString('language') ?? '';
 
   set token(String token) {
     _sharedPrefs.setString('token', token);
@@ -21,5 +22,9 @@ class SharedPreferencesHelper {
 
   set state(bool state) {
     _sharedPrefs.setBool('state', state);
+  }
+
+  set language(String languageId) {
+    _sharedPrefs.setString('language', languageId);
   }
 }
