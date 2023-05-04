@@ -1,16 +1,50 @@
-# app_submission_flutter_intermediate
 
-A new Flutter project.
+# Flutter Intermediate #1
+This is a project for flutter intermediate submission #1.
 
-## Getting Started
+## Demo
+#### Link Video Demo  App
+https://drive.google.com/file/d/1JG_CLw7DmzCqyxqy7F2fkkWI_GwzEqRY/view?usp=share_link
 
-This project is a starting point for a Flutter application.
+## Description
+### Create Story App
+##### *Note :
+- Navigation with Declarative Navigation with Page API and Router API.
+- Can run on web platform 😍
+##### Feature :
+- Autentikasi Page
+  - Splash Page
+  - Login Page
+  - Register Page
+- Home Page Story 
+- Detail Page Story
+- Post Story
+  - Gallery
+  - Camera Page
+- Setting
+  - Language Change
+  - Logout
+## Dependencies
+- [flutter_screenutil](https://pub.dev/packages/flutter_screenutil)
+- [readmore](https://pub.dev/packages/readmore)
+- [another_flushbar](https://pub.dev/packages/another_flushbar)
+- [connectivity_plus](https://pub.dev/packages/connectivity_plus)
+- [flutter_bloc](https://pub.dev/packages/flutter_bloc)
+- [equatable](https://pub.dev/packages/equatable)
+- [shared_preferences](https://pub.dev/packages/shared_preferences)
+- [http](https://pub.dev/packages/http)
+- [flutter_web_plugins] Flutter SDK
+- [email_validator](https://pub.dev/packages/email_validator)
+- [camera](https://pub.dev/packages/camera)
+- [camera_windows](https://pub.dev/packages/camera_windows)
+- [path_provider](https://pub.dev/packages/path_provider)
+- [image](https://pub.dev/packages/image)
+- [intl](https://pub.dev/packages/intl)
+- [image_picker](https://pub.dev/packages/image_picker)
+- [image_picker_windows](https://pub.dev/packages/image_picker_windows)
+- [flutter_localizations] Flutter SDK
+- [provider](https://pub.dev/packages/provider)
 
-A few resources to get you started if this is your first Flutter project:
+## Authors
+- [@theoarnan](https://www.github.com/theoarnan)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
