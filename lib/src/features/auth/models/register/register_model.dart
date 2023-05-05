@@ -1,19 +1,15 @@
-class RegisterModel {
-  final String name;
-  final String email;
-  final String password;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  RegisterModel({
-    required this.name,
-    required this.email,
-    required this.password,
-  });
+part 'register_model.freezed.dart';
+part 'register_model.g.dart';
 
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'email': email,
-      'password': password,
-    };
-  }
+@freezed
+class RegisterModel with _$RegisterModel {
+  const factory RegisterModel({
+    required String name,
+    required String email,
+    required String password,
+  }) = _RegisterModel;
+
+  factory RegisterModel.fromJson(json) => _$RegisterModelFromJson(json);
 }

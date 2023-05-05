@@ -1,16 +1,15 @@
-class RegisterResponseModel {
-  final bool error;
-  final String message;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  RegisterResponseModel({
-    required this.error,
-    required this.message,
-  });
+part 'register_response_model.freezed.dart';
+part 'register_response_model.g.dart';
 
-  factory RegisterResponseModel.fromMap(Map<String, dynamic> map) {
-    return RegisterResponseModel(
-      error: map['error'] ?? false,
-      message: map['message'] ?? '',
-    );
-  }
+@freezed
+class RegisterResponseModel with _$RegisterResponseModel {
+  const factory RegisterResponseModel({
+    required bool error,
+    required String message,
+  }) = _RegisterResponseModel;
+
+  factory RegisterResponseModel.fromJson(json) =>
+      _$RegisterResponseModelFromJson(json);
 }

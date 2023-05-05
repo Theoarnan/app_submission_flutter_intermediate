@@ -31,7 +31,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = StoriesResponseModel.fromMap(json.decode(response.body));
+      final data = StoriesResponseModel.fromJson(json.decode(response.body));
       return data;
     } else if (response.statusCode == HttpStatus.unauthorized) {
       final data = StoriesResponseModel(
@@ -57,7 +57,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = DetailStoriesResponseModel.fromMap(
+      final data = DetailStoriesResponseModel.fromJson(
         json.decode(response.body),
       );
       return data;
@@ -110,7 +110,7 @@ class StoriesRepository {
     final String responseData = String.fromCharCodes(responseList);
     if (statusCode == HttpStatus.created) {
       final PostStoriesResponseModel uploadResponse =
-          PostStoriesResponseModel.fromJson(
+          PostStoriesResponseModel.fromMap(
         responseData,
       );
       return uploadResponse;

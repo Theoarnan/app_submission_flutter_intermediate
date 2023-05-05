@@ -1,19 +1,15 @@
-class LoginResultModel {
-  final String userId;
-  final String name;
-  final String token;
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-  LoginResultModel({
-    required this.userId,
-    required this.name,
-    required this.token,
-  });
+part 'login_result_model.freezed.dart';
+part 'login_result_model.g.dart';
 
-  factory LoginResultModel.fromMap(Map<String, dynamic> map) {
-    return LoginResultModel(
-      userId: map['userId'] ?? '',
-      name: map['name'] ?? '',
-      token: map['token'] ?? '',
-    );
-  }
+@freezed
+class LoginResultModel with _$LoginResultModel {
+  const factory LoginResultModel({
+    required String userId,
+    required String name,
+    required String token,
+  }) = _LoginResultModel;
+
+  factory LoginResultModel.fromJson(json) => _$LoginResultModelFromJson(json);
 }
