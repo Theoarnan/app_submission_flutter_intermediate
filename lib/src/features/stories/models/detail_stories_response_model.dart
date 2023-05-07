@@ -1,23 +1,17 @@
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class DetailStoriesResponseModel {
-  final bool error;
-  final String message;
-  final StoriesModel dataStory;
+part 'detail_stories_response_model.freezed.dart';
+part 'detail_stories_response_model.g.dart';
 
-  DetailStoriesResponseModel({
-    required this.error,
-    required this.message,
-    required this.dataStory,
-  });
+@freezed
+class DetailStoriesResponseModel with _$DetailStoriesResponseModel {
+  const factory DetailStoriesResponseModel({
+    required bool error,
+    required String message,
+    @JsonKey(name: "story") required StoriesModel dataStory,
+  }) = _DetailStoriesResponseModel;
 
-  factory DetailStoriesResponseModel.fromMap(Map<String, dynamic> map) {
-    return DetailStoriesResponseModel(
-      error: map['error'] ?? false,
-      message: map['message'] ?? '',
-      dataStory: StoriesModel.fromMap(
-        map['story'],
-      ),
-    );
-  }
+  factory DetailStoriesResponseModel.fromJson(json) =>
+      _$DetailStoriesResponseModelFromJson(json);
 }

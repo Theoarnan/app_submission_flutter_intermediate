@@ -1,23 +1,21 @@
 import 'dart:convert';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class PostStoriesResponseModel {
-  final bool error;
-  final String message;
+part 'post_stories_response_model.freezed.dart';
+part 'post_stories_response_model.g.dart';
 
-  PostStoriesResponseModel({
-    required this.error,
-    required this.message,
-  });
+@freezed
+class PostStoriesResponseModel with _$PostStoriesResponseModel {
+  const factory PostStoriesResponseModel({
+    required bool error,
+    required String message,
+  }) = _PostStoriesResponseModel;
 
-  factory PostStoriesResponseModel.fromMap(Map<String, dynamic> map) {
-    return PostStoriesResponseModel(
-      error: map['error'] ?? false,
-      message: map['message'] ?? '',
-    );
-  }
+  factory PostStoriesResponseModel.fromJson(Map<String, dynamic> json) =>
+      _$PostStoriesResponseModelFromJson(json);
 
-  factory PostStoriesResponseModel.fromJson(String source) =>
-      PostStoriesResponseModel.fromMap(
+  factory PostStoriesResponseModel.fromMap(String source) =>
+      _$PostStoriesResponseModelFromJson(
         json.decode(source),
       );
 }

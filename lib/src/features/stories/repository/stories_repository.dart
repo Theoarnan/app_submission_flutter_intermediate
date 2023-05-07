@@ -19,9 +19,12 @@ class StoriesRepository {
         'Authorization': 'Bearer $token',
       };
 
-  Future<StoriesResponseModel> getAllStory() async {
+  Future<StoriesResponseModel> getAllStory([
+    int page = 1,
+    int size = 10,
+  ]) async {
     final url = Uri.parse(
-      storiesEndpoint,
+      '$storiesEndpoint?page=$page&size=$size&location=0',
     );
     final token = await getToken();
     final response = await http.get(
@@ -31,7 +34,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = StoriesResponseModel.fromMap(json.decode(response.body));
+      final data = StoriesResponseModel.fromJson(json.decode(response.body));
       return data;
     } else if (response.statusCode == HttpStatus.unauthorized) {
       final data = StoriesResponseModel(
@@ -57,7 +60,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = DetailStoriesResponseModel.fromMap(
+      final data = DetailStoriesResponseModel.fromJson(
         json.decode(response.body),
       );
       return data;
@@ -65,7 +68,7 @@ class StoriesRepository {
       final data = DetailStoriesResponseModel(
         error: true,
         message: HttpStatus.unauthorized.toString(),
-        dataStory: StoriesModel(
+        dataStory: const StoriesModel(
           id: '',
           name: '',
           description: '',
@@ -110,7 +113,7 @@ class StoriesRepository {
     final String responseData = String.fromCharCodes(responseList);
     if (statusCode == HttpStatus.created) {
       final PostStoriesResponseModel uploadResponse =
-          PostStoriesResponseModel.fromJson(
+          PostStoriesResponseModel.fromMap(
         responseData,
       );
       return uploadResponse;

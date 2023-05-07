@@ -27,17 +27,31 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   late StoriesBloc bloc;
+  final ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<StoriesBloc>(context);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (bloc.pageItems != null) {
+          bloc.add(const GetAllStories());
+        }
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final translate = AppLocalizations.of(context)!;
-    final textTheme = Theme.of(context).textTheme;
     return Scaffold(
       appBar: AppBar(
         toolbarHeight: 58.h,
@@ -73,29 +87,19 @@ class _HomePageState extends State<HomePage> {
             height: 0.88.sh,
             child: BlocBuilder<StoriesBloc, StoriesState>(
               builder: (context, state) {
-                if (state is StoriesLoadingState) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator.adaptive(),
-                        SizedBox(height: 12.h),
-                        Text(
-                          translate.loading,
-                          style: textTheme.bodySmall,
-                        ),
-                      ],
-                    ),
+                final dataBloc = context.watch<StoriesBloc>();
+                if (state is StoriesLoadingState && dataBloc.pageItems == 1) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
-                }
-                if (state is NoInternetState) {
+                } else if (state is NoInternetState) {
                   return WidgetCustom.stateError(
                     context,
                     isError: false,
-                    onPressed: () => bloc.add(GetAllStories()),
+                    onPressed: () =>
+                        bloc.add(const GetAllStories(isRefresh: true)),
                   );
-                }
-                if (state is StoriesErrorState) {
+                } else if (state is StoriesErrorState) {
                   if (UtilHelper.checkUnauthorized(state.error)) {
                     BlocProvider.of<AuthBloc>(context)
                         .add(const LogoutAccountEvent());
@@ -104,27 +108,54 @@ class _HomePageState extends State<HomePage> {
                       context,
                       isError: true,
                       message: translate.failed(translate.story.toLowerCase()),
-                      onPressed: () => bloc.add(GetAllStories()),
+                      onPressed: () => bloc.add(
+                        const GetAllStories(isRefresh: true),
+                      ),
                     );
                   }
                 }
-                if (state is GetAllStoriesSuccessState) {
-                  return ListView.separated(
-                    itemCount: state.dataStories.length,
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemBuilder: (context, index) {
-                      final data = state.dataStories[index];
-                      return GestureDetector(
-                        onTap: () => widget.toDetailStory(data.id),
-                        child: WidgetMomentsCustom.cardStory(
-                          context,
-                          stories: data,
-                        ),
-                      );
-                    },
+                final dataState = dataBloc.dataStories;
+                if (dataState.isEmpty) {
+                  return WidgetCustom.stateError(
+                    context,
+                    isError: false,
+                    isEmpty: true,
+                    isWithButton: false,
                   );
                 }
-                return const SizedBox.shrink();
+                return ListView.builder(
+                  controller: scrollController,
+                  itemCount:
+                      dataState.length + (dataBloc.pageItems != null ? 1 : 0),
+                  itemBuilder: (context, int index) {
+                    if (index == dataState.length &&
+                        dataBloc.pageItems != null) {
+                      return Center(
+                        child: Padding(
+                          padding: EdgeInsets.all(8.sp),
+                          child: WidgetCustom.loadingSecond(context),
+                        ),
+                      );
+                    }
+                    final dataStories = dataState[index];
+
+                    /// [TODO: Delete after all test pass]
+                    // return ListTile(
+                    //   title: Text(index.toString()),
+                    //   subtitle: Text(
+                    //     dataState[index].name + dataState[index].createdAt,
+                    //   ),
+                    // );
+
+                    return GestureDetector(
+                      onTap: () => widget.toDetailStory(dataStories.id),
+                      child: WidgetMomentsCustom.cardStory(
+                        context,
+                        stories: dataStories,
+                      ),
+                    );
+                  },
+                );
               },
             ),
           ),

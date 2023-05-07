@@ -327,15 +327,19 @@ class WidgetCustom {
   static Widget stateError(
     BuildContext context, {
     bool isError = true,
+    bool isEmpty = false,
     String? message,
-    required void Function()? onPressed,
+    isWithButton = true,
+    void Function()? onPressed,
   }) {
     final translate = AppLocalizations.of(context)!;
-    final ilustrationImg = isError
-        ? ConstantsName.gifErrorIlustrationImg
-        : ConstantsName.gifNoConnectionImg;
     final title = isError ? translate.sorry : translate.oops;
-    final messageText = isError ? message : translate.noConnectionDialog;
+    String ilustrationImg = ConstantsName.gifNoConnectionImg;
+    String messageText = translate.noConnectionDialog;
+    if (isError) ilustrationImg = ConstantsName.gifErrorIlustrationImg;
+    if (isEmpty) ilustrationImg = ConstantsName.gifNotDatalustrationImg;
+    if (isError) messageText = message!;
+    if (isEmpty) messageText = translate.descriptionNotFound;
     return Center(
       child: SizedBox(
         child: Column(
@@ -353,7 +357,7 @@ class WidgetCustom {
             SizedBox(
               width: 0.8.sw,
               child: Text(
-                messageText ?? '',
+                messageText,
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
@@ -361,14 +365,32 @@ class WidgetCustom {
             SizedBox(
               height: 10.h,
             ),
-            WidgetCustom.elevatedButtonCustom(
-              context,
-              textButton: translate.tryAgain,
-              onPressed: onPressed,
-            )
+            isWithButton
+                ? WidgetCustom.elevatedButtonCustom(
+                    context,
+                    textButton: translate.tryAgain,
+                    onPressed: onPressed,
+                  )
+                : const SizedBox.shrink()
           ],
         ),
       ),
+    );
+  }
+
+  static Widget loadingSecond(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        const CircularProgressIndicator(),
+        SizedBox(width: 8.w),
+        Text(
+          AppLocalizations.of(context)!.loading,
+          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+              ),
+        ),
+      ],
     );
   }
 }

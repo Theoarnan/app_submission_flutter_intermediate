@@ -148,20 +148,7 @@ class _LoginPageState extends State<LoginPage> {
                               SizedBox(height: 12.h),
                               Center(
                                 child: stateLoading
-                                    ? Row(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const CircularProgressIndicator(),
-                                          SizedBox(width: 8.w),
-                                          Text(
-                                            translate.loading,
-                                            style:
-                                                textTheme.bodyMedium?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                        ],
-                                      )
+                                    ? WidgetCustom.loadingSecond(context)
                                     : WidgetCustom.elevatedButtonCustom(
                                         context,
                                         textButton: translate.login,

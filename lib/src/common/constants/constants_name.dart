@@ -18,4 +18,5 @@ class ConstantsName {
   static String gifNoConnectionImg = '$baseDirImgGif/no_connection.gif';
   static String gifErrorIlustrationImg = '$baseDirImgGif/error.gif';
   static String gifNotFoundIlustrationImg = '$baseDirImgGif/not_found.gif';
+  static String gifNotDatalustrationImg = '$baseDirImgGif/no_data.gif';
 }

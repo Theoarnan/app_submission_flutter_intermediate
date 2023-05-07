@@ -25,7 +25,7 @@ class AuthRepository {
     );
     if (response.statusCode == HttpStatus.created ||
         response.statusCode == HttpStatus.badRequest) {
-      final data = RegisterResponseModel.fromMap(json.decode(response.body));
+      final data = RegisterResponseModel.fromJson(json.decode(response.body));
       return data;
     } else {
       throw Exception('Failed to register user');
@@ -38,7 +38,7 @@ class AuthRepository {
       body: loginModel.toJson(),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = LoginResponseModel.fromMap(json.decode(response.body));
+      final data = LoginResponseModel.fromJson(json.decode(response.body));
       SharedPreferencesHelper().state = true;
       SharedPreferencesHelper().token = data.result.token;
       return data;
