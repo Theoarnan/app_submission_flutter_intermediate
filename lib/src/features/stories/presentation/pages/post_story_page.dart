@@ -53,7 +53,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
       listener: (context, state) async {
         if (state is PostStoriesSuccessState) {
           await WidgetCustom.toastSuccessPostState(context);
-          blocStories.add(GetAllStories());
+          blocStories.add(const GetAllStories(isRefresh: true));
           widget.toHome();
         } else if (state is NoInternetState) {
           WidgetCustom.toastNoInternetState(context);
@@ -169,7 +169,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                       child: Text(
                         blocStories.imageFile != null
                             ? translate.change
-                            : translate.choose_photo,
+                            : translate.choosePhoto,
                         textAlign: TextAlign.left,
                         style: textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.bold,

@@ -19,9 +19,12 @@ class StoriesRepository {
         'Authorization': 'Bearer $token',
       };
 
-  Future<StoriesResponseModel> getAllStory() async {
+  Future<StoriesResponseModel> getAllStory([
+    int page = 1,
+    int size = 10,
+  ]) async {
     final url = Uri.parse(
-      storiesEndpoint,
+      '$storiesEndpoint?page=$page&size=$size&location=0',
     );
     final token = await getToken();
     final response = await http.get(
@@ -65,7 +68,7 @@ class StoriesRepository {
       final data = DetailStoriesResponseModel(
         error: true,
         message: HttpStatus.unauthorized.toString(),
-        dataStory: StoriesModel(
+        dataStory: const StoriesModel(
           id: '',
           name: '',
           description: '',

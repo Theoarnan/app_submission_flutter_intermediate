@@ -95,5 +95,6 @@
     "changeLanguage": "Change language",
     "logout": "Logout",
     "story": "Story",
-    "choose_photo": "Choose Photo"
+    "choosePhoto": "Choose Photo",
+    "descriptionNotFound": "No story data found"
 }

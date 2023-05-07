@@ -21,22 +21,35 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
   }
 
   XFile? imageFile;
+  int? pageItems = 1;
+  int sizeItems = 10;
+  List<StoriesModel> dataStories = [];
 
   void _getAllStories(
     GetAllStories event,
     Emitter<StoriesState> emit,
   ) async {
+    imageFile = null;
+    if (!(await UtilHelper.isConnected())) return emit(NoInternetState());
+    if (event.isRefresh) {
+      pageItems = 1;
+      dataStories.clear();
+    }
     try {
-      emit(StoriesLoadingState());
-      if (await UtilHelper.isConnected() == false) {
-        return emit(NoInternetState());
-      }
-      imageFile = null;
-      final data = await storiesRepository.getAllStory();
-      if (data.error != true) {
-        emit(GetAllStoriesSuccessState(dataStories: data.dataStory));
+      if (pageItems == 1) emit(StoriesLoadingState());
+      final dataResponse = await storiesRepository.getAllStory(pageItems!);
+      if (dataResponse.error != true) {
+        if (dataResponse.dataStory.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
+        dataStories.addAll(dataResponse.dataStory);
+        emit(state.copyWith(
+          stories: List.of(state.stories)..addAll(dataResponse.dataStory),
+        ));
       } else {
-        emit(StoriesErrorState(error: data.message));
+        emit(StoriesErrorState(error: dataResponse.error.toString()));
       }
     } catch (e) {
       emit(StoriesErrorState(error: e.toString()));

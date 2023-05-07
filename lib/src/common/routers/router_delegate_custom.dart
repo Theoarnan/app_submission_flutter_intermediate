@@ -280,7 +280,9 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         !isPostStory &&
         !isChooseMedia &&
         !isCamera) {
-      _navigatorKey.currentContext!.read<StoriesBloc>().add(GetAllStories());
+      _navigatorKey.currentContext!
+          .read<StoriesBloc>()
+          .add(const GetAllStories(isRefresh: true));
       return PageConfigurationModel.home();
     } else if (isLoggedIn! &&
         isSetting &&

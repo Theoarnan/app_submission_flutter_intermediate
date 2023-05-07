@@ -6,7 +6,12 @@ abstract class StoriesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetAllStories extends StoriesEvent {}
+class GetAllStories extends StoriesEvent {
+  final bool isRefresh;
+  const GetAllStories({this.isRefresh = false});
+  @override
+  List<Object> get props => [isRefresh];
+}
 
 class GetDetailStories extends StoriesEvent {
   final String id;

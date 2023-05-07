@@ -1,9 +1,22 @@
 part of 'stories_bloc.dart';
 
-abstract class StoriesState extends Equatable {
-  const StoriesState();
+class StoriesState extends Equatable {
+  final List<StoriesModel> stories;
+
+  const StoriesState({
+    this.stories = const [],
+  });
+
+  StoriesState copyWith({
+    List<StoriesModel>? stories,
+  }) {
+    return StoriesState(
+      stories: stories ?? this.stories,
+    );
+  }
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [stories];
 }
 
 class StoriesInitialState extends StoriesState {}
