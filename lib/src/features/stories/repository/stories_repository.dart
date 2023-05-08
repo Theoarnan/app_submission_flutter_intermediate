@@ -24,7 +24,7 @@ class StoriesRepository {
     int size = 10,
   ]) async {
     final url = Uri.parse(
-      '$storiesEndpoint?page=$page&size=$size&location=0',
+      '$storiesEndpoint?page=$page&size=$size&location=1',
     );
     final token = await getToken();
     final response = await http.get(

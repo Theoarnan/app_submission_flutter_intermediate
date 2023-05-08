@@ -103,5 +103,7 @@
     "logout": "Keluar",
     "story": "Cerita",
     "choosePhoto": "Pilih Foto",
-    "descriptionNotFound": "Tidak ada data cerita ditemukan"
+    "descriptionNotFound": "Tidak ada data cerita ditemukan",
+    "location": "Lokasi",
+    "openMap": "Buka Peta"
 }

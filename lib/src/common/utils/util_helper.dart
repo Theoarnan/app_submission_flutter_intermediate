@@ -4,6 +4,7 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:image/image.dart' as img;
 
@@ -107,6 +108,24 @@ class UtilHelper {
       case 'id':
       default:
         return "${String.fromCharCode(0x1F1EE)}${String.fromCharCode(0x1F1E9)}";
+    }
+  }
+
+  static Future<String> getLocation({
+    required double lat,
+    required double lon,
+  }) async {
+    try {
+      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
+      Placemark placeMark = placemarks[0];
+      String locality = placeMark.locality.toString();
+      String administrativeArea = placeMark.administrativeArea.toString();
+      String country = placeMark.country.toString();
+      String address =
+          "${locality.isNotEmpty ? '$locality,' : ''} ${administrativeArea.isNotEmpty ? '$administrativeArea,' : ''} $country";
+      return address.trim();
+    } catch (e) {
+      throw Exception(e.toString());
     }
   }
 }

@@ -19,7 +19,8 @@ class LoginPage extends StatefulWidget {
   State<LoginPage> createState() => _LoginPageState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
   final _formGlobalKey = GlobalKey<FormState>();
   final _emailField = TextEditingController(text: 'abcz1@gmail.com');
   final _passswordField = TextEditingController(text: 'a123456');
@@ -74,8 +75,12 @@ class _LoginPageState extends State<LoginPage> {
                       flex: 1,
                       child: Container(
                         alignment: Alignment.center,
-                        child: Image.asset(
-                          ConstantsName.imgLogo2,
+                        child: AnimatedSize(
+                          duration: const Duration(seconds: 1),
+                          curve: Curves.linearToEaseOut,
+                          child: Image.asset(
+                            ConstantsName.imgLogo2,
+                          ),
                         ),
                       ),
                     ),

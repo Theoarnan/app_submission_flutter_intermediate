@@ -137,7 +137,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     }
-                    final dataStories = dataState[index];
+                    final dataStories = dataState[index == 0 ? 1 : index];
 
                     /// [TODO: Delete after all test pass]
                     // return ListTile(

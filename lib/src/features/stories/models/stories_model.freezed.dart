@@ -25,8 +25,8 @@ mixin _$StoriesModel {
   String get description => throw _privateConstructorUsedError;
   String get photoUrl => throw _privateConstructorUsedError;
   String get createdAt => throw _privateConstructorUsedError;
-  num? get lat => throw _privateConstructorUsedError;
-  num? get lon => throw _privateConstructorUsedError;
+  double? get lat => throw _privateConstructorUsedError;
+  double? get lon => throw _privateConstructorUsedError;
 
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
   @JsonKey(ignore: true)
@@ -46,8 +46,8 @@ abstract class $StoriesModelCopyWith<$Res> {
       String description,
       String photoUrl,
       String createdAt,
-      num? lat,
-      num? lon});
+      double? lat,
+      double? lon});
 }
 
 /// @nodoc
@@ -95,11 +95,11 @@ class _$StoriesModelCopyWithImpl<$Res, $Val extends StoriesModel>
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as num?,
+              as double?,
       lon: freezed == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as num?,
+              as double?,
     ) as $Val);
   }
 }
@@ -118,8 +118,8 @@ abstract class _$$_StoriesModelCopyWith<$Res>
       String description,
       String photoUrl,
       String createdAt,
-      num? lat,
-      num? lon});
+      double? lat,
+      double? lon});
 }
 
 /// @nodoc
@@ -165,11 +165,11 @@ class __$$_StoriesModelCopyWithImpl<$Res>
       lat: freezed == lat
           ? _value.lat
           : lat // ignore: cast_nullable_to_non_nullable
-              as num?,
+              as double?,
       lon: freezed == lon
           ? _value.lon
           : lon // ignore: cast_nullable_to_non_nullable
-              as num?,
+              as double?,
     ));
   }
 }
@@ -200,9 +200,9 @@ class _$_StoriesModel implements _StoriesModel {
   @override
   final String createdAt;
   @override
-  final num? lat;
+  final double? lat;
   @override
-  final num? lon;
+  final double? lon;
 
   @override
   String toString() {
@@ -252,8 +252,8 @@ abstract class _StoriesModel implements StoriesModel {
       required final String description,
       required final String photoUrl,
       required final String createdAt,
-      required final num? lat,
-      required final num? lon}) = _$_StoriesModel;
+      required final double? lat,
+      required final double? lon}) = _$_StoriesModel;
 
   factory _StoriesModel.fromJson(Map<String, dynamic> json) =
       _$_StoriesModel.fromJson;
@@ -269,9 +269,9 @@ abstract class _StoriesModel implements StoriesModel {
   @override
   String get createdAt;
   @override
-  num? get lat;
+  double? get lat;
   @override
-  num? get lon;
+  double? get lon;
   @override
   @JsonKey(ignore: true)
   _$$_StoriesModelCopyWith<_$_StoriesModel> get copyWith =>
