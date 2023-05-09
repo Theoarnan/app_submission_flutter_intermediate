@@ -123,13 +123,14 @@ class _HomePageState extends State<HomePage> {
                     isWithButton: false,
                   );
                 }
+                final itemCountStories = (dataBloc.pageItems != null ? 1 : 0);
                 return ListView.builder(
                   controller: scrollController,
-                  itemCount:
-                      dataState.length + (dataBloc.pageItems != null ? 1 : 0),
+                  itemCount: dataState.length + (itemCountStories),
                   itemBuilder: (context, int index) {
-                    if (index == dataState.length &&
-                        dataBloc.pageItems != null) {
+                    final isShowLoading = (index == dataState.length &&
+                        dataBloc.pageItems != null);
+                    if (isShowLoading) {
                       return Center(
                         child: Padding(
                           padding: EdgeInsets.all(8.sp),
@@ -137,7 +138,7 @@ class _HomePageState extends State<HomePage> {
                         ),
                       );
                     }
-                    final dataStories = dataState[index == 0 ? 1 : index];
+                    final dataStories = dataState[index];
 
                     /// [TODO: Delete after all test pass]
                     // return ListTile(

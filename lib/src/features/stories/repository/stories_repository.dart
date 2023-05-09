@@ -8,6 +8,7 @@ import 'package:app_submission_flutter_intermediate/src/features/stories/models/
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_response_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class StoriesRepository {
@@ -88,6 +89,7 @@ class StoriesRepository {
     required List<int> bytes,
     required String fileName,
     required String description,
+    required LatLng latLng,
   }) async {
     final token = await getToken();
     final url = Uri.parse(storiesEndpoint);
@@ -99,6 +101,8 @@ class StoriesRepository {
     );
     final Map<String, String> fields = {
       "description": description,
+      "lat": latLng.latitude.toString(),
+      "lon": latLng.longitude.toString(),
     };
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",

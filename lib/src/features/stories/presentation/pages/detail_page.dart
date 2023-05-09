@@ -1,4 +1,5 @@
-import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
+import 'dart:async';
+
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
@@ -6,19 +7,22 @@ import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_cu
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoder2/geocoder2.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:geocoding/geocoding.dart' as geo;
 
 class DetailPage extends StatefulWidget {
   final String idStory;
   final Function() toHomePage;
+  final Function(StoriesModel dataStories) toMapPage;
   const DetailPage({
     super.key,
     required this.idStory,
     required this.toHomePage,
+    required this.toMapPage,
   });
 
   @override
@@ -27,8 +31,8 @@ class DetailPage extends StatefulWidget {
 
 class _DetailPageState extends State<DetailPage> {
   final Set<Marker> markers = {};
-  geo.Placemark? placemark;
-  late GoogleMapController mapController;
+  GeoData? placemark;
+  Completer<GoogleMapController> mapController = Completer();
 
   @override
   void initState() {
@@ -67,8 +71,7 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ),
             );
-          }
-          if (state is NoInternetState) {
+          } else if (state is NoInternetState) {
             return WidgetCustom.stateError(
               context,
               isError: false,
@@ -76,8 +79,7 @@ class _DetailPageState extends State<DetailPage> {
                 GetDetailStories(id: widget.idStory),
               ),
             );
-          }
-          if (state is StoriesErrorState) {
+          } else if (state is StoriesErrorState) {
             if (UtilHelper.checkUnauthorized(state.error)) {
               BlocProvider.of<AuthBloc>(context).add(
                 const LogoutAccountEvent(),
@@ -92,8 +94,7 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               );
             }
-          }
-          if (state is GetDetailStoriesSuccessState) {
+          } else if (state is GetDetailStoriesSuccessState) {
             final data = state.dataStories;
             return SafeArea(
               child: SingleChildScrollView(
@@ -115,9 +116,7 @@ class _DetailPageState extends State<DetailPage> {
                           top: 16.h,
                           left: 16.w,
                           child: GestureDetector(
-                            onTap: () {
-                              widget.toHomePage();
-                            },
+                            onTap: () => widget.toHomePage(),
                             child: Container(
                               height: 40.sp,
                               width: 40.sp,
@@ -143,8 +142,7 @@ class _DetailPageState extends State<DetailPage> {
                         children: <Widget>[
                           CircleAvatar(
                             radius: 24.sp,
-                            backgroundColor:
-                                ThemeCustom.secondaryColor.withOpacity(0.4),
+                            backgroundColor: ThemeCustom.secondaryColor,
                             child: Text(
                               UtilHelper.generateInitialText(data.name),
                               style: textTheme.bodyLarge,
@@ -220,20 +218,10 @@ class _DetailPageState extends State<DetailPage> {
                                 crossAxisAlignment: CrossAxisAlignment.stretch,
                                 children: [
                                   Text(
-                                    placemark?.street ?? '',
+                                    placemark?.address ?? '',
                                     style: textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.w500,
                                       color: ThemeCustom.primaryColor,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.h),
-                                  Text(
-                                    '${placemark!.subLocality}, ${placemark!.locality}, ${placemark!.administrativeArea}, ${placemark!.postalCode},  ${placemark!.country}',
-                                    maxLines: 4,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: textTheme.bodyMedium?.copyWith(
-                                      fontWeight: FontWeight.w400,
-                                      color: ThemeCustom.darkColor,
                                     ),
                                   ),
                                 ],
@@ -250,36 +238,23 @@ class _DetailPageState extends State<DetailPage> {
                         width: 1.sw,
                         child: Stack(
                           children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                  8.sp,
-                                ),
-                                boxShadow: <BoxShadow>[
-                                  BoxShadow(
-                                    blurRadius: 12,
-                                    offset: Offset.zero,
-                                    color: Colors.grey.withOpacity(0.3),
-                                  )
-                                ],
+                            GoogleMap(
+                              markers: markers,
+                              mapType: MapType.normal,
+                              buildingsEnabled: true,
+                              initialCameraPosition: CameraPosition(
+                                zoom: 18,
+                                target: LatLng(data.lat!, data.lon!),
                               ),
-                              child: GoogleMap(
-                                markers: markers,
-                                mapType: MapType.normal,
-                                buildingsEnabled: true,
-                                initialCameraPosition: CameraPosition(
-                                  zoom: 18,
-                                  target: LatLng(data.lat!, data.lon!),
-                                ),
-                                onMapCreated: (controller) =>
-                                    handleOnMapCreated(
+                              onMapCreated: (controller) async {
+                                await handleOnMapCreated(
                                   controller: controller,
                                   data: data,
-                                ),
-                                myLocationButtonEnabled: false,
-                                zoomControlsEnabled: false,
-                                mapToolbarEnabled: false,
-                              ),
+                                );
+                              },
+                              myLocationButtonEnabled: false,
+                              zoomControlsEnabled: false,
+                              mapToolbarEnabled: false,
                             ),
                             if (placemark == null)
                               const SizedBox.shrink()
@@ -301,7 +276,7 @@ class _DetailPageState extends State<DetailPage> {
                                     style: TextButton.styleFrom(
                                       backgroundColor: Colors.white,
                                     ),
-                                    onPressed: () {},
+                                    onPressed: () => widget.toMapPage(data),
                                     child: Text(
                                       translate.openMap,
                                       style: textTheme.bodyLarge?.copyWith(
@@ -326,12 +301,6 @@ class _DetailPageState extends State<DetailPage> {
     );
   }
 
-  Future<void> setMapStyle() async {
-    String value = await DefaultAssetBundle.of(context)
-        .loadString(ConstantsName.jsonMapStyle);
-    await mapController.setMapStyle(value);
-  }
-
   void defineMarker(LatLng latLng, String street, String address) {
     final marker = Marker(
       markerId: const MarkerId("source"),
@@ -341,13 +310,13 @@ class _DetailPageState extends State<DetailPage> {
         snippet: address,
       ),
     );
+    if (!mounted) return;
     setState(() {
-      markers.clear();
       markers.add(marker);
     });
   }
 
-  void handleOnMapCreated({
+  handleOnMapCreated({
     required GoogleMapController controller,
     required StoriesModel data,
   }) async {
@@ -364,24 +333,24 @@ class _DetailPageState extends State<DetailPage> {
         );
       },
     );
-    final info = await geo.placemarkFromCoordinates(
-      data.lat!,
-      data.lon!,
-    );
-    final place = info[0];
-    final street = place.street!;
+    final place = await Geocoder2.getDataFromCoordinates(
+        latitude: data.lat!,
+        longitude: data.lon!,
+        googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg');
     final address =
-        '${place.subLocality}, ${place.locality}, ${place.postalCode}, ${place.country}';
-    defineMarker(
-      LatLng(data.lat!, data.lon!),
-      street,
-      address,
-    );
+        '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
+    if (!mounted) return;
     setState(() {
-      mapController = controller;
+      mapController.complete(controller);
       placemark = place;
       markers.add(marker);
     });
-    await setMapStyle();
+    if (!kIsWeb) {
+      defineMarker(
+        LatLng(data.lat!, data.lon!),
+        place.address,
+        address,
+      );
+    }
   }
 }

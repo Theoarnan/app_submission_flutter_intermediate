@@ -7,11 +7,13 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/splash_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/setting_page.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/camera_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/detail_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/home_page.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/maps_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/post_story_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/widgets/choose_media.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +29,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   ) : _navigatorKey = GlobalKey<NavigatorState>();
 
   String? selectStory;
+  StoriesModel? dataDetailStories;
   List<Page> historyStack = [];
   bool? isLoggedIn;
   bool isRegister = false;
@@ -34,6 +37,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   bool isPostStory = false;
   bool isCamera = false;
   bool isChooseMedia = false;
+  bool isMapDetail = false;
+  bool isMapChoose = false;
   bool? isUnknown;
 
   List<Page> get _splashStack => const [
@@ -102,6 +107,24 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
                 selectStory = null;
                 notifyListeners();
               },
+              toMapPage: (dataStories) {
+                isMapDetail = true;
+                dataDetailStories = dataStories;
+                notifyListeners();
+              },
+            ),
+          ),
+        if (isMapDetail && dataDetailStories != null)
+          MaterialPage(
+            key: const ValueKey("MapDetailPage"),
+            child: MapsPage(
+              isFromDetail: true,
+              dataStories: dataDetailStories!,
+              toBackDetailPage: (String storyId) {
+                selectStory = storyId;
+                isMapDetail = false;
+                notifyListeners();
+              },
             ),
           ),
         if (isPostStory)
@@ -120,8 +143,23 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
                 isChooseMedia = true;
                 notifyListeners();
               },
+              toChooseLocation: () {
+                isMapChoose = true;
+                notifyListeners();
+              },
               toHome: () {
                 isPostStory = false;
+                notifyListeners();
+              },
+            ),
+          ),
+        if (isMapChoose)
+          MaterialPage(
+            key: const ValueKey("MapChoosePage"),
+            child: MapsPage(
+              isFromDetail: false,
+              toBackPostStory: () {
+                isMapChoose = false;
                 notifyListeners();
               },
             ),
@@ -168,6 +206,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isPostStory = false;
           isCamera = false;
           isChooseMedia = false;
+          isMapDetail = false;
+          isMapChoose = false;
           isLoggedIn = state.isLoggedIn;
           notifyListeners();
         }
@@ -190,6 +230,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isRegister = false;
           isSetting = false;
           selectStory = null;
+          isMapDetail = false;
+          isMapChoose = false;
           isPostStory = false;
           isChooseMedia = false;
           isCamera = false;
@@ -218,6 +260,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       isPostStory = false;
       selectStory = null;
+      isMapDetail = false;
+      isMapChoose = false;
       isCamera = false;
       isChooseMedia = false;
     } else if (configuration.isSettingPage) {
@@ -225,6 +269,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isRegister = false;
       isSetting = true;
       selectStory = null;
+      isMapDetail = false;
+      isMapChoose = false;
       isPostStory = false;
       isCamera = false;
       isChooseMedia = false;
@@ -233,6 +279,18 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isRegister = false;
       isSetting = false;
       isPostStory = false;
+      isMapDetail = false;
+      isMapChoose = false;
+      isCamera = false;
+      isChooseMedia = false;
+      selectStory = configuration.storyId.toString();
+    } else if (configuration.isMapPage) {
+      isUnknown = false;
+      isRegister = false;
+      isSetting = false;
+      isPostStory = false;
+      isMapDetail = true;
+      isMapChoose = false;
       isCamera = false;
       isChooseMedia = false;
       selectStory = configuration.storyId.toString();
@@ -242,6 +300,18 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      isMapDetail = false;
+      isMapChoose = false;
+      isChooseMedia = false;
+      isCamera = false;
+    } else if (configuration.isMapChoosePage) {
+      isUnknown = false;
+      isRegister = false;
+      isSetting = false;
+      selectStory = null;
+      isPostStory = true;
+      isMapDetail = false;
+      isMapChoose = true;
       isChooseMedia = false;
       isCamera = false;
     } else if (configuration.isChooseMediaPage) {
@@ -250,6 +320,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      isMapDetail = false;
+      isMapChoose = false;
       isChooseMedia = true;
       isCamera = false;
     } else if (configuration.isCameraPage) {
@@ -258,6 +330,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      isMapDetail = false;
+      isMapChoose = false;
       isChooseMedia = true;
       isCamera = true;
     } else {
@@ -279,6 +353,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         !isSetting &&
         !isPostStory &&
         !isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         !isCamera) {
       _navigatorKey.currentContext!
           .read<StoriesBloc>()
@@ -289,6 +365,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         selectStory == null &&
         !isPostStory &&
         !isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         !isCamera) {
       return PageConfigurationModel.setting();
     } else if (isLoggedIn! &&
@@ -296,13 +374,26 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         selectStory != null &&
         !isPostStory &&
         !isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         !isCamera) {
       return PageConfigurationModel.detailStory(selectStory!);
+    } else if (isLoggedIn! &&
+        !isSetting &&
+        selectStory != null &&
+        !isPostStory &&
+        !isChooseMedia &&
+        isMapDetail &&
+        !isMapChoose &&
+        !isCamera) {
+      return PageConfigurationModel.maps(selectStory!);
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
         selectStory == null &&
         !isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         !isCamera) {
       _navigatorKey.currentContext!.read<CameraBlocCubit>().cameraStopped();
       return PageConfigurationModel.postStory();
@@ -310,7 +401,18 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        !isChooseMedia &&
+        !isMapDetail &&
+        isMapChoose &&
+        !isCamera) {
+      return PageConfigurationModel.mapChoose();
+    } else if (isLoggedIn! &&
+        isPostStory &&
+        !isSetting &&
+        selectStory == null &&
         isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         !isCamera) {
       return PageConfigurationModel.chooseMedia();
     } else if (isLoggedIn! &&
@@ -318,6 +420,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         !isSetting &&
         selectStory == null &&
         isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
         isCamera) {
       return PageConfigurationModel.camera();
     } else if (isUnknown!) {

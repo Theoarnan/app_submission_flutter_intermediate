@@ -1,6 +1,7 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
@@ -9,6 +10,7 @@ import 'package:app_submission_flutter_intermediate/src/features/stories/present
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 class PostStoryPage extends StatefulWidget {
@@ -16,12 +18,14 @@ class PostStoryPage extends StatefulWidget {
   final Function() toHome;
   final Function() onCloseMedia;
   final Function() toChooseMedia;
+  final Function() toChooseLocation;
   const PostStoryPage({
     super.key,
     required this.toCamera,
     required this.toHome,
     required this.toChooseMedia,
     required this.onCloseMedia,
+    required this.toChooseLocation,
   });
 
   @override
@@ -31,11 +35,15 @@ class PostStoryPage extends StatefulWidget {
 class _PostStoryPageState extends State<PostStoryPage> {
   final _formGlobalKey = GlobalKey<FormState>();
   final _descriptionField = TextEditingController();
+  late StoriesBloc blocStories;
   XFile? fileImage;
+  String? address;
+  LatLng? location;
 
   @override
   void initState() {
     super.initState();
+    blocStories = BlocProvider.of<StoriesBloc>(context);
   }
 
   @override
@@ -44,10 +52,12 @@ class _PostStoryPageState extends State<PostStoryPage> {
     _descriptionField.dispose();
   }
 
+  bool get isProccesPostStories =>
+      location != null && blocStories.imageFile != null;
+
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
-    final blocStories = BlocProvider.of<StoriesBloc>(context);
     final translate = AppLocalizations.of(context)!;
     return BlocConsumer<StoriesBloc, StoriesState>(
       listener: (context, state) async {
@@ -63,6 +73,11 @@ class _PostStoryPageState extends State<PostStoryPage> {
           } else {
             WidgetCustom.toastErrorState(context, error: state.error);
           }
+        } else if (state is SetLocationSuccess) {
+          address = state.address;
+          location = state.location;
+        } else if (state is SetImageSuccess) {
+          fileImage = state.fileImage;
         }
       },
       builder: (context, state) {
@@ -93,32 +108,8 @@ class _PostStoryPageState extends State<PostStoryPage> {
               Padding(
                 padding: EdgeInsets.only(right: 16.w),
                 child: TextButton(
-                  onPressed: () =>
-                      blocStories.imageFile == null ? null : _onPostStory(),
-                  child: postStoryLoading
-                      ? Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const CircularProgressIndicator(),
-                            SizedBox(width: 8.w),
-                            Text(
-                              translate.loading,
-                              style: textTheme.bodyMedium?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        )
-                      : Text(
-                          translate.post,
-                          textAlign: TextAlign.left,
-                          style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.bold,
-                            color: blocStories.imageFile != null
-                                ? ThemeCustom.primaryColor
-                                : ThemeCustom.secondaryColor,
-                          ),
-                        ),
+                  onPressed: () => _handlePostStories(),
+                  child: onPostButton(postStoryLoading, translate, textTheme),
                 ),
               )
             ],
@@ -156,8 +147,8 @@ class _PostStoryPageState extends State<PostStoryPage> {
                         ),
                       ),
                       child: WidgetCustom.fadeInImageCustom(
-                        imageData: context.watch<StoriesBloc>().imageFile,
-                        isFile: context.watch<StoriesBloc>().imageFile != null,
+                        imageData: fileImage,
+                        isFile: fileImage != null,
                         image: ConstantsName.gifLoadingImg,
                       ),
                     ),
@@ -167,7 +158,7 @@ class _PostStoryPageState extends State<PostStoryPage> {
                     child: TextButton(
                       onPressed: () => widget.toChooseMedia(),
                       child: Text(
-                        blocStories.imageFile != null
+                        (fileImage != null)
                             ? translate.change
                             : translate.choosePhoto,
                         textAlign: TextAlign.left,
@@ -215,6 +206,95 @@ class _PostStoryPageState extends State<PostStoryPage> {
                       ),
                     ),
                   ),
+                  SizedBox(height: 6.h),
+                  if (location == null)
+                    TextButton(
+                      onPressed: () async {
+                        final pageManager = context.read<PageManager>();
+                        widget.toChooseLocation();
+                        final resultLocation =
+                            await pageManager.waitForResultLocation();
+                        if (resultLocation != null) {
+                          blocStories.add(
+                            SetLocationData(location: resultLocation),
+                          );
+                        }
+                      },
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 20.sp,
+                            color: ThemeCustom.primaryColor,
+                          ),
+                          SizedBox(width: 8.w),
+                          SizedBox(
+                            width: 1.sw - 100.w,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                Text(
+                                  translate.addLocation,
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    fontWeight: FontWeight.w500,
+                                    color: ThemeCustom.primaryColor,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  SizedBox(height: 6.h),
+                  if (location != null)
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 16.w,
+                        vertical: 10.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            blurRadius: 12,
+                            offset: Offset.zero,
+                            color: ThemeCustom.secondaryColor.withOpacity(0.5),
+                          ),
+                        ],
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.location_on,
+                            size: 24.sp,
+                            color: ThemeCustom.primaryColor,
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              address ?? '-',
+                              style: textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              blocStories.add(
+                                const SetLocationData(location: null),
+                              );
+                            },
+                            icon: const Icon(
+                              Icons.remove_circle,
+                              color: ThemeCustom.redColor,
+                            ),
+                          )
+                        ],
+                      ),
+                    )
                 ],
               ),
             ),
@@ -224,10 +304,55 @@ class _PostStoryPageState extends State<PostStoryPage> {
     );
   }
 
-  void _onPostStory() {
+  void _onPostStories() {
     if (_formGlobalKey.currentState!.validate()) {
       final storiesBloc = context.read<StoriesBloc>();
       storiesBloc.add(PostStories(description: _descriptionField.text));
     }
+  }
+
+  _handlePostStories() {
+    if (isProccesPostStories) {
+      return _onPostStories();
+    }
+    return null;
+  }
+
+  Widget onPostButton(
+    bool postStoryLoading,
+    AppLocalizations translate,
+    TextTheme textTheme,
+  ) {
+    if (postStoryLoading) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          SizedBox(
+            height: 14.h,
+            width: 14.w,
+            child: const CircularProgressIndicator(
+              strokeWidth: 2,
+            ),
+          ),
+          SizedBox(width: 8.w),
+          Text(
+            translate.loading,
+            style: textTheme.bodySmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      );
+    }
+    return Text(
+      translate.post,
+      textAlign: TextAlign.left,
+      style: textTheme.bodyLarge?.copyWith(
+        fontWeight: FontWeight.bold,
+        color: (isProccesPostStories)
+            ? ThemeCustom.primaryColor
+            : ThemeCustom.secondaryColor,
+      ),
+    );
   }
 }

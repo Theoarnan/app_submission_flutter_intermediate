@@ -105,5 +105,8 @@
     "choosePhoto": "Pilih Foto",
     "descriptionNotFound": "Tidak ada data cerita ditemukan",
     "location": "Lokasi",
-    "openMap": "Buka Peta"
+    "openMap": "Buka Peta",
+    "chooseLocation": "Pilih Lokasi",
+    "choose": "Pilih",
+    "addLocation": "Tambahkan lokasi"
 }

@@ -1,10 +1,11 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:geocoder2/geocoder2.dart';
 import 'package:intl/intl.dart';
 import 'package:image/image.dart' as img;
 
@@ -116,14 +117,11 @@ class UtilHelper {
     required double lon,
   }) async {
     try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(lat, lon);
-      Placemark placeMark = placemarks[0];
-      String locality = placeMark.locality.toString();
-      String administrativeArea = placeMark.administrativeArea.toString();
-      String country = placeMark.country.toString();
-      String address =
-          "${locality.isNotEmpty ? '$locality,' : ''} ${administrativeArea.isNotEmpty ? '$administrativeArea,' : ''} $country";
-      return address.trim();
+      GeoData placeMark = await Geocoder2.getDataFromCoordinates(
+          latitude: lat,
+          longitude: lon,
+          googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg');
+      return placeMark.address;
     } catch (e) {
       throw Exception(e.toString());
     }

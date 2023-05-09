@@ -45,29 +45,31 @@ class WidgetMomentsCustom {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    FutureBuilder(
-                      future: UtilHelper.getLocation(
-                        lat: stories.lat!,
-                        lon: stories.lon!,
-                      ),
-                      builder: (context, snapshot) {
-                        String address;
-                        if (snapshot.hasError) address = '';
-                        address = snapshot.data ?? '';
-                        return SizedBox(
-                          width: 1.sw - 100.w,
-                          child: Text(
-                            address,
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                            style: textTheme.bodySmall?.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: ThemeCustom.primaryColor,
+                    if (stories.lat != null && stories.lon != null)
+                      FutureBuilder(
+                        future: UtilHelper.getLocation(
+                          lat: stories.lat!,
+                          lon: stories.lon!,
+                        ),
+                        builder: (context, snapshot) {
+                          WidgetCustom.loadingSecond(context);
+                          String address;
+                          if (snapshot.hasError) address = '';
+                          address = snapshot.data ?? '';
+                          return SizedBox(
+                            width: 1.sw - 100.w,
+                            child: Text(
+                              address,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: textTheme.bodySmall?.copyWith(
+                                fontWeight: FontWeight.w400,
+                                color: ThemeCustom.primaryColor,
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                    )
+                          );
+                        },
+                      )
                   ],
                 ),
               ],

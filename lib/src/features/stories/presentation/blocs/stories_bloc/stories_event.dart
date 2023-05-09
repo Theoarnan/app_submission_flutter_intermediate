@@ -37,3 +37,10 @@ class SetImageFile extends StoriesEvent {
   @override
   List<Object> get props => [image];
 }
+
+class SetLocationData extends StoriesEvent {
+  final LatLng? location;
+  const SetLocationData({this.location});
+  @override
+  List<Object> get props => [location!];
+}
