@@ -5,6 +5,7 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/constan
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/widgets/placemark_widget.dart';
 import 'package:flutter/foundation.dart';
@@ -33,15 +34,26 @@ class MapsPage extends StatefulWidget {
   State<MapsPage> createState() => _MapsPageState();
 }
 
-class _MapsPageState extends State<MapsPage> {
+class _MapsPageState extends State<MapsPage>
+    with SingleTickerProviderStateMixin {
   final Set<Marker> markers = {};
   final Location location = Location();
   Completer<GoogleMapController> mapController = Completer();
   GeoData? placemark;
   LatLng locationLatLon = ConstantsName.baseLocationLatLon;
 
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromTop;
+
   @override
   void initState() {
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
     if (widget.isFromDetail) {
       locationLatLon = LatLng(
         widget.dataStories!.lat!,
@@ -214,58 +226,64 @@ class _MapsPageState extends State<MapsPage> {
             )
         ],
       ),
-      body: SafeArea(
-        child: Center(
-          child: Stack(
-            children: [
-              GoogleMap(
-                myLocationEnabled: true,
-                markers: markers,
-                mapType: MapType.normal,
-                initialCameraPosition: CameraPosition(
-                  zoom: 18,
-                  target: locationLatLon,
-                ),
-                myLocationButtonEnabled: false,
-                zoomControlsEnabled: false,
-                mapToolbarEnabled: false,
-                onTap: (LatLng latLng) {
-                  if (!widget.isFromDetail) onTapMap(latLng);
-                },
-                onMapCreated: (controller) async {
-                  if (!mounted) return;
-                  setState(() {
-                    mapController.complete(controller);
-                  });
-                  if (widget.isFromDetail) onTapMap(locationLatLon);
-                },
-              ),
-              Positioned(
-                top: 16.h,
-                right: 16.w,
-                child: FloatingActionButton(
-                  backgroundColor: ThemeCustom.primaryColor,
-                  child: const Icon(
-                    Icons.my_location,
-                    color: Colors.white,
+      body: FadeTransition(
+        opacity: animation,
+        child: SafeArea(
+          child: Center(
+            child: Stack(
+              children: [
+                GoogleMap(
+                  myLocationEnabled: true,
+                  markers: markers,
+                  mapType: MapType.normal,
+                  initialCameraPosition: CameraPosition(
+                    zoom: 18,
+                    target: locationLatLon,
                   ),
-                  onPressed: () {
-                    onMyLocationButtonPress();
+                  myLocationButtonEnabled: false,
+                  zoomControlsEnabled: false,
+                  mapToolbarEnabled: false,
+                  onTap: (LatLng latLng) {
+                    if (!widget.isFromDetail) onTapMap(latLng);
+                  },
+                  onMapCreated: (controller) async {
+                    if (!mounted) return;
+                    setState(() {
+                      mapController.complete(controller);
+                    });
+                    if (widget.isFromDetail) onTapMap(locationLatLon);
                   },
                 ),
-              ),
-              if (placemark == null)
-                const SizedBox()
-              else
                 Positioned(
-                  bottom: 36.h,
+                  top: 16.h,
                   right: 16.w,
-                  left: 16.w,
-                  child: PlacemarkWidget(
-                    placemark: placemark!,
+                  child: SlideTransition(
+                    position: fromTop,
+                    child: FloatingActionButton(
+                      backgroundColor: ThemeCustom.primaryColor,
+                      child: const Icon(
+                        Icons.my_location,
+                        color: Colors.white,
+                      ),
+                      onPressed: () {
+                        onMyLocationButtonPress();
+                      },
+                    ),
                   ),
                 ),
-            ],
+                if (placemark == null)
+                  const SizedBox()
+                else
+                  Positioned(
+                    bottom: 36.h,
+                    right: 16.w,
+                    left: 16.w,
+                    child: PlacemarkWidget(
+                      placemark: placemark!,
+                    ),
+                  ),
+              ],
+            ),
           ),
         ),
       ),
