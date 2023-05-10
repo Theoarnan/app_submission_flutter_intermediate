@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
@@ -50,9 +48,23 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         } else {
           pageItems = pageItems! + 1;
         }
-        dataStories.addAll(dataResponse.dataStory);
+        final dataStoriesMap =
+            await Future.wait(dataResponse.dataStory.map((e) async {
+          final latitude = e.lat;
+          final longitude = e.lon;
+          String address = '';
+          if (latitude != null && longitude != null) {
+            address = await UtilHelper.getLocation(
+              lat: latitude,
+              lon: longitude,
+              isSimpleAddress: true,
+            );
+          }
+          return e.copyWith(address: address);
+        }));
+        dataStories.addAll(dataStoriesMap);
         emit(state.copyWith(
-          stories: List.of(state.stories)..addAll(dataResponse.dataStory),
+          stories: List.of(state.stories)..addAll(dataStoriesMap),
         ));
       } else {
         emit(StoriesErrorState(error: dataResponse.error.toString()));

@@ -32,7 +32,8 @@ class PostStoryPage extends StatefulWidget {
   State<PostStoryPage> createState() => _PostStoryPageState();
 }
 
-class _PostStoryPageState extends State<PostStoryPage> {
+class _PostStoryPageState extends State<PostStoryPage>
+    with SingleTickerProviderStateMixin {
   final _formGlobalKey = GlobalKey<FormState>();
   final _descriptionField = TextEditingController();
   late StoriesBloc blocStories;
@@ -40,15 +41,28 @@ class _PostStoryPageState extends State<PostStoryPage> {
   String? address;
   LatLng? location;
 
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromTop;
+  late Animation<Offset> fromLeft;
+
   @override
   void initState() {
     super.initState();
     blocStories = BlocProvider.of<StoriesBloc>(context);
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
+    fromLeft = UtilHelper.initializePositioned(controller, isFromLeft: true);
   }
 
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
     _descriptionField.dispose();
   }
 
@@ -115,187 +129,207 @@ class _PostStoryPageState extends State<PostStoryPage> {
             ],
           ),
           body: SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 10.h,
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(height: 10.h),
-                  Center(
-                    child: Text(
-                      translate.subtitlePostStory,
-                      textAlign: TextAlign.center,
-                      style: textTheme.bodyMedium?.copyWith(
-                        color: ThemeCustom.secondaryColor,
-                        fontWeight: FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 18.h),
-                  Center(
-                    child: Container(
-                      height: 0.3.sh,
-                      width: 0.5.sw,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(8.sp),
-                        ),
-                      ),
-                      child: WidgetCustom.fadeInImageCustom(
-                        imageData: fileImage,
-                        isFile: fileImage != null,
-                        image: ConstantsName.gifLoadingImg,
-                      ),
-                    ),
-                  ),
-                  SizedBox(height: 6.h),
-                  Center(
-                    child: TextButton(
-                      onPressed: () => widget.toChooseMedia(),
-                      child: Text(
-                        (fileImage != null)
-                            ? translate.change
-                            : translate.choosePhoto,
-                        textAlign: TextAlign.left,
-                        style: textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.bold,
-                          color: ThemeCustom.primaryColor,
+            child: FadeTransition(
+              opacity: animation,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 10.h,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(height: 10.h),
+                    SlideTransition(
+                      position: fromTop,
+                      child: Center(
+                        child: Text(
+                          translate.subtitlePostStory,
+                          textAlign: TextAlign.center,
+                          style: textTheme.bodyMedium?.copyWith(
+                            color: ThemeCustom.secondaryColor,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 6.h),
-                  SizedBox(
-                    child: Form(
-                      key: _formGlobalKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            translate.description,
+                    SizedBox(height: 18.h),
+                    SlideTransition(
+                      position: fromTop,
+                      child: Center(
+                        child: Container(
+                          height: 0.3.sh,
+                          width: 0.5.sw,
+                          clipBehavior: Clip.hardEdge,
+                          decoration: BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(8.sp),
+                            ),
+                          ),
+                          child: WidgetCustom.fadeInImageCustom(
+                            imageData: fileImage,
+                            isFile: fileImage != null,
+                            image: ConstantsName.gifLoadingImg,
+                          ),
+                        ),
+                      ),
+                    ),
+                    SizedBox(height: 6.h),
+                    SlideTransition(
+                      position: fromTop,
+                      child: Center(
+                        child: TextButton(
+                          onPressed: () => widget.toChooseMedia(),
+                          child: Text(
+                            (fileImage != null)
+                                ? translate.change
+                                : translate.choosePhoto,
                             textAlign: TextAlign.left,
-                            style: textTheme.bodyLarge?.copyWith(
+                            style: textTheme.bodyMedium?.copyWith(
                               fontWeight: FontWeight.bold,
+                              color: ThemeCustom.primaryColor,
                             ),
                           ),
-                          SizedBox(height: 4.h),
-                          TextFormField(
-                            controller: _descriptionField,
-                            maxLines: 4,
-                            decoration: InputDecoration(
-                              hintText: translate.fieldDescription,
-                              hintStyle: textTheme.bodyLarge?.copyWith(
-                                color: ThemeCustom.secondaryColor,
-                                fontWeight: FontWeight.normal,
-                              ),
-                            ),
-                            validator: (value) {
-                              return ValidationFormUtil.validateNotNull(
-                                context,
-                                value,
-                                translate.description.toLowerCase(),
-                              );
-                            },
-                          ),
-                        ],
+                        ),
                       ),
                     ),
-                  ),
-                  SizedBox(height: 6.h),
-                  if (location == null)
-                    TextButton(
-                      onPressed: () async {
-                        final pageManager = context.read<PageManager>();
-                        widget.toChooseLocation();
-                        final resultLocation =
-                            await pageManager.waitForResultLocation();
-                        if (resultLocation != null) {
-                          blocStories.add(
-                            SetLocationData(location: resultLocation),
-                          );
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 20.sp,
-                            color: ThemeCustom.primaryColor,
-                          ),
-                          SizedBox(width: 8.w),
-                          SizedBox(
-                            width: 1.sw - 100.w,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.stretch,
-                              children: [
-                                Text(
-                                  translate.addLocation,
-                                  style: textTheme.bodyMedium?.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    color: ThemeCustom.primaryColor,
+                    SizedBox(height: 6.h),
+                    SlideTransition(
+                      position: fromLeft,
+                      child: SizedBox(
+                        child: Form(
+                          key: _formGlobalKey,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                translate.description,
+                                textAlign: TextAlign.left,
+                                style: textTheme.bodyLarge?.copyWith(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4.h),
+                              TextFormField(
+                                controller: _descriptionField,
+                                maxLines: 4,
+                                decoration: InputDecoration(
+                                  hintText: translate.fieldDescription,
+                                  hintStyle: textTheme.bodyLarge?.copyWith(
+                                    color: ThemeCustom.secondaryColor,
+                                    fontWeight: FontWeight.normal,
                                   ),
                                 ),
-                              ],
-                            ),
+                                validator: (value) {
+                                  return ValidationFormUtil.validateNotNull(
+                                    context,
+                                    value,
+                                    translate.description.toLowerCase(),
+                                  );
+                                },
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                  SizedBox(height: 6.h),
-                  if (location != null)
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 16.w,
-                        vertical: 10.h,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.all(Radius.circular(8.w)),
-                        boxShadow: <BoxShadow>[
-                          BoxShadow(
-                            blurRadius: 12,
-                            offset: Offset.zero,
-                            color: ThemeCustom.secondaryColor.withOpacity(0.5),
+                    SizedBox(height: 6.h),
+                    if (location == null)
+                      SlideTransition(
+                        position: fromLeft,
+                        child: TextButton(
+                          onPressed: () async {
+                            final pageManager = context.read<PageManager>();
+                            widget.toChooseLocation();
+                            final resultLocation =
+                                await pageManager.waitForResultLocation();
+                            if (resultLocation != null) {
+                              blocStories.add(
+                                SetLocationData(location: resultLocation),
+                              );
+                            }
+                          },
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            children: [
+                              Icon(
+                                Icons.location_on,
+                                size: 20.sp,
+                                color: ThemeCustom.primaryColor,
+                              ),
+                              SizedBox(width: 8.w),
+                              SizedBox(
+                                width: 1.sw - 100.w,
+                                child: Column(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      translate.addLocation,
+                                      style: textTheme.bodyMedium?.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: ThemeCustom.primaryColor,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.location_on,
-                            size: 24.sp,
-                            color: ThemeCustom.primaryColor,
-                          ),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: Text(
-                              address ?? '-',
-                              style: textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w500,
+                    SizedBox(height: 6.h),
+                    if (location != null)
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 16.w,
+                          vertical: 10.h,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.all(Radius.circular(8.w)),
+                          boxShadow: <BoxShadow>[
+                            BoxShadow(
+                              blurRadius: 12,
+                              offset: Offset.zero,
+                              color:
+                                  ThemeCustom.secondaryColor.withOpacity(0.5),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 24.sp,
+                              color: ThemeCustom.primaryColor,
+                            ),
+                            SizedBox(width: 8.w),
+                            Expanded(
+                              child: Text(
+                                address ?? '-',
+                                style: textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              blocStories.add(
-                                const SetLocationData(location: null),
-                              );
-                            },
-                            icon: const Icon(
-                              Icons.remove_circle,
-                              color: ThemeCustom.redColor,
-                            ),
-                          )
-                        ],
-                      ),
-                    )
-                ],
+                            IconButton(
+                              onPressed: () {
+                                blocStories.add(
+                                  const SetLocationData(location: null),
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.remove_circle,
+                                color: ThemeCustom.redColor,
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                  ],
+                ),
               ),
             ),
           ),

@@ -1,6 +1,7 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/login/login_model.dart';
@@ -26,15 +27,34 @@ class _LoginPageState extends State<LoginPage>
   final _passswordField = TextEditingController(text: 'a123456');
 
   bool isObscurePass = true;
+  bool isValueAnimated = false;
+
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromTop;
+  late Animation<Offset> fromLeft;
+  late Animation<Offset> fromBottom;
 
   @override
   void initState() {
     super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
+    fromLeft = UtilHelper.initializePositioned(controller, isFromLeft: true);
+    fromBottom = UtilHelper.initializePositioned(
+      controller,
+      isFromBottom: true,
+    );
   }
 
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
     _emailField.dispose();
     _passswordField.dispose();
   }
@@ -45,6 +65,7 @@ class _LoginPageState extends State<LoginPage>
     final textTheme = Theme.of(context).textTheme;
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(0),
         child: AppBar(
@@ -68,135 +89,162 @@ class _LoginPageState extends State<LoginPage>
               ),
               child: SizedBox(
                 height: size.height - 44,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        alignment: Alignment.center,
-                        child: AnimatedSize(
-                          duration: const Duration(seconds: 1),
-                          curve: Curves.linearToEaseOut,
-                          child: Image.asset(
-                            ConstantsName.imgLogo2,
+                child: FadeTransition(
+                  opacity: animation,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: SlideTransition(
+                          position: fromTop,
+                          child: Container(
+                            alignment: Alignment.center,
+                            child: Image.asset(
+                              ConstantsName.imgLogo2,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            translate.welcome,
-                            style: textTheme.labelLarge?.copyWith(
-                              fontSize: 28.sp,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            translate.subtitleLogin,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: ThemeCustom.secondaryColor,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      flex: 3,
-                      child: SizedBox(
-                        child: Form(
-                          key: _formGlobalKey,
+                      Expanded(
+                        child: SlideTransition(
+                          position: fromLeft,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _emailField,
-                                hintText: translate.email,
-                                validator: (value) {
-                                  return ValidationFormUtil.validateEmail(
-                                    context,
-                                    value!,
-                                  );
-                                },
-                              ),
-                              SizedBox(height: 12.h),
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _passswordField,
-                                suffixIcon: Icon(
-                                  isObscurePass
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                              Text(
+                                translate.welcome,
+                                style: textTheme.labelLarge?.copyWith(
+                                  fontSize: 28.sp,
                                 ),
-                                onTapSuffixIcon: () {
-                                  setState(() {
-                                    isObscurePass = !isObscurePass;
-                                  });
-                                },
-                                hintText: translate.password,
-                                obscureText: isObscurePass,
-                                validator: (value) {
-                                  return ValidationFormUtil.validateNotNull(
-                                    context,
-                                    value!,
-                                    translate.password.toLowerCase(),
-                                  );
-                                },
                               ),
-                              SizedBox(height: 12.h),
-                              Center(
-                                child: stateLoading
-                                    ? WidgetCustom.loadingSecond(context)
-                                    : WidgetCustom.elevatedButtonCustom(
-                                        context,
-                                        textButton: translate.login,
-                                        onPressed: () => _onLogin(),
-                                      ),
+                              SizedBox(height: 4.h),
+                              Text(
+                                translate.subtitleLogin,
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: ThemeCustom.secondaryColor,
+                                  fontWeight: FontWeight.normal,
+                                ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            translate.dontHaveAccount,
-                            style: textTheme.bodyMedium,
-                          ),
-                          GestureDetector(
-                            onTap: () => widget.onRegister(),
-                            child: Text(
-                              translate.register,
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: ThemeCustom.yellowColor,
-                                fontWeight: FontWeight.bold,
+                      Expanded(
+                        flex: 3,
+                        child: SlideTransition(
+                          position: fromLeft,
+                          child: SizedBox(
+                            child: Form(
+                              key: _formGlobalKey,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                children: [
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _emailField,
+                                    hintText: translate.email,
+                                    validator: (value) {
+                                      return ValidationFormUtil.validateEmail(
+                                        context,
+                                        value!,
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _passswordField,
+                                    suffixIcon: Icon(
+                                      isObscurePass
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onTapSuffixIcon: () {
+                                      setState(() {
+                                        isObscurePass = !isObscurePass;
+                                      });
+                                    },
+                                    hintText: translate.password,
+                                    obscureText: isObscurePass,
+                                    validator: (value) {
+                                      return ValidationFormUtil.validateNotNull(
+                                        context,
+                                        value!,
+                                        translate.password.toLowerCase(),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(height: 12.h),
+                                  Center(
+                                    child: AnimatedCrossFade(
+                                      alignment: Alignment.center,
+                                      sizeCurve: Curves.easeInToLinear,
+                                      duration:
+                                          const Duration(milliseconds: 160),
+                                      crossFadeState: stateLoading
+                                          ? CrossFadeState.showSecond
+                                          : CrossFadeState.showFirst,
+                                      firstChild:
+                                          WidgetCustom.elevatedButtonCustom(
+                                        context,
+                                        textButton: translate.login,
+                                        onPressed: () => _onLogin(),
+                                      ),
+                                      secondChild: Padding(
+                                        padding: EdgeInsets.all(12.sp),
+                                        child:
+                                            WidgetCustom.loadingSecond(context),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          )
-                        ],
-                      ),
-                    ),
-                    const Spacer(),
-                    Center(
-                      child: Text(
-                        translate.copyright,
-                        style: textTheme.bodySmall?.copyWith(
-                          color: ThemeCustom.secondaryColor,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      SizedBox(
+                        child: SlideTransition(
+                          position: fromBottom,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                translate.dontHaveAccount,
+                                style: textTheme.bodyMedium,
+                              ),
+                              GestureDetector(
+                                onTap: () => widget.onRegister(),
+                                child: Text(
+                                  translate.register,
+                                  style: textTheme.bodyMedium?.copyWith(
+                                    color: ThemeCustom.yellowColor,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              )
+                            ],
+                          ),
+                        ),
+                      ),
+                      const Spacer(),
+                      Center(
+                        child: SlideTransition(
+                          position: fromBottom,
+                          child: Text(
+                            translate.copyright,
+                            style: textTheme.bodySmall?.copyWith(
+                              color: ThemeCustom.secondaryColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

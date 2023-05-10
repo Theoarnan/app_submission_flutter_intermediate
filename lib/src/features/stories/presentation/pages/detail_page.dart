@@ -96,6 +96,7 @@ class _DetailPageState extends State<DetailPage> {
             }
           } else if (state is GetDetailStoriesSuccessState) {
             final data = state.dataStories;
+            final isAvalaibleLocation = data.lat != null && data.lon != null;
             return SafeArea(
               child: SingleChildScrollView(
                 child: Column(
@@ -188,16 +189,17 @@ class _DetailPageState extends State<DetailPage> {
                       ),
                     ),
                     SizedBox(height: 12.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        translate.location,
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: ThemeCustom.darkColor,
-                          fontWeight: FontWeight.bold,
+                    if (isAvalaibleLocation)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Text(
+                          translate.location,
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: ThemeCustom.darkColor,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
-                    ),
                     SizedBox(height: 8.h),
                     if (placemark == null)
                       const SizedBox.shrink()
@@ -231,65 +233,66 @@ class _DetailPageState extends State<DetailPage> {
                         ),
                       ),
                     SizedBox(height: 10.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: SizedBox(
-                        height: 160.h,
-                        width: 1.sw,
-                        child: Stack(
-                          children: [
-                            GoogleMap(
-                              markers: markers,
-                              mapType: MapType.normal,
-                              buildingsEnabled: true,
-                              initialCameraPosition: CameraPosition(
-                                zoom: 18,
-                                target: LatLng(data.lat!, data.lon!),
+                    if (isAvalaibleLocation)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: SizedBox(
+                          height: 160.h,
+                          width: 1.sw,
+                          child: Stack(
+                            children: [
+                              GoogleMap(
+                                markers: markers,
+                                mapType: MapType.normal,
+                                buildingsEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  zoom: 18,
+                                  target: LatLng(data.lat!, data.lon!),
+                                ),
+                                onMapCreated: (controller) async {
+                                  await handleOnMapCreated(
+                                    controller: controller,
+                                    data: data,
+                                  );
+                                },
+                                myLocationButtonEnabled: false,
+                                zoomControlsEnabled: false,
+                                mapToolbarEnabled: false,
                               ),
-                              onMapCreated: (controller) async {
-                                await handleOnMapCreated(
-                                  controller: controller,
-                                  data: data,
-                                );
-                              },
-                              myLocationButtonEnabled: false,
-                              zoomControlsEnabled: false,
-                              mapToolbarEnabled: false,
-                            ),
-                            if (placemark == null)
-                              const SizedBox.shrink()
-                            else
-                              Positioned(
-                                bottom: 18.h,
-                                right: 18.w,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    boxShadow: <BoxShadow>[
-                                      BoxShadow(
-                                        blurRadius: 14,
-                                        offset: Offset.zero,
-                                        color: Colors.grey.withOpacity(0.3),
-                                      )
-                                    ],
-                                  ),
-                                  child: TextButton(
-                                    style: TextButton.styleFrom(
-                                      backgroundColor: Colors.white,
+                              if (placemark == null)
+                                const SizedBox.shrink()
+                              else
+                                Positioned(
+                                  bottom: 18.h,
+                                  right: 18.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                          blurRadius: 14,
+                                          offset: Offset.zero,
+                                          color: Colors.grey.withOpacity(0.3),
+                                        )
+                                      ],
                                     ),
-                                    onPressed: () => widget.toMapPage(data),
-                                    child: Text(
-                                      translate.openMap,
-                                      style: textTheme.bodyLarge?.copyWith(
-                                        color: ThemeCustom.primaryColor,
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () => widget.toMapPage(data),
+                                      child: Text(
+                                        translate.openMap,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          color: ThemeCustom.primaryColor,
+                                        ),
                                       ),
                                     ),
                                   ),
                                 ),
-                              ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                    ),
                   ],
                 ),
               ),

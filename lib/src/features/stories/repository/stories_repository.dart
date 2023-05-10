@@ -77,6 +77,7 @@ class StoriesRepository {
           createdAt: '',
           lat: null,
           lon: null,
+          address: '',
         ),
       );
       return data;
@@ -89,7 +90,7 @@ class StoriesRepository {
     required List<int> bytes,
     required String fileName,
     required String description,
-    required LatLng latLng,
+    required LatLng? latLng,
   }) async {
     final token = await getToken();
     final url = Uri.parse(storiesEndpoint);
@@ -99,11 +100,19 @@ class StoriesRepository {
       bytes,
       filename: fileName,
     );
-    final Map<String, String> fields = {
-      "description": description,
-      "lat": latLng.latitude.toString(),
-      "lon": latLng.longitude.toString(),
-    };
+    final isAvailaleLocation = latLng != null;
+    Map<String, String> fields;
+    if (isAvailaleLocation) {
+      fields = {
+        "description": description,
+        "lat": latLng.latitude.toString(),
+        "lon": latLng.longitude.toString(),
+      };
+    } else {
+      fields = {
+        "description": description,
+      };
+    }
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
       'Authorization': 'Bearer $token',

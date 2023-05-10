@@ -45,30 +45,18 @@ class WidgetMomentsCustom {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    if (stories.lat != null && stories.lon != null)
-                      FutureBuilder(
-                        future: UtilHelper.getLocation(
-                          lat: stories.lat!,
-                          lon: stories.lon!,
+                    if (stories.address!.isNotEmpty)
+                      SizedBox(
+                        width: 1.sw - 100.w,
+                        child: Text(
+                          stories.address!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: ThemeCustom.primaryColor,
+                          ),
                         ),
-                        builder: (context, snapshot) {
-                          WidgetCustom.loadingSecond(context);
-                          String address;
-                          if (snapshot.hasError) address = '';
-                          address = snapshot.data ?? '';
-                          return SizedBox(
-                            width: 1.sw - 100.w,
-                            child: Text(
-                              address,
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: textTheme.bodySmall?.copyWith(
-                                fontWeight: FontWeight.w400,
-                                color: ThemeCustom.primaryColor,
-                              ),
-                            ),
-                          );
-                        },
                       )
                   ],
                 ),
@@ -79,13 +67,9 @@ class WidgetMomentsCustom {
             width: 1.sw,
             height: 0.6.sw,
             clipBehavior: Clip.hardEdge,
-            margin: EdgeInsets.symmetric(
-              horizontal: 16.w,
-            ),
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8.sp),
-              ),
+              borderRadius: BorderRadius.all(Radius.circular(8.sp)),
             ),
             child: WidgetCustom.fadeInImageCustom(
               isUrl: true,
