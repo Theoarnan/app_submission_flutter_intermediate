@@ -1,0 +1,23 @@
+[
+  {
+    "featureType": "administrative",
+    "elementType": "geometry.fill",
+    "stylers": [
+      {
+        "saturation": 90
+      },
+      {
+        "lightness": 100
+      }
+    ]
+  },
+  {
+    "featureType": "administrative",
+    "elementType": "labels.icon",
+    "stylers": [
+      {
+        "color": "#ddce40"
+      }
+    ]
+  }
+]

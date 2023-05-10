@@ -382,7 +382,11 @@ class WidgetCustom {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const CircularProgressIndicator(),
+        SizedBox(
+          height: 20.h,
+          width: 20.w,
+          child: const CircularProgressIndicator(strokeWidth: 3),
+        ),
         SizedBox(width: 8.w),
         Text(
           AppLocalizations.of(context)!.loading,

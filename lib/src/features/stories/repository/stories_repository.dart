@@ -8,6 +8,7 @@ import 'package:app_submission_flutter_intermediate/src/features/stories/models/
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_response_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class StoriesRepository {
@@ -24,7 +25,7 @@ class StoriesRepository {
     int size = 10,
   ]) async {
     final url = Uri.parse(
-      '$storiesEndpoint?page=$page&size=$size&location=0',
+      '$storiesEndpoint?page=$page&size=$size&location=1',
     );
     final token = await getToken();
     final response = await http.get(
@@ -76,6 +77,7 @@ class StoriesRepository {
           createdAt: '',
           lat: null,
           lon: null,
+          address: '',
         ),
       );
       return data;
@@ -88,6 +90,7 @@ class StoriesRepository {
     required List<int> bytes,
     required String fileName,
     required String description,
+    required LatLng? latLng,
   }) async {
     final token = await getToken();
     final url = Uri.parse(storiesEndpoint);
@@ -97,9 +100,19 @@ class StoriesRepository {
       bytes,
       filename: fileName,
     );
-    final Map<String, String> fields = {
-      "description": description,
-    };
+    final isAvailaleLocation = latLng != null;
+    Map<String, String> fields;
+    if (isAvailaleLocation) {
+      fields = {
+        "description": description,
+        "lat": latLng.latitude.toString(),
+        "lon": latLng.longitude.toString(),
+      };
+    } else {
+      fields = {
+        "description": description,
+      };
+    }
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
       'Authorization': 'Bearer $token',

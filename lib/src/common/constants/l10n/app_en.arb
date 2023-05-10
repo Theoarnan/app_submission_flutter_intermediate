@@ -96,5 +96,10 @@
     "logout": "Logout",
     "story": "Story",
     "choosePhoto": "Choose Photo",
-    "descriptionNotFound": "No story data found"
+    "descriptionNotFound": "No story data found",
+    "location": "Location",
+    "openMap": "Open Map",
+    "chooseLocation": "Choose Location",
+    "choose": "Choose",
+    "addLocation": "Add a location"
 }

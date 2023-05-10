@@ -1,9 +1,13 @@
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+
 class ConstantsName {
   static const String baseUrl = 'https://story-api.dicoding.dev/v1';
+  static const LatLng baseLocationLatLon = LatLng(-6.200000, 106.816666);
 
   static const String missingAnthentication = '401';
 
   static String baseDirImg = 'assets/img';
+  static String baseDirJson = 'assets/json';
   static String baseDirImgLogo = '$baseDirImg/logo';
   static String baseDirImgIlustration = '$baseDirImg/ilustration';
   static String baseDirImgGif = '$baseDirImg/gif';
@@ -19,4 +23,6 @@ class ConstantsName {
   static String gifErrorIlustrationImg = '$baseDirImgGif/error.gif';
   static String gifNotFoundIlustrationImg = '$baseDirImgGif/not_found.gif';
   static String gifNotDatalustrationImg = '$baseDirImgGif/no_data.gif';
+
+  static String jsonMapStyle = '$baseDirJson/map_style.json';
 }

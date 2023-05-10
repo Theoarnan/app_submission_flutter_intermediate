@@ -1,5 +1,6 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/validate_form_util.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/register/register_model.dart';
@@ -18,7 +19,8 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterPageState extends State<RegisterPage>
+    with SingleTickerProviderStateMixin {
   final _formGlobalKey = GlobalKey<FormState>();
   final _nameField = TextEditingController();
   final _emailField = TextEditingController();
@@ -28,9 +30,27 @@ class _RegisterPageState extends State<RegisterPage> {
   bool isObscurePass = true;
   bool isObscureConfirmPass = true;
 
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromTop;
+  late Animation<Offset> fromLeft;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 600),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
+    fromLeft = UtilHelper.initializePositioned(controller, isFromLeft: true);
+  }
+
   @override
   void dispose() {
     super.dispose();
+    controller.dispose();
     _nameField.dispose();
     _emailField.dispose();
     _passswordField.dispose();
@@ -59,10 +79,13 @@ class _RegisterPageState extends State<RegisterPage> {
             ),
           ),
         ),
-        title: Text(
-          translate.register,
-          style: textTheme.labelLarge?.copyWith(
-            fontSize: 24.sp,
+        title: SlideTransition(
+          position: fromLeft,
+          child: Text(
+            translate.register,
+            style: textTheme.labelLarge?.copyWith(
+              fontSize: 24.sp,
+            ),
           ),
         ),
         toolbarHeight: 58.h,
@@ -82,152 +105,164 @@ class _RegisterPageState extends State<RegisterPage> {
         builder: (context, state) {
           final stateLoading = state is AuthLoadingState;
           return SafeArea(
-            child: SingleChildScrollView(
-              padding: EdgeInsets.symmetric(
-                horizontal: 16.w,
-                vertical: 10.h,
-              ),
-              child: SizedBox(
-                height: 0.93.sh,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      alignment: Alignment.center,
-                      margin: EdgeInsets.only(top: 2.h),
-                      child: Column(
-                        children: [
-                          SizedBox(
-                            height: 4.h,
-                          ),
-                          Text(
-                            translate.subtitleRegister,
-                            textAlign: TextAlign.center,
-                            style: textTheme.bodyMedium?.copyWith(
-                              color: ThemeCustom.secondaryColor,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        margin: EdgeInsets.symmetric(vertical: 0.02.sh),
-                        child: Form(
-                          key: _formGlobalKey,
+            child: FadeTransition(
+              opacity: animation,
+              child: SingleChildScrollView(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 16.w,
+                  vertical: 10.h,
+                ),
+                child: SizedBox(
+                  height: 0.93.sh,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      SlideTransition(
+                        position: fromTop,
+                        child: Container(
+                          alignment: Alignment.center,
+                          margin: EdgeInsets.only(top: 2.h),
                           child: Column(
                             children: [
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _nameField,
-                                hintText: translate.name,
-                                validator: (value) {
-                                  return ValidationFormUtil.validateNotNull(
-                                    context,
-                                    value,
-                                    translate.name.toLowerCase(),
-                                  );
-                                },
-                              ),
                               SizedBox(
-                                height: 0.02.sh,
+                                height: 4.h,
                               ),
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _emailField,
-                                keyboardType: TextInputType.emailAddress,
-                                hintText: translate.email,
-                                validator: (value) {
-                                  return ValidationFormUtil.validateEmail(
-                                    context,
-                                    value!,
-                                  );
-                                },
-                              ),
-                              SizedBox(
-                                height: 0.02.sh,
-                              ),
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _passswordField,
-                                suffixIcon: Icon(
-                                  isObscurePass
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
+                              Text(
+                                translate.subtitleRegister,
+                                textAlign: TextAlign.center,
+                                style: textTheme.bodyMedium?.copyWith(
+                                  color: ThemeCustom.secondaryColor,
+                                  fontWeight: FontWeight.normal,
                                 ),
-                                onTapSuffixIcon: () {
-                                  setState(() {
-                                    isObscurePass = !isObscurePass;
-                                  });
-                                },
-                                hintText: translate.password,
-                                obscureText: isObscurePass,
-                                validator: (value) {
-                                  return ValidationFormUtil.validatePassword(
-                                    context,
-                                    value!,
-                                  );
-                                },
                               ),
-                              SizedBox(
-                                height: 0.02.sh,
-                              ),
-                              WidgetCustom.textFormField(
-                                context,
-                                controller: _passswordConfirmField,
-                                suffixIcon: Icon(
-                                  isObscureConfirmPass
-                                      ? Icons.visibility
-                                      : Icons.visibility_off,
-                                ),
-                                onTapSuffixIcon: () {
-                                  setState(() {
-                                    isObscureConfirmPass =
-                                        !isObscureConfirmPass;
-                                  });
-                                },
-                                hintText: translate.confirm_password,
-                                obscureText: isObscureConfirmPass,
-                                validator: (value) {
-                                  if (_passswordField.text == value) {
-                                    return ValidationFormUtil.validatePassword(
-                                      context,
-                                      value!,
-                                    );
-                                  } else {
-                                    return translate.validateConfirmPassword;
-                                  }
-                                },
-                              ),
-                              SizedBox(
-                                height: 0.04.sh,
-                              ),
-                              stateLoading
-                                  ? Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        const CircularProgressIndicator(),
-                                        SizedBox(width: 8.w),
-                                        Text(
-                                          translate.loading,
-                                          style: textTheme.bodyMedium?.copyWith(
-                                              fontWeight: FontWeight.bold,
-                                              color: ThemeCustom.darkColor),
-                                        ),
-                                      ],
-                                    )
-                                  : WidgetCustom.elevatedButtonCustom(
-                                      context,
-                                      textButton: translate.register,
-                                      onPressed: () => _onRegister(),
-                                    ),
                             ],
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                      Expanded(
+                        child: SlideTransition(
+                          position: fromLeft,
+                          child: Container(
+                            margin: EdgeInsets.symmetric(vertical: 0.02.sh),
+                            child: Form(
+                              key: _formGlobalKey,
+                              child: Column(
+                                children: [
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _nameField,
+                                    hintText: translate.name,
+                                    validator: (value) {
+                                      return ValidationFormUtil.validateNotNull(
+                                        context,
+                                        value,
+                                        translate.name.toLowerCase(),
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 0.02.sh,
+                                  ),
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _emailField,
+                                    keyboardType: TextInputType.emailAddress,
+                                    hintText: translate.email,
+                                    validator: (value) {
+                                      return ValidationFormUtil.validateEmail(
+                                        context,
+                                        value!,
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 0.02.sh,
+                                  ),
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _passswordField,
+                                    suffixIcon: Icon(
+                                      isObscurePass
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onTapSuffixIcon: () {
+                                      setState(() {
+                                        isObscurePass = !isObscurePass;
+                                      });
+                                    },
+                                    hintText: translate.password,
+                                    obscureText: isObscurePass,
+                                    validator: (value) {
+                                      return ValidationFormUtil
+                                          .validatePassword(
+                                        context,
+                                        value!,
+                                      );
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 0.02.sh,
+                                  ),
+                                  WidgetCustom.textFormField(
+                                    context,
+                                    controller: _passswordConfirmField,
+                                    suffixIcon: Icon(
+                                      isObscureConfirmPass
+                                          ? Icons.visibility
+                                          : Icons.visibility_off,
+                                    ),
+                                    onTapSuffixIcon: () {
+                                      setState(() {
+                                        isObscureConfirmPass =
+                                            !isObscureConfirmPass;
+                                      });
+                                    },
+                                    hintText: translate.confirm_password,
+                                    obscureText: isObscureConfirmPass,
+                                    validator: (value) {
+                                      if (_passswordField.text == value) {
+                                        return ValidationFormUtil
+                                            .validatePassword(
+                                          context,
+                                          value!,
+                                        );
+                                      } else {
+                                        return translate
+                                            .validateConfirmPassword;
+                                      }
+                                    },
+                                  ),
+                                  SizedBox(
+                                    height: 0.04.sh,
+                                  ),
+                                  AnimatedCrossFade(
+                                    alignment: Alignment.center,
+                                    sizeCurve: Curves.easeInToLinear,
+                                    duration: const Duration(milliseconds: 160),
+                                    crossFadeState: stateLoading
+                                        ? CrossFadeState.showSecond
+                                        : CrossFadeState.showFirst,
+                                    firstChild:
+                                        WidgetCustom.elevatedButtonCustom(
+                                      context,
+                                      textButton: translate.register,
+                                      onPressed: () => _onRegister(),
+                                    ),
+                                    secondChild: Padding(
+                                      padding: EdgeInsets.all(12.sp),
+                                      child:
+                                          WidgetCustom.loadingSecond(context),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

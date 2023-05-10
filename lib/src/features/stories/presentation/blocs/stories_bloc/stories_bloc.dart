@@ -3,6 +3,7 @@ import 'package:app_submission_flutter_intermediate/src/features/stories/models/
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'stories_event.dart';
@@ -18,9 +19,11 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     on<GetDetailStories>((event, emit) => _getDetailStories(event, emit));
     on<PostStories>((event, emit) => _postStories(event, emit));
     on<SetImageFile>((event, emit) => _setImageFile(event, emit));
+    on<SetLocationData>((event, emit) => _setLocationData(event, emit));
   }
 
   XFile? imageFile;
+  LatLng? locationData;
   int? pageItems = 1;
   int sizeItems = 10;
   List<StoriesModel> dataStories = [];
@@ -30,6 +33,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) async {
     imageFile = null;
+    locationData = null;
     if (!(await UtilHelper.isConnected())) return emit(NoInternetState());
     if (event.isRefresh) {
       pageItems = 1;
@@ -44,9 +48,23 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         } else {
           pageItems = pageItems! + 1;
         }
-        dataStories.addAll(dataResponse.dataStory);
+        final dataStoriesMap =
+            await Future.wait(dataResponse.dataStory.map((e) async {
+          final latitude = e.lat;
+          final longitude = e.lon;
+          String address = '';
+          if (latitude != null && longitude != null) {
+            address = await UtilHelper.getLocation(
+              lat: latitude,
+              lon: longitude,
+              isSimpleAddress: true,
+            );
+          }
+          return e.copyWith(address: address);
+        }));
+        dataStories.addAll(dataStoriesMap);
         emit(state.copyWith(
-          stories: List.of(state.stories)..addAll(dataResponse.dataStory),
+          stories: List.of(state.stories)..addAll(dataStoriesMap),
         ));
       } else {
         emit(StoriesErrorState(error: dataResponse.error.toString()));
@@ -93,9 +111,11 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         bytes: newBytes,
         fileName: fileName,
         description: event.description,
+        latLng: locationData!,
       );
       if (data.error != true) {
         emit(PostStoriesSuccessState());
+        locationData = null;
       } else {
         emit(StoriesErrorState(error: data.message));
       }
@@ -109,6 +129,25 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) async {
     imageFile = event.image;
-    emit(GetImageGallerySuccess(fileImage: imageFile));
+    emit(SetImageSuccess(fileImage: imageFile));
+  }
+
+  void _setLocationData(
+    SetLocationData event,
+    Emitter<StoriesState> emit,
+  ) async {
+    String address = '';
+    try {
+      locationData = event.location;
+      if (locationData != null) {
+        address = await UtilHelper.getLocation(
+          lat: locationData!.latitude,
+          lon: locationData!.longitude,
+        );
+      }
+      emit(SetLocationSuccess(address: address, location: locationData));
+    } catch (e) {
+      emit(StoriesErrorState(error: e.toString()));
+    }
   }
 }

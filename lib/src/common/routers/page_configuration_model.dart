@@ -6,6 +6,8 @@ class PageConfigurationModel {
   final bool isPostStory;
   final bool isCamera;
   final bool isChooseMedia;
+  final bool isMap;
+  final bool isMapChoose;
   final String? storyId;
 
   PageConfigurationModel.splash()
@@ -16,6 +18,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.login()
@@ -26,6 +30,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.register()
@@ -36,6 +42,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.home()
@@ -46,6 +54,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.detailStory(String id)
@@ -56,6 +66,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.setting()
@@ -66,6 +78,8 @@ class PageConfigurationModel {
         isSetting = true,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.postStory()
@@ -76,6 +90,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = true;
 
   PageConfigurationModel.unknown()
@@ -86,6 +102,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = false,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = false;
 
   PageConfigurationModel.camera()
@@ -96,6 +114,8 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = true,
         isChooseMedia = true,
+        isMap = false,
+        isMapChoose = false,
         isPostStory = true;
 
   PageConfigurationModel.chooseMedia()
@@ -106,6 +126,32 @@ class PageConfigurationModel {
         isSetting = false,
         isCamera = false,
         isChooseMedia = true,
+        isMap = false,
+        isMapChoose = false,
+        isPostStory = true;
+
+  PageConfigurationModel.maps(String id)
+      : isUnknownPage = false,
+        isRegister = false,
+        isLoggin = true,
+        storyId = id,
+        isSetting = false,
+        isCamera = false,
+        isChooseMedia = false,
+        isMap = true,
+        isMapChoose = false,
+        isPostStory = false;
+
+  PageConfigurationModel.mapChoose()
+      : isUnknownPage = false,
+        isRegister = false,
+        isLoggin = true,
+        storyId = null,
+        isSetting = false,
+        isCamera = false,
+        isChooseMedia = false,
+        isMap = false,
+        isMapChoose = true,
         isPostStory = true;
 
   bool get isSplashPage =>
@@ -116,6 +162,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isLogginPage =>
@@ -126,6 +174,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isRegisterPage =>
@@ -136,6 +186,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isHomePage =>
@@ -146,6 +198,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isDetailStoryPage =>
@@ -156,6 +210,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isSettingPage =>
@@ -166,6 +222,8 @@ class PageConfigurationModel {
       isSetting == true &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == false;
 
   bool get isPostStoryPage =>
@@ -176,6 +234,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == true;
 
   bool get isCameraPage =>
@@ -186,6 +246,8 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == true &&
       isChooseMedia == true &&
+      isMap == false &&
+      isMapChoose == false &&
       isPostStory == true;
 
   bool get isChooseMediaPage =>
@@ -196,5 +258,31 @@ class PageConfigurationModel {
       isSetting == false &&
       isCamera == false &&
       isChooseMedia == true &&
+      isMap == false &&
+      isMapChoose == false &&
+      isPostStory == true;
+
+  bool get isMapPage =>
+      isUnknownPage == false &&
+      isRegister == false &&
+      isLoggin == true &&
+      storyId != null &&
+      isSetting == false &&
+      isCamera == false &&
+      isChooseMedia == false &&
+      isMap == true &&
+      isMapChoose == false &&
+      isPostStory == false;
+
+  bool get isMapChoosePage =>
+      isUnknownPage == false &&
+      isRegister == false &&
+      isLoggin == true &&
+      storyId == null &&
+      isSetting == false &&
+      isCamera == false &&
+      isChooseMedia == false &&
+      isMap == false &&
+      isMapChoose == true &&
       isPostStory == true;
 }

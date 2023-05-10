@@ -38,18 +38,27 @@ class RouteInformationParserCustom
         return PageConfigurationModel.detailStory(third);
       } else if (first == 'moments' && second == 'post' && third == 'choose') {
         return PageConfigurationModel.chooseMedia();
+      } else if (first == 'moments' &&
+          second == 'post' &&
+          third == 'choose-location') {
+        return PageConfigurationModel.mapChoose();
       }
       return PageConfigurationModel.unknown();
     } else if (uri.pathSegments.length == 4) {
       final first = uri.pathSegments[0].toLowerCase();
       final second = uri.pathSegments[1].toLowerCase();
-      final third = uri.pathSegments[2].toLowerCase();
+      final third = uri.pathSegments[2];
       final fourth = uri.pathSegments[3].toLowerCase();
       if (first == 'moments' &&
           second == 'post' &&
           third == 'choose' &&
           fourth == 'camera') {
         return PageConfigurationModel.camera();
+      } else if (first == 'moments' &&
+          second == 'detail' &&
+          third.isNotEmpty &&
+          fourth == 'maps') {
+        return PageConfigurationModel.maps(third);
       }
       return PageConfigurationModel.unknown();
     }
@@ -73,10 +82,16 @@ class RouteInformationParserCustom
       return RouteInformation(
         location: 'moments/detail/${configuration.storyId}',
       );
+    } else if (configuration.isMapPage) {
+      return RouteInformation(
+        location: 'moments/detail/${configuration.storyId}/maps',
+      );
     } else if (configuration.isSettingPage) {
       return const RouteInformation(location: '/moments/setting');
     } else if (configuration.isPostStoryPage) {
       return const RouteInformation(location: '/moments/post');
+    } else if (configuration.isMapChoosePage) {
+      return const RouteInformation(location: '/moments/post/choose-location');
     } else if (configuration.isChooseMediaPage) {
       return const RouteInformation(location: '/moments/post/choose');
     } else if (configuration.isCameraPage) {

@@ -11,8 +11,9 @@ class StoriesModel with _$StoriesModel {
     required String description,
     required String photoUrl,
     required String createdAt,
-    required num? lat,
-    required num? lon,
+    required double? lat,
+    required double? lon,
+    required String? address,
   }) = _StoriesModel;
 
   factory StoriesModel.fromJson(json) => _$StoriesModelFromJson(json);

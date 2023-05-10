@@ -18,7 +18,31 @@ class SettingPage extends StatefulWidget {
   State<SettingPage> createState() => _SettingPageState();
 }
 
-class _SettingPageState extends State<SettingPage> {
+class _SettingPageState extends State<SettingPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromTop;
+  late Animation<Offset> fromLeft;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
+    fromLeft = UtilHelper.initializePositioned(controller, isFromLeft: true);
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final translate = AppLocalizations.of(context)!;
@@ -39,10 +63,13 @@ class _SettingPageState extends State<SettingPage> {
             ),
           ),
         ),
-        title: Text(
-          translate.setting,
-          style: textTheme.labelLarge?.copyWith(
-            fontSize: 24.sp,
+        title: SlideTransition(
+          position: fromLeft,
+          child: Text(
+            translate.setting,
+            style: textTheme.labelLarge?.copyWith(
+              fontSize: 24.sp,
+            ),
           ),
         ),
         toolbarHeight: 58.h,
@@ -54,58 +81,66 @@ class _SettingPageState extends State<SettingPage> {
             vertical: 5.h,
             horizontal: 4.w,
           ),
-          child: Column(
-            children: [
-              WidgetCustom.expansionListLite(
-                context,
-                title: translate.changeLanguage,
-                icon: Icons.translate_rounded,
-                trailing: const Icon(Icons.arrow_forward_ios_rounded),
+          child: FadeTransition(
+            opacity: animation,
+            child: SlideTransition(
+              position: fromLeft,
+              child: Column(
                 children: [
-                  ListTile(
-                    leading: Text(
-                      UtilHelper.getFlag('id'),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    title: Text(
-                      'Indonesia',
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w400,
+                  WidgetCustom.expansionListLite(
+                    context,
+                    title: translate.changeLanguage,
+                    icon: Icons.translate_rounded,
+                    trailing: const Icon(Icons.arrow_forward_ios_rounded),
+                    children: [
+                      ListTile(
+                        leading: Text(
+                          UtilHelper.getFlag('id'),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        title: Text(
+                          'Indonesia',
+                          style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        onTap: () {
+                          final bloc =
+                              BlocProvider.of<SettingBlocCubit>(context);
+                          return bloc.setLocale(const Locale('id'));
+                        },
                       ),
-                    ),
+                      ListTile(
+                        leading: Text(
+                          UtilHelper.getFlag('en'),
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        title: Text(
+                          'English',
+                          style: textTheme.bodyLarge?.copyWith(
+                            fontWeight: FontWeight.w400,
+                          ),
+                        ),
+                        onTap: () {
+                          final bloc =
+                              BlocProvider.of<SettingBlocCubit>(context);
+                          return bloc.setLocale(const Locale('en'));
+                        },
+                      )
+                    ],
+                  ),
+                  WidgetCustom.listTileCustom(
+                    context,
+                    title: translate.logout,
+                    icon: Icons.logout,
                     onTap: () {
-                      final bloc = BlocProvider.of<SettingBlocCubit>(context);
-                      return bloc.setLocale(const Locale('id'));
+                      WidgetCustom.dialogLoadingState(context);
+                      context.read<AuthBloc>().add(const LogoutAccountEvent());
                     },
                   ),
-                  ListTile(
-                    leading: Text(
-                      UtilHelper.getFlag('en'),
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                    title: Text(
-                      'English',
-                      style: textTheme.bodyLarge?.copyWith(
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
-                    onTap: () {
-                      final bloc = BlocProvider.of<SettingBlocCubit>(context);
-                      return bloc.setLocale(const Locale('en'));
-                    },
-                  )
                 ],
               ),
-              WidgetCustom.listTileCustom(
-                context,
-                title: translate.logout,
-                icon: Icons.logout,
-                onTap: () {
-                  WidgetCustom.dialogLoadingState(context);
-                  context.read<AuthBloc>().add(const LogoutAccountEvent());
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),

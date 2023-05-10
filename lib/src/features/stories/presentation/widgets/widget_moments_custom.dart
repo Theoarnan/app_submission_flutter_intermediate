@@ -45,13 +45,19 @@ class WidgetMomentsCustom {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    Text(
-                      UtilHelper.convertToAgo(context, stories.createdAt),
-                      style: textTheme.bodySmall?.copyWith(
-                        fontWeight: FontWeight.w400,
-                        color: ThemeCustom.secondaryColor,
-                      ),
-                    )
+                    if (stories.address!.isNotEmpty)
+                      SizedBox(
+                        width: 1.sw - 100.w,
+                        child: Text(
+                          stories.address!,
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
+                          style: textTheme.bodySmall?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: ThemeCustom.primaryColor,
+                          ),
+                        ),
+                      )
                   ],
                 ),
               ],
@@ -61,13 +67,9 @@ class WidgetMomentsCustom {
             width: 1.sw,
             height: 0.6.sw,
             clipBehavior: Clip.hardEdge,
-            margin: EdgeInsets.symmetric(
-              horizontal: 16.w,
-            ),
+            margin: EdgeInsets.symmetric(horizontal: 16.w),
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(
-                Radius.circular(8.sp),
-              ),
+              borderRadius: BorderRadius.all(Radius.circular(8.sp)),
             ),
             child: WidgetCustom.fadeInImageCustom(
               isUrl: true,
@@ -84,11 +86,11 @@ class WidgetMomentsCustom {
               children: [
                 Text(
                   '${stories.name} ',
-                  style: textTheme.bodyLarge?.copyWith(
+                  style: textTheme.bodyMedium?.copyWith(
                     fontWeight: FontWeight.w500,
                   ),
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 3.h),
                 SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: ReadMoreText(
@@ -115,6 +117,14 @@ class WidgetMomentsCustom {
                     ),
                   ),
                 ),
+                SizedBox(height: 3.h),
+                Text(
+                  UtilHelper.convertToAgo(context, stories.createdAt),
+                  style: textTheme.bodySmall?.copyWith(
+                    fontWeight: FontWeight.w400,
+                    color: ThemeCustom.secondaryColor,
+                  ),
+                )
               ],
             ),
           ),

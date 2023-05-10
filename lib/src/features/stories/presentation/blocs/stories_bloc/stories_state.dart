@@ -50,9 +50,17 @@ class StoriesErrorState extends StoriesState {
 
 class NoInternetState extends StoriesState {}
 
-class GetImageGallerySuccess extends StoriesState {
+class SetImageSuccess extends StoriesState {
   final XFile? fileImage;
-  const GetImageGallerySuccess({required this.fileImage});
+  const SetImageSuccess({required this.fileImage});
   @override
   List<Object?> get props => [fileImage];
+}
+
+class SetLocationSuccess extends StoriesState {
+  final String address;
+  final LatLng? location;
+  const SetLocationSuccess({required this.address, required this.location});
+  @override
+  List<Object?> get props => [address, location];
 }

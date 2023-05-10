@@ -4,6 +4,7 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:geocoder2/geocoder2.dart';
 import 'package:intl/intl.dart';
 import 'package:image/image.dart' as img;
 
@@ -108,5 +109,51 @@ class UtilHelper {
       default:
         return "${String.fromCharCode(0x1F1EE)}${String.fromCharCode(0x1F1E9)}";
     }
+  }
+
+  static Future<String> getLocation({
+    required double lat,
+    required double lon,
+    bool isSimpleAddress = false,
+  }) async {
+    try {
+      GeoData placeMark = await Geocoder2.getDataFromCoordinates(
+        latitude: lat,
+        longitude: lon,
+        googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+      );
+      String address =
+          '${placeMark.city}, ${placeMark.state}, ${placeMark.country}';
+      if (isSimpleAddress) return address;
+      return placeMark.address;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  static Animation<Offset> initializePositioned(
+    AnimationController controller, {
+    bool? isFromTop = false,
+    bool? isFromBottom = false,
+    bool? isFromLeft = false,
+  }) {
+    Offset begin = const Offset(0.0, 0.0);
+    Offset end = const Offset(0.0, 0.0);
+    if (isFromTop!) begin = const Offset(0.0, -0.5);
+    if (isFromBottom!) begin = const Offset(0.0, 0.8);
+    if (isFromLeft!) begin = const Offset(-0.5, 0.0);
+    return Tween<Offset>(
+      begin: begin,
+      end: end,
+    ).animate(CurvedAnimation(
+      parent: controller,
+      curve: Curves.easeInCubic,
+    ));
+  }
+
+  static Animation<double> initializeCurvedAnimation(
+    AnimationController controller,
+  ) {
+    return CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
   }
 }
