@@ -85,11 +85,11 @@ class _MapsPageState extends State<MapsPage>
   }
 
   void onTapMap(LatLng latLng) async {
+    log('Sini');
     final GoogleMapController controller = await mapController.future;
-    final place = await Geocoder2.getDataFromCoordinates(
-      latitude: latLng.latitude,
-      longitude: latLng.longitude,
-      googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+    final place = await UtilHelper.getLocation(
+      lat: latLng.latitude,
+      lon: latLng.longitude,
     );
     final address =
         '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
@@ -108,11 +108,12 @@ class _MapsPageState extends State<MapsPage>
     );
     if (!mounted) return;
     setState(() {
+      if (!widget.isFromDetail) markers.clear();
       placemark = place;
       locationLatLon = latLng;
       markers.add(marker);
     });
-    if (!kIsWeb) defineMarker(latLng, place.address, address);
+    if (!kIsWeb) defineMarker(latLng, place.streetNumber, address);
     controller.animateCamera(
       CameraUpdate.newLatLng(latLng),
     );
@@ -247,7 +248,8 @@ class _MapsPageState extends State<MapsPage>
                   zoomControlsEnabled: false,
                   mapToolbarEnabled: false,
                   onTap: (LatLng latLng) {
-                    if (!widget.isFromDetail) onTapMap(latLng);
+                    log('Yaa');
+                    if (!widget.isFromDetail) return onTapMap(latLng);
                   },
                   onMapCreated: (controller) async {
                     if (!mounted) return;

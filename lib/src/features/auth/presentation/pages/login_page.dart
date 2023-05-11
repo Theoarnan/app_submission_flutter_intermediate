@@ -179,26 +179,16 @@ class _LoginPageState extends State<LoginPage>
                                   ),
                                   SizedBox(height: 12.h),
                                   Center(
-                                    child: AnimatedCrossFade(
-                                      alignment: Alignment.center,
-                                      sizeCurve: Curves.easeInToLinear,
-                                      duration:
-                                          const Duration(milliseconds: 160),
-                                      crossFadeState: stateLoading
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                      firstChild:
-                                          WidgetCustom.elevatedButtonCustom(
-                                        context,
-                                        textButton: translate.login,
-                                        onPressed: () => _onLogin(),
-                                      ),
-                                      secondChild: Padding(
-                                        padding: EdgeInsets.all(12.sp),
-                                        child:
-                                            WidgetCustom.loadingSecond(context),
-                                      ),
-                                    ),
+                                    child: stateLoading
+                                        ? Padding(
+                                            padding: EdgeInsets.all(12.sp),
+                                            child: WidgetCustom.loadingSecond(
+                                                context))
+                                        : WidgetCustom.elevatedButtonCustom(
+                                            context,
+                                            textButton: translate.login,
+                                            onPressed: () => _onLogin(),
+                                          ),
                                   ),
                                 ],
                               ),

@@ -111,16 +111,31 @@ class UtilHelper {
     }
   }
 
-  static Future<String> getLocation({
+  static Future<GeoData> getLocation({
     required double lat,
     required double lon,
-    bool isSimpleAddress = false,
   }) async {
     try {
       GeoData placeMark = await Geocoder2.getDataFromCoordinates(
         latitude: lat,
         longitude: lon,
         googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+      );
+      return placeMark;
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  static Future<String> getLocationByAddress({
+    required double lat,
+    required double lon,
+    bool isSimpleAddress = false,
+  }) async {
+    try {
+      GeoData placeMark = await getLocation(
+        lat: lat,
+        lon: lon,
       );
       String address =
           '${placeMark.city}, ${placeMark.state}, ${placeMark.country}';

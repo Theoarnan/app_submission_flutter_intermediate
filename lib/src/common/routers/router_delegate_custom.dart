@@ -126,6 +126,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
               toBackDetailPage: (String storyId) {
                 isMapDetail = false;
                 selectStory = storyId;
+                latitude = null;
+                longitude = null;
                 notifyListeners();
               },
             ),

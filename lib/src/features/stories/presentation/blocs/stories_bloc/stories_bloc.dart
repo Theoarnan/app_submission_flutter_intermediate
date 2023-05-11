@@ -54,7 +54,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
           final longitude = e.lon;
           String address = '';
           if (latitude != null && longitude != null) {
-            address = await UtilHelper.getLocation(
+            address = await UtilHelper.getLocationByAddress(
               lat: latitude,
               lon: longitude,
               isSimpleAddress: true,
@@ -140,7 +140,7 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     try {
       locationData = event.location;
       if (locationData != null) {
-        address = await UtilHelper.getLocation(
+        address = await UtilHelper.getLocationByAddress(
           lat: locationData!.latitude,
           lon: locationData!.longitude,
         );

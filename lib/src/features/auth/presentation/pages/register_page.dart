@@ -236,25 +236,16 @@ class _RegisterPageState extends State<RegisterPage>
                                   SizedBox(
                                     height: 0.04.sh,
                                   ),
-                                  AnimatedCrossFade(
-                                    alignment: Alignment.center,
-                                    sizeCurve: Curves.easeInToLinear,
-                                    duration: const Duration(milliseconds: 160),
-                                    crossFadeState: stateLoading
-                                        ? CrossFadeState.showSecond
-                                        : CrossFadeState.showFirst,
-                                    firstChild:
-                                        WidgetCustom.elevatedButtonCustom(
-                                      context,
-                                      textButton: translate.register,
-                                      onPressed: () => _onRegister(),
-                                    ),
-                                    secondChild: Padding(
-                                      padding: EdgeInsets.all(12.sp),
-                                      child:
-                                          WidgetCustom.loadingSecond(context),
-                                    ),
-                                  ),
+                                  stateLoading
+                                      ? Padding(
+                                          padding: EdgeInsets.all(12.sp),
+                                          child: WidgetCustom.loadingSecond(
+                                              context))
+                                      : WidgetCustom.elevatedButtonCustom(
+                                          context,
+                                          textButton: translate.register,
+                                          onPressed: () => _onRegister(),
+                                        ),
                                 ],
                               ),
                             ),
