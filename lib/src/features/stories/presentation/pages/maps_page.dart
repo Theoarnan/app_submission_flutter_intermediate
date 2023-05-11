@@ -6,7 +6,6 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/widgets/placemark_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,16 +17,20 @@ import 'package:location/location.dart';
 
 class MapsPage extends StatefulWidget {
   final bool isFromDetail;
-  final StoriesModel? dataStories;
+  final double? latitude;
+  final double? longitude;
+  final String? idStory;
   final Function(String storyId)? toBackDetailPage;
   final Function()? toBackPostStory;
 
   const MapsPage({
     super.key,
     required this.isFromDetail,
-    this.dataStories,
     this.toBackDetailPage,
     this.toBackPostStory,
+    this.latitude,
+    this.longitude,
+    this.idStory,
   });
 
   @override
@@ -56,8 +59,8 @@ class _MapsPageState extends State<MapsPage>
     fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
     if (widget.isFromDetail) {
       locationLatLon = LatLng(
-        widget.dataStories!.lat!,
-        widget.dataStories!.lon!,
+        widget.latitude!,
+        widget.longitude!,
       );
     } else {
       onMyLocationButtonPress();
@@ -188,7 +191,7 @@ class _MapsPageState extends State<MapsPage>
           child: IconButton(
             onPressed: () {
               if (widget.isFromDetail) {
-                widget.toBackDetailPage!(widget.dataStories!.id);
+                widget.toBackDetailPage!(widget.idStory!);
               } else {
                 widget.toBackPostStory!();
               }

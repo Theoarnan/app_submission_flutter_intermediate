@@ -7,7 +7,6 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/splash_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/setting_page.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/pages/camera_page.dart';
@@ -29,10 +28,11 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   ) : _navigatorKey = GlobalKey<NavigatorState>();
 
   String? selectStory;
-  StoriesModel? dataDetailStories;
+  double? latitude;
+  double? longitude;
   List<Page> historyStack = [];
-  bool? isLoggedIn;
   bool isRegister = false;
+  bool? isLoggedIn;
   bool isSetting = false;
   bool isPostStory = false;
   bool isCamera = false;
@@ -109,20 +109,23 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
               },
               toMapPage: (dataStories) {
                 isMapDetail = true;
-                dataDetailStories = dataStories;
+                latitude = dataStories.lat;
+                longitude = dataStories.lon;
                 notifyListeners();
               },
             ),
           ),
-        if (isMapDetail && dataDetailStories != null)
+        if (isMapDetail && latitude != null && longitude != null)
           MaterialPage(
             key: const ValueKey("MapDetailPage"),
             child: MapsPage(
               isFromDetail: true,
-              dataStories: dataDetailStories!,
+              idStory: selectStory,
+              latitude: latitude,
+              longitude: longitude,
               toBackDetailPage: (String storyId) {
-                selectStory = storyId;
                 isMapDetail = false;
+                selectStory = storyId;
                 notifyListeners();
               },
             ),
@@ -206,6 +209,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isPostStory = false;
           isCamera = false;
           isChooseMedia = false;
+          latitude = null;
+          longitude = null;
           isMapDetail = false;
           isMapChoose = false;
           isLoggedIn = state.isLoggedIn;
@@ -230,6 +235,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           isRegister = false;
           isSetting = false;
           selectStory = null;
+          latitude = null;
+          longitude = null;
           isMapDetail = false;
           isMapChoose = false;
           isPostStory = false;
@@ -260,6 +267,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       isPostStory = false;
       selectStory = null;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isCamera = false;
@@ -269,6 +278,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isRegister = false;
       isSetting = true;
       selectStory = null;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isPostStory = false;
@@ -279,6 +290,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isRegister = false;
       isSetting = false;
       isPostStory = false;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isCamera = false;
@@ -289,6 +302,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isRegister = false;
       isSetting = false;
       isPostStory = false;
+      latitude = configuration.latitude;
+      longitude = configuration.longitude;
       isMapDetail = true;
       isMapChoose = false;
       isCamera = false;
@@ -300,6 +315,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isChooseMedia = false;
@@ -310,6 +327,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = true;
       isChooseMedia = false;
@@ -320,6 +339,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isChooseMedia = true;
@@ -330,6 +351,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isSetting = false;
       selectStory = null;
       isPostStory = true;
+      latitude = null;
+      longitude = null;
       isMapDetail = false;
       isMapChoose = false;
       isChooseMedia = true;
@@ -350,6 +373,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       return PageConfigurationModel.login();
     } else if (isLoggedIn! &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         !isSetting &&
         !isPostStory &&
         !isChooseMedia &&
@@ -363,6 +388,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         isSetting &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         !isPostStory &&
         !isChooseMedia &&
         !isMapDetail &&
@@ -372,6 +399,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         !isSetting &&
         selectStory != null &&
+        latitude == null &&
+        longitude == null &&
         !isPostStory &&
         !isChooseMedia &&
         !isMapDetail &&
@@ -381,16 +410,20 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         !isSetting &&
         selectStory != null &&
+        latitude != null &&
+        longitude != null &&
         !isPostStory &&
         !isChooseMedia &&
         isMapDetail &&
         !isMapChoose &&
         !isCamera) {
-      return PageConfigurationModel.maps(selectStory!);
+      return PageConfigurationModel.maps(selectStory!, latitude!, longitude!);
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         !isChooseMedia &&
         !isMapDetail &&
         !isMapChoose &&
@@ -401,6 +434,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         !isChooseMedia &&
         !isMapDetail &&
         isMapChoose &&
@@ -410,6 +445,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         isChooseMedia &&
         !isMapDetail &&
         !isMapChoose &&
@@ -419,6 +456,8 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         isPostStory &&
         !isSetting &&
         selectStory == null &&
+        latitude == null &&
+        longitude == null &&
         isChooseMedia &&
         !isMapDetail &&
         !isMapChoose &&

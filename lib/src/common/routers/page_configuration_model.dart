@@ -7,6 +7,8 @@ class PageConfigurationModel {
   final bool isCamera;
   final bool isChooseMedia;
   final bool isMap;
+  final double? latitude;
+  final double? longitude;
   final bool isMapChoose;
   final String? storyId;
 
@@ -19,6 +21,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -31,6 +35,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -43,6 +49,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -55,6 +63,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -67,6 +77,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -79,6 +91,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -91,6 +105,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
@@ -103,6 +119,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -115,6 +133,8 @@ class PageConfigurationModel {
         isCamera = true,
         isChooseMedia = true,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
@@ -127,10 +147,12 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = true,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
-  PageConfigurationModel.maps(String id)
+  PageConfigurationModel.maps(String id, double lat, double lon)
       : isUnknownPage = false,
         isRegister = false,
         isLoggin = true,
@@ -139,6 +161,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = true,
+        latitude = lat,
+        longitude = lon,
         isMapChoose = false,
         isPostStory = false;
 
@@ -151,6 +175,8 @@ class PageConfigurationModel {
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = true,
         isPostStory = true;
 
@@ -163,6 +189,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -175,6 +203,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -187,6 +217,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -199,6 +231,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -211,6 +245,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -223,6 +259,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -235,6 +273,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -247,6 +287,8 @@ class PageConfigurationModel {
       isCamera == true &&
       isChooseMedia == true &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -259,6 +301,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == true &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -271,6 +315,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == true &&
+      latitude != null &&
+      longitude != null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -283,6 +329,8 @@ class PageConfigurationModel {
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == true &&
       isPostStory == true;
 }

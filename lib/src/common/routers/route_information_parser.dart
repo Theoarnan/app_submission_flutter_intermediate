@@ -54,11 +54,24 @@ class RouteInformationParserCustom
           third == 'choose' &&
           fourth == 'camera') {
         return PageConfigurationModel.camera();
-      } else if (first == 'moments' &&
+      }
+      return PageConfigurationModel.unknown();
+    } else if (uri.pathSegments.length == 6) {
+      final first = uri.pathSegments[0].toLowerCase();
+      final second = uri.pathSegments[1].toLowerCase();
+      final third = uri.pathSegments[2];
+      final fourth = uri.pathSegments[3].toLowerCase();
+      final fifth = uri.pathSegments[4];
+      final sixth = uri.pathSegments[5];
+      if (first == 'moments' &&
           second == 'detail' &&
           third.isNotEmpty &&
-          fourth == 'maps') {
-        return PageConfigurationModel.maps(third);
+          fourth == 'maps' &&
+          fifth.isNotEmpty &&
+          sixth.isNotEmpty) {
+        final latitude = double.tryParse(fifth);
+        final longitude = double.tryParse(sixth);
+        return PageConfigurationModel.maps(third, latitude!, longitude!);
       }
       return PageConfigurationModel.unknown();
     }
@@ -80,11 +93,12 @@ class RouteInformationParserCustom
       return const RouteInformation(location: '/moments');
     } else if (configuration.isDetailStoryPage) {
       return RouteInformation(
-        location: 'moments/detail/${configuration.storyId}',
+        location: '/moments/detail/${configuration.storyId}',
       );
     } else if (configuration.isMapPage) {
       return RouteInformation(
-        location: 'moments/detail/${configuration.storyId}/maps',
+        location:
+            '/moments/detail/${configuration.storyId}/maps/${configuration.latitude}/${configuration.longitude}',
       );
     } else if (configuration.isSettingPage) {
       return const RouteInformation(location: '/moments/setting');
