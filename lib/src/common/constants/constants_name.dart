@@ -3,6 +3,7 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 class ConstantsName {
   static const String baseUrl = 'https://story-api.dicoding.dev/v1';
   static const LatLng baseLocationLatLon = LatLng(-6.200000, 106.816666);
+  static const String apiKeyMap = 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg';
 
   static const String missingAnthentication = '401';
 

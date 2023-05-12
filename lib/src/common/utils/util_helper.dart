@@ -122,7 +122,7 @@ class UtilHelper {
       GeoData placeMark = await Geocoder2.getDataFromCoordinates(
         latitude: lat,
         longitude: lon,
-        googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+        googleMapApiKey: ConstantsName.apiKeyMap,
         language:
             SharedPreferencesHelper().language == 'id' ? 'id_ID' : 'en_US',
       );
