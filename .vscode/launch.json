@@ -1,16 +1,136 @@
 {
     "configurations": [
         {
-            "name": "App Profile",
+            "name": "free_dev_debug",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "profile"
+            "program": "lib/main_free_dev.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "freedev"
+            ]
         },
         {
-            "name": "App Debug",
+            "name": "free_dev_profile",
             "request": "launch",
             "type": "dart",
-            "flutterMode": "debug"
-        }
+            "program": "lib/main_free_dev.dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "freedev"
+            ]
+        },
+        {
+            "name": "free_dev_release",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_free_dev.dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "freedev"
+            ]
+        },
+        {
+            "name": "free_debug",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_free.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "free"
+            ]
+        },
+        {
+            "name": "free_profile",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_free.dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "free"
+            ]
+        },
+        {
+            "name": "free_release",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_free.dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "free"
+            ]
+        },
+        {
+            "name": "paid_dev_debug",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid_dev.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "paiddev"
+            ]
+        },
+        {
+            "name": "paid_dev_profile",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid_dev.dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "paiddev"
+            ]
+        },
+        {
+            "name": "paid_dev_release",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid_dev.dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "paiddev"
+            ]
+        },
+        {
+            "name": "paid_debug",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid.dart",
+            "flutterMode": "debug",
+            "args": [
+                "--flavor",
+                "paid"
+            ]
+        },
+        {
+            "name": "paid_profile",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid.dart",
+            "flutterMode": "profile",
+            "args": [
+                "--flavor",
+                "paid"
+            ]
+        },
+        {
+            "name": "paid_release",
+            "request": "launch",
+            "type": "dart",
+            "program": "lib/main_paid.dart",
+            "flutterMode": "release",
+            "args": [
+                "--flavor",
+                "paid"
+            ]
+        },
     ]
 }

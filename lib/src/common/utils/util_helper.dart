@@ -1,6 +1,8 @@
+import 'dart:developer';
 import 'dart:typed_data';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
+import 'package:app_submission_flutter_intermediate/src/common/flavor/flavor_config.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -170,5 +172,14 @@ class UtilHelper {
     AnimationController controller,
   ) {
     return CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
+  }
+
+  static String getModeApp(String flavorMode) {
+    log(flavorMode);
+    if (flavorMode == 'paid') return 'Moments Paid';
+    if (flavorMode == 'free') return 'Moments Free';
+    if (flavorMode == 'paiddev') return 'Moments Paid Dev';
+    if (flavorMode == 'freedev') return 'Moments Free Dev';
+    return 'Development App';
   }
 }

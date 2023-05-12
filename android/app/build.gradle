@@ -54,10 +54,37 @@ android {
     }
 
     buildTypes {
+        debug {
+            applicationIdSuffix ".debug"
+        }
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
             signingConfig signingConfigs.debug
+        }
+    }
+
+    flavorDimensions "flavors"
+    productFlavors {
+        freedev {
+            dimension "flavors"
+            applicationIdSuffix ".free.dev"
+            versionNameSuffix "-free-dev"
+        }
+        paiddev {
+            dimension "flavors"
+            applicationIdSuffix ".paid.dev"
+            versionNameSuffix "-paid-dev"
+        }
+        free {
+            dimension "flavors"
+            applicationIdSuffix ".free.dev"
+            versionNameSuffix "-free-dev"
+        }
+        paid {
+            dimension "flavors"
+            applicationIdSuffix ".paid"
+            versionNameSuffix "-paid"
         }
     }
 }

@@ -23,8 +23,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   final _formGlobalKey = GlobalKey<FormState>();
-  final _emailField = TextEditingController(text: 'abcz1@gmail.com');
-  final _passswordField = TextEditingController(text: 'a123456');
+  final _emailField = TextEditingController(text: 'artheo@gmail.com');
+  final _passswordField = TextEditingController(text: 'Arnan400');
 
   bool isObscurePass = true;
   bool isValueAnimated = false;
