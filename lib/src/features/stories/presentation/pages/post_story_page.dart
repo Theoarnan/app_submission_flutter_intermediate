@@ -66,8 +66,9 @@ class _PostStoryPageState extends State<PostStoryPage>
     _descriptionField.dispose();
   }
 
-  bool get isProccesPostStories =>
-      location != null && blocStories.imageFile != null;
+  bool get isProccesPostStories => UtilHelper.getIsPaidApp()
+      ? location != null && blocStories.imageFile != null
+      : blocStories.imageFile != null;
 
   @override
   Widget build(BuildContext context) {
@@ -235,7 +236,7 @@ class _PostStoryPageState extends State<PostStoryPage>
                       ),
                     ),
                     SizedBox(height: 6.h),
-                    if (location == null)
+                    if (location == null && UtilHelper.getIsPaidApp())
                       SlideTransition(
                         position: fromLeft,
                         child: TextButton(
@@ -280,7 +281,7 @@ class _PostStoryPageState extends State<PostStoryPage>
                         ),
                       ),
                     SizedBox(height: 6.h),
-                    if (location != null)
+                    if (location != null && UtilHelper.getIsPaidApp())
                       Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 16.w,

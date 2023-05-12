@@ -1,20 +1,23 @@
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/flavor/flutter_mode_config.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
+import 'package:app_submission_flutter_intermediate/src/features/auth/models/login/login_result_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/bloc/setting_bloc_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 class SettingPage extends StatefulWidget {
   final Function() toHomePage;
+  final Function() toAboutPage;
   const SettingPage({
     super.key,
     required this.toHomePage,
+    required this.toAboutPage,
   });
   @override
   State<SettingPage> createState() => _SettingPageState();
@@ -26,6 +29,7 @@ class _SettingPageState extends State<SettingPage>
   late Animation<double> animation;
   late Animation<Offset> fromTop;
   late Animation<Offset> fromLeft;
+  late LoginResultModel? dataUser;
 
   @override
   void initState() {
@@ -105,50 +109,28 @@ class _SettingPageState extends State<SettingPage>
                             radius: 48.sp,
                             backgroundColor: Colors.grey.withOpacity(0.3),
                             child: Text(
-                              'AT',
+                              UtilHelper.generateInitialText(
+                                SharedPreferencesHelper().nameUser,
+                              ),
                               style: textTheme.bodyLarge?.copyWith(
                                 color: ThemeCustom.primaryColor,
+                                fontSize: 24.sp,
                               ),
                             ),
                           ),
                           SizedBox(height: 8.h),
                           Text(
-                            'Arnan Theopilus',
+                            SharedPreferencesHelper().nameUser,
+                            textAlign: TextAlign.center,
                             style: textTheme.bodyLarge?.copyWith(
                               fontWeight: FontWeight.w500,
-                              fontSize: 18.sp,
-                            ),
-                          ),
-                          SizedBox(height: 4.h),
-                          Text(
-                            'artheo@gmail.com',
-                            style: textTheme.bodyLarge?.copyWith(
-                              fontWeight: FontWeight.w400,
-                              color: ThemeCustom.primaryColor,
+                              fontSize: 22.sp,
                             ),
                           ),
                         ],
                       ),
                     ),
                     const Divider(),
-                    // Container(
-                    //   color: ThemeCustom.yellowColor,
-                    //   padding: EdgeInsets.symmetric(
-                    //     horizontal: 16.w,
-                    //     vertical: 10.h,
-                    //   ),
-                    //   child: Center(
-                    //     child: Text(
-                    //       '${UtilHelper.getModeApp(
-                    //         FlavorConfig.instance.flavor.name,
-                    //       )}${!isModeRelease ? ' - ${FlutterModeConfig.flutterMode} ' : ''}',
-                    //       style: textTheme.bodyLarge?.copyWith(
-                    //         fontWeight: FontWeight.w500,
-                    //         color: Colors.white,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ),
                     WidgetCustom.expansionListLite(
                       context,
                       title: translate.changeLanguage,
@@ -193,13 +175,10 @@ class _SettingPageState extends State<SettingPage>
                     ),
                     WidgetCustom.listTileCustom(
                       context,
-                      title: 'About',
+                      title: translate.about,
                       icon: Icons.info_outline_rounded,
                       onTap: () {
-                        WidgetCustom.dialogLoadingState(context);
-                        context
-                            .read<AuthBloc>()
-                            .add(const LogoutAccountEvent());
+                        widget.toAboutPage();
                       },
                     ),
                     WidgetCustom.listTileCustom(
@@ -212,26 +191,6 @@ class _SettingPageState extends State<SettingPage>
                             .read<AuthBloc>()
                             .add(const LogoutAccountEvent());
                       },
-                    ),
-                    const Spacer(),
-                    Padding(
-                      padding: EdgeInsets.only(bottom: 5.h),
-                      child: FutureBuilder(
-                        future: PackageInfo.fromPlatform(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) return Container();
-                          PackageInfo? packageInfo = snapshot.data;
-                          return Center(
-                            child: Text(
-                              'version ${packageInfo?.version}',
-                              style: textTheme.bodyLarge?.copyWith(
-                                color: ThemeCustom.secondaryColor,
-                                fontWeight: FontWeight.w400,
-                              ),
-                            ),
-                          );
-                        },
-                      ),
                     ),
                   ],
                 ),

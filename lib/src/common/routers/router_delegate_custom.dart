@@ -6,6 +6,7 @@ import 'package:app_submission_flutter_intermediate/src/features/auth/presentati
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/register_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/pages/splash_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/repository/auth_repository.dart';
+import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/about_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/settings/presentation/pages/setting_page.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/camera_bloc/camera_bloc_cubit.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
@@ -34,6 +35,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
   bool isRegister = false;
   bool? isLoggedIn;
   bool isSetting = false;
+  bool isAbout = false;
   bool isPostStory = false;
   bool isCamera = false;
   bool isChooseMedia = false;
@@ -94,6 +96,20 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
             child: SettingPage(
               toHomePage: () {
                 isSetting = false;
+                notifyListeners();
+              },
+              toAboutPage: () {
+                isAbout = true;
+                notifyListeners();
+              },
+            ),
+          ),
+        if (isAbout)
+          MaterialPage(
+            key: const ValueKey("AboutPage"),
+            child: AboutPage(
+              toSettingPage: () {
+                isAbout = false;
                 notifyListeners();
               },
             ),
@@ -207,6 +223,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
             );
           }
           isSetting = false;
+          isAbout = false;
           selectStory = null;
           isPostStory = false;
           isCamera = false;
@@ -236,6 +253,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
           }
           isRegister = false;
           isSetting = false;
+          isAbout = false;
           selectStory = null;
           latitude = null;
           longitude = null;
@@ -267,6 +285,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       isPostStory = false;
       selectStory = null;
       latitude = null;
@@ -279,6 +298,20 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = true;
+      isAbout = false;
+      selectStory = null;
+      latitude = null;
+      longitude = null;
+      isMapDetail = false;
+      isMapChoose = false;
+      isPostStory = false;
+      isCamera = false;
+      isChooseMedia = false;
+    } else if (configuration.isAboutPage) {
+      isUnknown = false;
+      isRegister = false;
+      isSetting = true;
+      isAbout = true;
       selectStory = null;
       latitude = null;
       longitude = null;
@@ -291,6 +324,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       isPostStory = false;
       latitude = null;
       longitude = null;
@@ -303,6 +337,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       isPostStory = false;
       latitude = configuration.latitude;
       longitude = configuration.longitude;
@@ -315,6 +350,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       selectStory = null;
       isPostStory = true;
       latitude = null;
@@ -327,6 +363,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       selectStory = null;
       isPostStory = true;
       latitude = null;
@@ -339,6 +376,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       selectStory = null;
       isPostStory = true;
       latitude = null;
@@ -351,6 +389,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       isUnknown = false;
       isRegister = false;
       isSetting = false;
+      isAbout = false;
       selectStory = null;
       isPostStory = true;
       latitude = null;
@@ -378,6 +417,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         latitude == null &&
         longitude == null &&
         !isSetting &&
+        !isAbout &&
         !isPostStory &&
         !isChooseMedia &&
         !isMapDetail &&
@@ -389,6 +429,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       return PageConfigurationModel.home();
     } else if (isLoggedIn! &&
         isSetting &&
+        !isAbout &&
         selectStory == null &&
         latitude == null &&
         longitude == null &&
@@ -399,7 +440,20 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
         !isCamera) {
       return PageConfigurationModel.setting();
     } else if (isLoggedIn! &&
+        isSetting &&
+        isAbout &&
+        selectStory == null &&
+        latitude == null &&
+        longitude == null &&
+        !isPostStory &&
+        !isChooseMedia &&
+        !isMapDetail &&
+        !isMapChoose &&
+        !isCamera) {
+      return PageConfigurationModel.about();
+    } else if (isLoggedIn! &&
         !isSetting &&
+        !isAbout &&
         selectStory != null &&
         latitude == null &&
         longitude == null &&
@@ -411,6 +465,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
       return PageConfigurationModel.detailStory(selectStory!);
     } else if (isLoggedIn! &&
         !isSetting &&
+        !isAbout &&
         selectStory != null &&
         latitude != null &&
         longitude != null &&
@@ -423,6 +478,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
+        !isAbout &&
         selectStory == null &&
         latitude == null &&
         longitude == null &&
@@ -435,6 +491,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
+        !isAbout &&
         selectStory == null &&
         latitude == null &&
         longitude == null &&
@@ -446,6 +503,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
+        !isAbout &&
         selectStory == null &&
         latitude == null &&
         longitude == null &&
@@ -457,6 +515,7 @@ class RouterDelegateCustom extends RouterDelegate<PageConfigurationModel>
     } else if (isLoggedIn! &&
         isPostStory &&
         !isSetting &&
+        !isAbout &&
         selectStory == null &&
         latitude == null &&
         longitude == null &&

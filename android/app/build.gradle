@@ -78,8 +78,8 @@ android {
         }
         free {
             dimension "flavors"
-            applicationIdSuffix ".free.dev"
-            versionNameSuffix "-free-dev"
+            applicationIdSuffix ".free"
+            versionNameSuffix "-free"
         }
         paid {
             dimension "flavors"

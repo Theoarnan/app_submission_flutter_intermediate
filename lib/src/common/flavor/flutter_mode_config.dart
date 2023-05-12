@@ -6,10 +6,10 @@ class FlutterModeConfig {
   static bool get isProfile => kProfileMode;
 
   static String get flutterMode => isDebug
-      ? "Debug"
+      ? "debug"
       : isRelease
-          ? "Release"
+          ? "release"
           : isProfile
-              ? "Profile"
+              ? "profile"
               : "Unknown";
 }

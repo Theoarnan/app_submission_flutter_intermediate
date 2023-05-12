@@ -85,7 +85,6 @@ class _MapsPageState extends State<MapsPage>
   }
 
   void onTapMap(LatLng latLng) async {
-    log('Sini');
     final GoogleMapController controller = await mapController.future;
     final place = await UtilHelper.getLocation(
       lat: latLng.latitude,
@@ -248,7 +247,6 @@ class _MapsPageState extends State<MapsPage>
                   zoomControlsEnabled: false,
                   mapToolbarEnabled: false,
                   onTap: (LatLng latLng) {
-                    log('Yaa');
                     if (!widget.isFromDetail) return onTapMap(latLng);
                   },
                   onMapCreated: (controller) async {

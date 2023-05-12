@@ -42,6 +42,10 @@ class RouteInformationParserCustom
           second == 'post' &&
           third == 'choose-location') {
         return PageConfigurationModel.mapChoose();
+      } else if (first == 'moments' &&
+          second == 'setting' &&
+          third == 'about') {
+        return PageConfigurationModel.about();
       }
       return PageConfigurationModel.unknown();
     } else if (uri.pathSegments.length == 4) {
@@ -102,6 +106,8 @@ class RouteInformationParserCustom
       );
     } else if (configuration.isSettingPage) {
       return const RouteInformation(location: '/moments/setting');
+    } else if (configuration.isAboutPage) {
+      return const RouteInformation(location: '/moments/setting/about');
     } else if (configuration.isPostStoryPage) {
       return const RouteInformation(location: '/moments/post');
     } else if (configuration.isMapChoosePage) {

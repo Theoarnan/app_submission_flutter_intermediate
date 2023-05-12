@@ -101,5 +101,13 @@
     "openMap": "Open Map",
     "chooseLocation": "Choose Location",
     "choose": "Choose",
-    "addLocation": "Add a location"
+    "addLocation": "Add a location",
+    "about": "About",
+    "descAbout": "Moments is a app for you to show your feel about journey, experience, expresion, love, belived, and anything In the form of pictures and words.",
+    "information": "Information",
+    "type": "Type",
+    "freeApp": "Free App",
+    "paidApp": "Paid App",
+    "version": "Version",
+    "mode": "Mode"
 }

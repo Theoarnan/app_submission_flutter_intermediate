@@ -9,6 +9,7 @@ class LoginResponseModel with _$LoginResponseModel {
   const factory LoginResponseModel({
     required bool error,
     required String message,
+    // ignore: invalid_annotation_target
     @JsonKey(name: "loginResult") required LoginResultModel result,
   }) = _LoginResponseModel;
 

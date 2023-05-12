@@ -1,4 +1,5 @@
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/models/post_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
 import 'package:equatable/equatable.dart';
@@ -48,23 +49,9 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
         } else {
           pageItems = pageItems! + 1;
         }
-        final dataStoriesMap =
-            await Future.wait(dataResponse.dataStory.map((e) async {
-          final latitude = e.lat;
-          final longitude = e.lon;
-          String address = '';
-          if (latitude != null && longitude != null) {
-            address = await UtilHelper.getLocationByAddress(
-              lat: latitude,
-              lon: longitude,
-              isSimpleAddress: true,
-            );
-          }
-          return e.copyWith(address: address);
-        }));
-        dataStories.addAll(dataStoriesMap);
+        dataStories.addAll(dataResponse.dataStory);
         emit(state.copyWith(
-          stories: List.of(state.stories)..addAll(dataStoriesMap),
+          stories: List.of(state.stories)..addAll(dataResponse.dataStory),
         ));
       } else {
         emit(StoriesErrorState(error: dataResponse.error.toString()));
@@ -107,12 +94,21 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
       final fileName = imageFile!.name;
       final bytes = await imageFile!.readAsBytes();
       final newBytes = await UtilHelper.compressImage(bytes);
-      final data = await storiesRepository.postStory(
-        bytes: newBytes,
-        fileName: fileName,
-        description: event.description,
-        latLng: locationData!,
-      );
+      PostStoriesResponseModel data;
+      if (UtilHelper.getIsPaidApp()) {
+        data = await storiesRepository.postStory(
+          bytes: newBytes,
+          fileName: fileName,
+          description: event.description,
+          latLng: locationData!,
+        );
+      } else {
+        data = await storiesRepository.postStory(
+          bytes: newBytes,
+          fileName: fileName,
+          description: event.description,
+        );
+      }
       if (data.error != true) {
         emit(PostStoriesSuccessState());
         locationData = null;

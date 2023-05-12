@@ -41,6 +41,7 @@ class AuthRepository {
       final data = LoginResponseModel.fromJson(json.decode(response.body));
       SharedPreferencesHelper().state = true;
       SharedPreferencesHelper().token = data.result.token;
+      SharedPreferencesHelper().nameUser = data.result.name;
       return data;
     } else {
       throw Exception('Failed to login user');
@@ -51,5 +52,6 @@ class AuthRepository {
     await Future.delayed(const Duration(seconds: 2));
     SharedPreferencesHelper().state = false;
     SharedPreferencesHelper().token = '';
+    SharedPreferencesHelper().nameUser = '';
   }
 }

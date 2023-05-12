@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/detail_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/post_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
@@ -24,8 +25,9 @@ class StoriesRepository {
     int page = 1,
     int size = 10,
   ]) async {
+    final withLocation = UtilHelper.getIsPaidApp() ? 1 : 0;
     final url = Uri.parse(
-      '$storiesEndpoint?page=$page&size=$size&location=1',
+      '$storiesEndpoint?page=$page&size=$size&location=$withLocation',
     );
     final token = await getToken();
     final response = await http.get(
@@ -77,7 +79,6 @@ class StoriesRepository {
           createdAt: '',
           lat: null,
           lon: null,
-          address: '',
         ),
       );
       return data;
@@ -90,7 +91,7 @@ class StoriesRepository {
     required List<int> bytes,
     required String fileName,
     required String description,
-    required LatLng? latLng,
+    LatLng? latLng,
   }) async {
     final token = await getToken();
     final url = Uri.parse(storiesEndpoint);
@@ -102,7 +103,7 @@ class StoriesRepository {
     );
     final isAvailaleLocation = latLng != null;
     Map<String, String> fields;
-    if (isAvailaleLocation) {
+    if (isAvailaleLocation && UtilHelper.getIsPaidApp()) {
       fields = {
         "description": description,
         "lat": latLng.latitude.toString(),

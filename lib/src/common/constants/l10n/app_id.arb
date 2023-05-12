@@ -108,5 +108,13 @@
     "openMap": "Buka Peta",
     "chooseLocation": "Pilih Lokasi",
     "choose": "Pilih",
-    "addLocation": "Tambahkan lokasi"
+    "addLocation": "Tambahkan lokasi",
+    "about": "Tentang",
+    "descAbout": "Moments adalah aplikasi bagi Anda untuk menunjukkan perasaan Anda tentang perjalanan, pengalaman, ekspresi, cinta, kepercayaan, dan apa pun dalam bentuk gambar dan kata-kata.",
+    "information": "Informasi",
+    "type": "Tipe",
+    "freeApp": "Gratis App",
+    "paidApp": "Berbayar App",
+    "version": "Versi",
+    "mode": "Mode"
 }

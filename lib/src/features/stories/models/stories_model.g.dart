@@ -15,7 +15,6 @@ _$_StoriesModel _$$_StoriesModelFromJson(Map<String, dynamic> json) =>
       createdAt: json['createdAt'] as String,
       lat: (json['lat'] as num?)?.toDouble(),
       lon: (json['lon'] as num?)?.toDouble(),
-      address: json['address'] as String?,
     );
 
 Map<String, dynamic> _$$_StoriesModelToJson(_$_StoriesModel instance) =>
@@ -27,5 +26,4 @@ Map<String, dynamic> _$$_StoriesModelToJson(_$_StoriesModel instance) =>
       'createdAt': instance.createdAt,
       'lat': instance.lat,
       'lon': instance.lon,
-      'address': instance.address,
     };

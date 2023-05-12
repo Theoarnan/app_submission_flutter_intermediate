@@ -34,7 +34,7 @@ class ValidationFormUtil {
       AppLocalizations.of(context)!.password.toLowerCase(),
     );
     if (isNull == null) {
-      if (password.length < 6) {
+      if (password.length < 8) {
         return AppLocalizations.of(context)!.validatePasswordLength;
       } else {
         if (!regex.hasMatch(password)) {

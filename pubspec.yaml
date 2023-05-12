@@ -34,7 +34,6 @@ dependencies:
   provider: ^6.0.5
   json_annotation: ^4.8.1
   freezed_annotation: ^2.2.0
-  geocoding: ^2.1.0
   google_maps_flutter: ^2.2.6
   google_maps_flutter_web: ^0.4.0+8
   location: ^4.4.0

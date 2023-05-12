@@ -13,6 +13,7 @@ class WidgetMomentsCustom {
     required StoriesModel stories,
   }) {
     final textTheme = Theme.of(context).textTheme;
+    bool isAvailableLatLon = stories.lat != null && stories.lon != null;
     return SizedBox(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -45,19 +46,40 @@ class WidgetMomentsCustom {
                       ),
                     ),
                     SizedBox(height: 4.h),
-                    if (stories.address!.isNotEmpty)
-                      SizedBox(
-                        width: 1.sw - 100.w,
-                        child: Text(
-                          stories.address!,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: textTheme.bodySmall?.copyWith(
-                            fontWeight: FontWeight.w400,
-                            color: ThemeCustom.primaryColor,
+                    if (isAvailableLatLon)
+                      FutureBuilder(
+                          future: UtilHelper.getLocationByAddress(
+                            lat: stories.lat!,
+                            lon: stories.lon!,
                           ),
-                        ),
-                      )
+                          builder: (context, snapshot) {
+                            String address = '-';
+                            if (snapshot.hasError) address = '-';
+                            if (snapshot.connectionState ==
+                                ConnectionState.none) address = '-';
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              SizedBox(
+                                height: 20.sp,
+                                width: 20.sp,
+                                child: const CircularProgressIndicator.adaptive(
+                                    strokeWidth: 3),
+                              );
+                            }
+                            if (snapshot.hasData) address = snapshot.data!;
+                            return SizedBox(
+                              width: 1.sw - 100.w,
+                              child: Text(
+                                address,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: textTheme.bodySmall?.copyWith(
+                                  fontWeight: FontWeight.w400,
+                                  color: ThemeCustom.primaryColor,
+                                ),
+                              ),
+                            );
+                          })
                   ],
                 ),
               ],

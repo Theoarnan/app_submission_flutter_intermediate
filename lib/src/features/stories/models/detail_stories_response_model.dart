@@ -9,6 +9,7 @@ class DetailStoriesResponseModel with _$DetailStoriesResponseModel {
   const factory DetailStoriesResponseModel({
     required bool error,
     required String message,
+    // ignore: invalid_annotation_target
     @JsonKey(name: "story") required StoriesModel dataStory,
   }) = _DetailStoriesResponseModel;
 

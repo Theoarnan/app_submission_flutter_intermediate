@@ -1,8 +1,9 @@
-import 'dart:developer';
 import 'dart:typed_data';
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
+import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/flavor/flavor_config.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
 import 'package:camera/camera.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
@@ -122,6 +123,8 @@ class UtilHelper {
         latitude: lat,
         longitude: lon,
         googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+        language:
+            SharedPreferencesHelper().language == 'id' ? 'id_ID' : 'en_US',
       );
       return placeMark;
     } catch (e) {
@@ -174,12 +177,25 @@ class UtilHelper {
     return CurvedAnimation(parent: controller, curve: Curves.easeInCubic);
   }
 
-  static String getModeApp(String flavorMode) {
-    log(flavorMode);
-    if (flavorMode == 'paid') return 'Moments Paid';
-    if (flavorMode == 'free') return 'Moments Free';
-    if (flavorMode == 'paiddev') return 'Moments Paid Dev';
-    if (flavorMode == 'freedev') return 'Moments Free Dev';
+  static String getModeApp() {
+    final flavorName = FlavorConfig.instance.flavor.name;
+    if (flavorName == 'paid') return 'Moments Paid';
+    if (flavorName == 'free') return 'Moments Free';
+    if (flavorName == 'paiddev') return 'Moments Paid Dev';
+    if (flavorName == 'freedev') return 'Moments Free Dev';
     return 'Development App';
+  }
+
+  static Color getColorIdentify() {
+    final flavorName = FlavorConfig.instance.flavor.name;
+    if (flavorName == 'paid') return ThemeCustom.primaryColor;
+    if (flavorName == 'free') return ThemeCustom.greenColor;
+    return ThemeCustom.yellowColor;
+  }
+
+  static bool getIsPaidApp() {
+    final flavorName = FlavorConfig.instance.flavor.name;
+    final isPaidApp = flavorName == 'paid' || flavorName == 'paiddev';
+    return isPaidApp;
   }
 }
