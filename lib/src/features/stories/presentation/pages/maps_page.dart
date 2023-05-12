@@ -79,7 +79,6 @@ class _MapsPageState extends State<MapsPage>
     );
     if (!mounted) return;
     setState(() {
-      if (!widget.isFromDetail) markers.clear();
       markers.add(marker);
     });
   }
@@ -168,6 +167,7 @@ class _MapsPageState extends State<MapsPage>
     );
     if (!mounted) return;
     setState(() {
+      if (!widget.isFromDetail) markers.clear();
       locationLatLon = latLng;
       placemark = place;
       markers.add(marker);
