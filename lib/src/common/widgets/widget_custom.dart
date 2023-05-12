@@ -383,9 +383,9 @@ class WidgetCustom {
       mainAxisSize: MainAxisSize.min,
       children: [
         SizedBox(
-          height: 20.h,
-          width: 20.w,
-          child: const CircularProgressIndicator(strokeWidth: 3),
+          height: 20.sp,
+          width: 20.sp,
+          child: const CircularProgressIndicator.adaptive(strokeWidth: 3),
         ),
         SizedBox(width: 8.w),
         Text(

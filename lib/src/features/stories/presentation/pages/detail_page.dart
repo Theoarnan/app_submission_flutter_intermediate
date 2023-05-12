@@ -336,24 +336,24 @@ class _DetailPageState extends State<DetailPage> {
         );
       },
     );
-    final place = await Geocoder2.getDataFromCoordinates(
-        latitude: data.lat!,
-        longitude: data.lon!,
-        googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg');
+    final place = await UtilHelper.getLocation(
+      lat: data.lat!,
+      lon: data.lon!,
+    );
     final address =
         '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
+    if (!kIsWeb) {
+      defineMarker(
+        LatLng(data.lat!, data.lon!),
+        place.streetNumber,
+        address,
+      );
+    }
     if (!mounted) return;
     setState(() {
       mapController.complete(controller);
       placemark = place;
       markers.add(marker);
     });
-    if (!kIsWeb) {
-      defineMarker(
-        LatLng(data.lat!, data.lon!),
-        place.address,
-        address,
-      );
-    }
   }
 }

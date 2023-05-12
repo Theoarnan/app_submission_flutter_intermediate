@@ -23,8 +23,8 @@ class LoginPage extends StatefulWidget {
 class _LoginPageState extends State<LoginPage>
     with SingleTickerProviderStateMixin {
   final _formGlobalKey = GlobalKey<FormState>();
-  final _emailField = TextEditingController(text: 'abcz1@gmail.com');
-  final _passswordField = TextEditingController(text: 'a123456');
+  final _emailField = TextEditingController(text: 'artheo@gmail.com');
+  final _passswordField = TextEditingController(text: 'Arnan400');
 
   bool isObscurePass = true;
   bool isValueAnimated = false;
@@ -179,26 +179,16 @@ class _LoginPageState extends State<LoginPage>
                                   ),
                                   SizedBox(height: 12.h),
                                   Center(
-                                    child: AnimatedCrossFade(
-                                      alignment: Alignment.center,
-                                      sizeCurve: Curves.easeInToLinear,
-                                      duration:
-                                          const Duration(milliseconds: 160),
-                                      crossFadeState: stateLoading
-                                          ? CrossFadeState.showSecond
-                                          : CrossFadeState.showFirst,
-                                      firstChild:
-                                          WidgetCustom.elevatedButtonCustom(
-                                        context,
-                                        textButton: translate.login,
-                                        onPressed: () => _onLogin(),
-                                      ),
-                                      secondChild: Padding(
-                                        padding: EdgeInsets.all(12.sp),
-                                        child:
-                                            WidgetCustom.loadingSecond(context),
-                                      ),
-                                    ),
+                                    child: stateLoading
+                                        ? Padding(
+                                            padding: EdgeInsets.all(12.sp),
+                                            child: WidgetCustom.loadingSecond(
+                                                context))
+                                        : WidgetCustom.elevatedButtonCustom(
+                                            context,
+                                            textButton: translate.login,
+                                            onPressed: () => _onLogin(),
+                                          ),
                                   ),
                                 ],
                               ),

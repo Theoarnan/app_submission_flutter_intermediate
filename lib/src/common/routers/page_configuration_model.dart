@@ -7,7 +7,10 @@ class PageConfigurationModel {
   final bool isCamera;
   final bool isChooseMedia;
   final bool isMap;
+  final double? latitude;
+  final double? longitude;
   final bool isMapChoose;
+  final bool isAbout;
   final String? storyId;
 
   PageConfigurationModel.splash()
@@ -16,9 +19,12 @@ class PageConfigurationModel {
         isLoggin = null,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -28,9 +34,12 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -40,9 +49,12 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -52,9 +64,12 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -64,9 +79,12 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = id,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -76,9 +94,27 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = true,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
+        isMapChoose = false,
+        isPostStory = false;
+
+  PageConfigurationModel.about()
+      : isUnknownPage = false,
+        isRegister = false,
+        isLoggin = true,
+        storyId = null,
+        isSetting = true,
+        isAbout = true,
+        isCamera = false,
+        isChooseMedia = false,
+        isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -88,9 +124,12 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
@@ -100,9 +139,12 @@ class PageConfigurationModel {
         isLoggin = false,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = false;
 
@@ -112,9 +154,12 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = true,
         isChooseMedia = true,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
@@ -124,21 +169,27 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = true,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = false,
         isPostStory = true;
 
-  PageConfigurationModel.maps(String id)
+  PageConfigurationModel.maps(String id, double lat, double lon)
       : isUnknownPage = false,
         isRegister = false,
         isLoggin = true,
         storyId = id,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = true,
+        latitude = lat,
+        longitude = lon,
         isMapChoose = false,
         isPostStory = false;
 
@@ -148,9 +199,12 @@ class PageConfigurationModel {
         isLoggin = true,
         storyId = null,
         isSetting = false,
+        isAbout = false,
         isCamera = false,
         isChooseMedia = false,
         isMap = false,
+        latitude = null,
+        longitude = null,
         isMapChoose = true,
         isPostStory = true;
 
@@ -160,9 +214,12 @@ class PageConfigurationModel {
       isLoggin == null &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -172,9 +229,12 @@ class PageConfigurationModel {
       isLoggin == false &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -184,9 +244,12 @@ class PageConfigurationModel {
       isLoggin == false &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -196,9 +259,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -208,9 +274,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId != null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -220,9 +289,27 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == true &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
+      isMapChoose == false &&
+      isPostStory == false;
+
+  bool get isAboutPage =>
+      isUnknownPage == false &&
+      isRegister == false &&
+      isLoggin == true &&
+      storyId == null &&
+      isSetting == true &&
+      isAbout == true &&
+      isCamera == false &&
+      isChooseMedia == false &&
+      isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -232,9 +319,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -244,9 +334,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == true &&
       isChooseMedia == true &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -256,9 +349,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == true &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == false &&
       isPostStory == true;
 
@@ -268,9 +364,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId != null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == true &&
+      latitude != null &&
+      longitude != null &&
       isMapChoose == false &&
       isPostStory == false;
 
@@ -280,9 +379,12 @@ class PageConfigurationModel {
       isLoggin == true &&
       storyId == null &&
       isSetting == false &&
+      isAbout == false &&
       isCamera == false &&
       isChooseMedia == false &&
       isMap == false &&
+      latitude == null &&
+      longitude == null &&
       isMapChoose == true &&
       isPostStory == true;
 }

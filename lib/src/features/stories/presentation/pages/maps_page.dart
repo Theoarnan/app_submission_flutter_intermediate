@@ -6,7 +6,6 @@ import 'package:app_submission_flutter_intermediate/src/common/constants/export_
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/routers/page_manager.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
-import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/widgets/placemark_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -18,16 +17,20 @@ import 'package:location/location.dart';
 
 class MapsPage extends StatefulWidget {
   final bool isFromDetail;
-  final StoriesModel? dataStories;
+  final double? latitude;
+  final double? longitude;
+  final String? idStory;
   final Function(String storyId)? toBackDetailPage;
   final Function()? toBackPostStory;
 
   const MapsPage({
     super.key,
     required this.isFromDetail,
-    this.dataStories,
     this.toBackDetailPage,
     this.toBackPostStory,
+    this.latitude,
+    this.longitude,
+    this.idStory,
   });
 
   @override
@@ -56,8 +59,8 @@ class _MapsPageState extends State<MapsPage>
     fromTop = UtilHelper.initializePositioned(controller, isFromTop: true);
     if (widget.isFromDetail) {
       locationLatLon = LatLng(
-        widget.dataStories!.lat!,
-        widget.dataStories!.lon!,
+        widget.latitude!,
+        widget.longitude!,
       );
     } else {
       onMyLocationButtonPress();
@@ -83,10 +86,9 @@ class _MapsPageState extends State<MapsPage>
 
   void onTapMap(LatLng latLng) async {
     final GoogleMapController controller = await mapController.future;
-    final place = await Geocoder2.getDataFromCoordinates(
-      latitude: latLng.latitude,
-      longitude: latLng.longitude,
-      googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+    final place = await UtilHelper.getLocation(
+      lat: latLng.latitude,
+      lon: latLng.longitude,
     );
     final address =
         '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
@@ -105,11 +107,12 @@ class _MapsPageState extends State<MapsPage>
     );
     if (!mounted) return;
     setState(() {
+      if (!widget.isFromDetail) markers.clear();
       placemark = place;
       locationLatLon = latLng;
       markers.add(marker);
     });
-    if (!kIsWeb) defineMarker(latLng, place.address, address);
+    if (!kIsWeb) defineMarker(latLng, place.streetNumber, address);
     controller.animateCamera(
       CameraUpdate.newLatLng(latLng),
     );
@@ -188,7 +191,7 @@ class _MapsPageState extends State<MapsPage>
           child: IconButton(
             onPressed: () {
               if (widget.isFromDetail) {
-                widget.toBackDetailPage!(widget.dataStories!.id);
+                widget.toBackDetailPage!(widget.idStory!);
               } else {
                 widget.toBackPostStory!();
               }
@@ -244,7 +247,7 @@ class _MapsPageState extends State<MapsPage>
                   zoomControlsEnabled: false,
                   mapToolbarEnabled: false,
                   onTap: (LatLng latLng) {
-                    if (!widget.isFromDetail) onTapMap(latLng);
+                    if (!widget.isFromDetail) return onTapMap(latLng);
                   },
                   onMapCreated: (controller) async {
                     if (!mounted) return;
