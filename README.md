@@ -1,16 +1,17 @@
-# app_submission_flutter_intermediate
+# Flutter Intermediate
+This is a project for flutter intermediate submission.
 
-A new Flutter project.
+## Description
+<img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%">
+### Moments - StoriesApp
+Moments is a app for you to show your feel about journey, experience, expresion, love, belived, and anything In the form of pictures and words.
 
-## Getting Started
+### Clone zip
+https://github.com/Theoarnan/app_submission_flutter_intermediate/archive/refs/heads/master.zip
 
-This project is a starting point for a Flutter application.
+#### Submission 1 Branch : https://shorturl.at/yAMP8
 
-A few resources to get you started if this is your first Flutter project:
+#### Submission 2 Branch : https://shorturl.at/huJK6
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+## Authors
+- [@theoarnan](https://www.github.com/theoarnan)
