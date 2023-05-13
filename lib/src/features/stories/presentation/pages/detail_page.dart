@@ -1,20 +1,28 @@
+import 'dart:async';
+
 import 'package:app_submission_flutter_intermediate/src/common/constants/export_localization.dart';
 import 'package:app_submission_flutter_intermediate/src/common/constants/theme/theme_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/common/widgets/widget_custom.dart';
 import 'package:app_submission_flutter_intermediate/src/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/presentation/blocs/stories_bloc/stories_bloc.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoder2/geocoder2.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class DetailPage extends StatefulWidget {
   final String idStory;
   final Function() toHomePage;
+  final Function(StoriesModel dataStories) toMapPage;
   const DetailPage({
     super.key,
     required this.idStory,
     required this.toHomePage,
+    required this.toMapPage,
   });
 
   @override
@@ -22,6 +30,10 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
+  final Set<Marker> markers = {};
+  GeoData? placemark;
+  Completer<GoogleMapController> mapController = Completer();
+
   @override
   void initState() {
     super.initState();
@@ -59,8 +71,7 @@ class _DetailPageState extends State<DetailPage> {
                 ],
               ),
             );
-          }
-          if (state is NoInternetState) {
+          } else if (state is NoInternetState) {
             return WidgetCustom.stateError(
               context,
               isError: false,
@@ -68,8 +79,7 @@ class _DetailPageState extends State<DetailPage> {
                 GetDetailStories(id: widget.idStory),
               ),
             );
-          }
-          if (state is StoriesErrorState) {
+          } else if (state is StoriesErrorState) {
             if (UtilHelper.checkUnauthorized(state.error)) {
               BlocProvider.of<AuthBloc>(context).add(
                 const LogoutAccountEvent(),
@@ -84,9 +94,9 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               );
             }
-          }
-          if (state is GetDetailStoriesSuccessState) {
+          } else if (state is GetDetailStoriesSuccessState) {
             final data = state.dataStories;
+            final isAvalaibleLocation = data.lat != null && data.lon != null;
             return SafeArea(
               child: SingleChildScrollView(
                 child: Column(
@@ -107,9 +117,7 @@ class _DetailPageState extends State<DetailPage> {
                           top: 16.h,
                           left: 16.w,
                           child: GestureDetector(
-                            onTap: () {
-                              widget.toHomePage();
-                            },
+                            onTap: () => widget.toHomePage(),
                             child: Container(
                               height: 40.sp,
                               width: 40.sp,
@@ -135,10 +143,7 @@ class _DetailPageState extends State<DetailPage> {
                         children: <Widget>[
                           CircleAvatar(
                             radius: 24.sp,
-                            backgroundColor:
-                                ThemeCustom.secondaryColor.withOpacity(
-                              0.4,
-                            ),
+                            backgroundColor: ThemeCustom.secondaryColor,
                             child: Text(
                               UtilHelper.generateInitialText(data.name),
                               style: textTheme.bodyLarge,
@@ -160,7 +165,7 @@ class _DetailPageState extends State<DetailPage> {
                                   context,
                                   data.createdAt,
                                 ),
-                                style: textTheme.bodyLarge?.copyWith(
+                                style: textTheme.bodySmall?.copyWith(
                                   fontWeight: FontWeight.w400,
                                   color: ThemeCustom.secondaryColor,
                                 ),
@@ -170,30 +175,124 @@ class _DetailPageState extends State<DetailPage> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 4.h),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 16.w),
-                      child: Text(
-                        translate.description,
-                        style: textTheme.bodyLarge?.copyWith(
-                          color: ThemeCustom.darkColor,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 6.h),
                     Padding(
                       padding: EdgeInsets.symmetric(horizontal: 16.w),
                       child: SizedBox(
                         child: Text(
                           data.description,
-                          style: textTheme.bodyLarge?.copyWith(
-                            fontWeight: FontWeight.w500,
-                            color: ThemeCustom.darkColor.withOpacity(0.6),
+                          style: textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w400,
+                            fontSize: 15.sp,
+                            color: ThemeCustom.darkColor,
                           ),
                         ),
                       ),
                     ),
+                    SizedBox(height: 12.h),
+                    if (isAvalaibleLocation)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Text(
+                          translate.location,
+                          style: textTheme.bodyLarge?.copyWith(
+                            color: ThemeCustom.darkColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    SizedBox(height: 8.h),
+                    if (placemark == null)
+                      const SizedBox.shrink()
+                    else
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: Row(
+                          children: [
+                            Icon(
+                              Icons.location_on,
+                              size: 30.sp,
+                              color: ThemeCustom.primaryColor,
+                            ),
+                            SizedBox(width: 8.w),
+                            SizedBox(
+                              width: 1.sw - 80.w,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Text(
+                                    placemark?.address ?? '',
+                                    style: textTheme.bodyMedium?.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: ThemeCustom.primaryColor,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    SizedBox(height: 10.h),
+                    if (isAvalaibleLocation)
+                      Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        child: SizedBox(
+                          height: 160.h,
+                          width: 1.sw,
+                          child: Stack(
+                            children: [
+                              GoogleMap(
+                                markers: markers,
+                                mapType: MapType.normal,
+                                buildingsEnabled: true,
+                                initialCameraPosition: CameraPosition(
+                                  zoom: 18,
+                                  target: LatLng(data.lat!, data.lon!),
+                                ),
+                                onMapCreated: (controller) async {
+                                  await handleOnMapCreated(
+                                    controller: controller,
+                                    data: data,
+                                  );
+                                },
+                                myLocationButtonEnabled: false,
+                                zoomControlsEnabled: false,
+                                mapToolbarEnabled: false,
+                              ),
+                              if (placemark == null)
+                                const SizedBox.shrink()
+                              else
+                                Positioned(
+                                  bottom: 18.h,
+                                  right: 18.w,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      boxShadow: <BoxShadow>[
+                                        BoxShadow(
+                                          blurRadius: 14,
+                                          offset: Offset.zero,
+                                          color: Colors.grey.withOpacity(0.3),
+                                        )
+                                      ],
+                                    ),
+                                    child: TextButton(
+                                      style: TextButton.styleFrom(
+                                        backgroundColor: Colors.white,
+                                      ),
+                                      onPressed: () => widget.toMapPage(data),
+                                      child: Text(
+                                        translate.openMap,
+                                        style: textTheme.bodyLarge?.copyWith(
+                                          color: ThemeCustom.primaryColor,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -203,5 +302,58 @@ class _DetailPageState extends State<DetailPage> {
         },
       ),
     );
+  }
+
+  void defineMarker(LatLng latLng, String street, String address) {
+    final marker = Marker(
+      markerId: const MarkerId("source"),
+      position: latLng,
+      infoWindow: InfoWindow(
+        title: street,
+        snippet: address,
+      ),
+    );
+    if (!mounted) return;
+    setState(() {
+      markers.add(marker);
+    });
+  }
+
+  handleOnMapCreated({
+    required GoogleMapController controller,
+    required StoriesModel data,
+  }) async {
+    final marker = Marker(
+      draggable: false,
+      markerId: MarkerId(data.id),
+      position: LatLng(data.lat!, data.lon!),
+      onTap: () {
+        controller.animateCamera(
+          CameraUpdate.newLatLngZoom(
+            LatLng(data.lat!, data.lon!),
+            18,
+          ),
+        );
+      },
+    );
+    final place = await UtilHelper.getLocation(
+      lat: data.lat!,
+      lon: data.lon!,
+    );
+    final address =
+        '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
+    if (!kIsWeb) {
+      defineMarker(
+        LatLng(data.lat!, data.lon!),
+        place.streetNumber,
+        address,
+      );
+    }
+    if (!mounted) return;
+    setState(() {
+      mapController.complete(controller);
+      placemark = place;
+      markers.add(marker);
+    });
   }
 }

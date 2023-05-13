@@ -1,8 +1,10 @@
 import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
+import 'package:app_submission_flutter_intermediate/src/features/stories/models/post_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/repository/stories_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 
 part 'stories_event.dart';
@@ -18,25 +20,41 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     on<GetDetailStories>((event, emit) => _getDetailStories(event, emit));
     on<PostStories>((event, emit) => _postStories(event, emit));
     on<SetImageFile>((event, emit) => _setImageFile(event, emit));
+    on<SetLocationData>((event, emit) => _setLocationData(event, emit));
   }
 
   XFile? imageFile;
+  LatLng? locationData;
+  int? pageItems = 1;
+  int sizeItems = 10;
+  List<StoriesModel> dataStories = [];
 
   void _getAllStories(
     GetAllStories event,
     Emitter<StoriesState> emit,
   ) async {
+    imageFile = null;
+    locationData = null;
+    if (!(await UtilHelper.isConnected())) return emit(NoInternetState());
+    if (event.isRefresh) {
+      pageItems = 1;
+      dataStories.clear();
+    }
     try {
-      emit(StoriesLoadingState());
-      if (await UtilHelper.isConnected() == false) {
-        return emit(NoInternetState());
-      }
-      imageFile = null;
-      final data = await storiesRepository.getAllStory();
-      if (data.error != true) {
-        emit(GetAllStoriesSuccessState(dataStories: data.dataStory));
+      if (pageItems == 1) emit(StoriesLoadingState());
+      final dataResponse = await storiesRepository.getAllStory(pageItems!);
+      if (dataResponse.error != true) {
+        if (dataResponse.dataStory.length < sizeItems) {
+          pageItems = null;
+        } else {
+          pageItems = pageItems! + 1;
+        }
+        dataStories.addAll(dataResponse.dataStory);
+        emit(state.copyWith(
+          stories: List.of(state.stories)..addAll(dataResponse.dataStory),
+        ));
       } else {
-        emit(StoriesErrorState(error: data.message));
+        emit(StoriesErrorState(error: dataResponse.error.toString()));
       }
     } catch (e) {
       emit(StoriesErrorState(error: e.toString()));
@@ -76,13 +94,24 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
       final fileName = imageFile!.name;
       final bytes = await imageFile!.readAsBytes();
       final newBytes = await UtilHelper.compressImage(bytes);
-      final data = await storiesRepository.postStory(
-        bytes: newBytes,
-        fileName: fileName,
-        description: event.description,
-      );
+      PostStoriesResponseModel data;
+      if (UtilHelper.getIsPaidApp()) {
+        data = await storiesRepository.postStory(
+          bytes: newBytes,
+          fileName: fileName,
+          description: event.description,
+          latLng: locationData!,
+        );
+      } else {
+        data = await storiesRepository.postStory(
+          bytes: newBytes,
+          fileName: fileName,
+          description: event.description,
+        );
+      }
       if (data.error != true) {
         emit(PostStoriesSuccessState());
+        locationData = null;
       } else {
         emit(StoriesErrorState(error: data.message));
       }
@@ -96,6 +125,25 @@ class StoriesBloc extends Bloc<StoriesEvent, StoriesState> {
     Emitter<StoriesState> emit,
   ) async {
     imageFile = event.image;
-    emit(GetImageGallerySuccess(fileImage: imageFile));
+    emit(SetImageSuccess(fileImage: imageFile));
+  }
+
+  void _setLocationData(
+    SetLocationData event,
+    Emitter<StoriesState> emit,
+  ) async {
+    String address = '';
+    try {
+      locationData = event.location;
+      if (locationData != null) {
+        address = await UtilHelper.getLocationByAddress(
+          lat: locationData!.latitude,
+          lon: locationData!.longitude,
+        );
+      }
+      emit(SetLocationSuccess(address: address, location: locationData));
+    } catch (e) {
+      emit(StoriesErrorState(error: e.toString()));
+    }
   }
 }

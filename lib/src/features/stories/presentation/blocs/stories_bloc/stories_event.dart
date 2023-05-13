@@ -6,7 +6,12 @@ abstract class StoriesEvent extends Equatable {
   List<Object?> get props => [];
 }
 
-class GetAllStories extends StoriesEvent {}
+class GetAllStories extends StoriesEvent {
+  final bool isRefresh;
+  const GetAllStories({this.isRefresh = false});
+  @override
+  List<Object> get props => [isRefresh];
+}
 
 class GetDetailStories extends StoriesEvent {
   final String id;
@@ -31,4 +36,11 @@ class SetImageFile extends StoriesEvent {
   const SetImageFile({required this.image});
   @override
   List<Object> get props => [image];
+}
+
+class SetLocationData extends StoriesEvent {
+  final LatLng? location;
+  const SetLocationData({this.location});
+  @override
+  List<Object> get props => [location!];
 }

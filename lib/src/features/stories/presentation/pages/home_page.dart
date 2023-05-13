@@ -25,13 +25,43 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage>
+    with SingleTickerProviderStateMixin {
   late StoriesBloc bloc;
+  final ScrollController scrollController = ScrollController();
+
+  late AnimationController controller;
+  late Animation<double> animation;
+  late Animation<Offset> fromBottom;
 
   @override
   void initState() {
     super.initState();
     bloc = BlocProvider.of<StoriesBloc>(context);
+    scrollController.addListener(() {
+      if (scrollController.position.pixels >=
+          scrollController.position.maxScrollExtent) {
+        if (bloc.pageItems != null) {
+          bloc.add(const GetAllStories());
+        }
+      }
+    });
+    controller = AnimationController(
+      duration: const Duration(milliseconds: 900),
+      vsync: this,
+    )..forward();
+    animation = UtilHelper.initializeCurvedAnimation(controller);
+    fromBottom = UtilHelper.initializePositioned(
+      controller,
+      isFromBottom: true,
+    );
+  }
+
+  @override
+  void dispose() {
+    scrollController.dispose();
+    controller.dispose();
+    super.dispose();
   }
 
   @override
@@ -69,76 +99,119 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: SizedBox(
-            height: 0.88.sh,
-            child: BlocBuilder<StoriesBloc, StoriesState>(
-              builder: (context, state) {
-                if (state is StoriesLoadingState) {
-                  return Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const CircularProgressIndicator.adaptive(),
-                        SizedBox(height: 12.h),
-                        Text(
-                          translate.loading,
-                          style: textTheme.bodySmall,
+          child: FadeTransition(
+            opacity: animation,
+            child: SizedBox(
+              height: 0.88.sh,
+              child: BlocBuilder<StoriesBloc, StoriesState>(
+                builder: (context, state) {
+                  final dataBloc = context.watch<StoriesBloc>();
+                  if (state is StoriesLoadingState && dataBloc.pageItems == 1) {
+                    return SlideTransition(
+                      position: fromBottom,
+                      child: Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const CircularProgressIndicator.adaptive(),
+                            SizedBox(height: 12.h),
+                            Text(
+                              translate.loading,
+                              style: textTheme.bodySmall,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  );
-                }
-                if (state is NoInternetState) {
-                  return WidgetCustom.stateError(
-                    context,
-                    isError: false,
-                    onPressed: () => bloc.add(GetAllStories()),
-                  );
-                }
-                if (state is StoriesErrorState) {
-                  if (UtilHelper.checkUnauthorized(state.error)) {
-                    BlocProvider.of<AuthBloc>(context)
-                        .add(const LogoutAccountEvent());
-                  } else {
-                    return WidgetCustom.stateError(
-                      context,
-                      isError: true,
-                      message: translate.failed(translate.story.toLowerCase()),
-                      onPressed: () => bloc.add(GetAllStories()),
+                      ),
                     );
-                  }
-                }
-                if (state is GetAllStoriesSuccessState) {
-                  return ListView.separated(
-                    itemCount: state.dataStories.length,
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemBuilder: (context, index) {
-                      final data = state.dataStories[index];
-                      return GestureDetector(
-                        onTap: () => widget.toDetailStory(data.id),
-                        child: WidgetMomentsCustom.cardStory(
+                  } else if (state is NoInternetState) {
+                    return SlideTransition(
+                      position: fromBottom,
+                      child: WidgetCustom.stateError(
+                        context,
+                        isError: false,
+                        onPressed: () =>
+                            bloc.add(const GetAllStories(isRefresh: true)),
+                      ),
+                    );
+                  } else if (state is StoriesErrorState) {
+                    if (UtilHelper.checkUnauthorized(state.error)) {
+                      BlocProvider.of<AuthBloc>(context)
+                          .add(const LogoutAccountEvent());
+                    } else {
+                      return SlideTransition(
+                        position: fromBottom,
+                        child: WidgetCustom.stateError(
                           context,
-                          stories: data,
+                          isError: true,
+                          message:
+                              translate.failed(translate.story.toLowerCase()),
+                          onPressed: () => bloc.add(
+                            const GetAllStories(isRefresh: true),
+                          ),
                         ),
                       );
-                    },
+                    }
+                  }
+                  final dataState = dataBloc.dataStories;
+                  if (dataState.isEmpty) {
+                    return SlideTransition(
+                      position: fromBottom,
+                      child: WidgetCustom.stateError(
+                        context,
+                        isError: false,
+                        isEmpty: true,
+                        isWithButton: false,
+                      ),
+                    );
+                  }
+                  final itemCountStories = (dataBloc.pageItems != null ? 1 : 0);
+                  return RefreshIndicator(
+                    onRefresh: () async => bloc.add(
+                      const GetAllStories(isRefresh: true),
+                    ),
+                    child: ListView.builder(
+                      controller: scrollController,
+                      itemCount: dataState.length + (itemCountStories),
+                      itemBuilder: (context, index) {
+                        final isShowLoading = (index == dataState.length &&
+                            dataBloc.pageItems != null);
+                        if (isShowLoading) {
+                          return Center(
+                            child: Padding(
+                              padding: EdgeInsets.all(8.sp),
+                              child: WidgetCustom.loadingSecond(context),
+                            ),
+                          );
+                        }
+                        final dataStories = dataState[index];
+                        return GestureDetector(
+                          onTap: () => widget.toDetailStory(dataStories.id),
+                          child: WidgetMomentsCustom.cardStory(
+                            context,
+                            stories: dataStories,
+                          ),
+                        );
+                      },
+                    ),
                   );
-                }
-                return const SizedBox.shrink();
-              },
+                },
+              ),
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.white,
-        elevation: 5,
-        child: Image.asset(
-          ConstantsName.imgLogo4,
-          fit: BoxFit.fill,
-          height: 38.h,
+      floatingActionButton: SlideTransition(
+        position: fromBottom,
+        child: FloatingActionButton(
+          backgroundColor: Colors.white,
+          elevation: 5,
+          child: Image.asset(
+            ConstantsName.imgLogo4,
+            fit: BoxFit.fill,
+            height: 38.h,
+          ),
+          onPressed: () => widget.toPostStory(),
         ),
-        onPressed: () => widget.toPostStory(),
       ),
     );
   }

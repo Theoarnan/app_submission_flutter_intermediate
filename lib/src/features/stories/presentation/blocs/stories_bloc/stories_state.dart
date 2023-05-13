@@ -1,9 +1,22 @@
 part of 'stories_bloc.dart';
 
-abstract class StoriesState extends Equatable {
-  const StoriesState();
+class StoriesState extends Equatable {
+  final List<StoriesModel> stories;
+
+  const StoriesState({
+    this.stories = const [],
+  });
+
+  StoriesState copyWith({
+    List<StoriesModel>? stories,
+  }) {
+    return StoriesState(
+      stories: stories ?? this.stories,
+    );
+  }
+
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [stories];
 }
 
 class StoriesInitialState extends StoriesState {}
@@ -37,9 +50,17 @@ class StoriesErrorState extends StoriesState {
 
 class NoInternetState extends StoriesState {}
 
-class GetImageGallerySuccess extends StoriesState {
+class SetImageSuccess extends StoriesState {
   final XFile? fileImage;
-  const GetImageGallerySuccess({required this.fileImage});
+  const SetImageSuccess({required this.fileImage});
   @override
   List<Object?> get props => [fileImage];
+}
+
+class SetLocationSuccess extends StoriesState {
+  final String address;
+  final LatLng? location;
+  const SetLocationSuccess({required this.address, required this.location});
+  @override
+  List<Object?> get props => [address, location];
 }

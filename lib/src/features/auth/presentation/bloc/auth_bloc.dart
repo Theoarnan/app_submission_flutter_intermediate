@@ -25,7 +25,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     Emitter<AuthState> emit,
   ) async {
     try {
-      await Future.delayed(const Duration(milliseconds: 500));
+      await Future.delayed(const Duration(milliseconds: 700));
       final bool? data = await authRepository.isLoggedIn();
       if (data == true) return emit(AuthenticatedState());
       emit(UnAuthenticatedState(isLoggedIn: data));

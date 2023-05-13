@@ -1,21 +1,18 @@
 import 'package:app_submission_flutter_intermediate/src/features/auth/models/login/login_result_model.dart';
+import 'package:freezed_annotation/freezed_annotation.dart';
 
-class LoginResponseModel {
-  final bool error;
-  final String message;
-  final LoginResultModel result;
+part 'login_response_model.freezed.dart';
+part 'login_response_model.g.dart';
 
-  LoginResponseModel({
-    required this.error,
-    required this.message,
-    required this.result,
-  });
+@freezed
+class LoginResponseModel with _$LoginResponseModel {
+  const factory LoginResponseModel({
+    required bool error,
+    required String message,
+    // ignore: invalid_annotation_target
+    @JsonKey(name: "loginResult") required LoginResultModel result,
+  }) = _LoginResponseModel;
 
-  factory LoginResponseModel.fromMap(Map<String, dynamic> map) {
-    return LoginResponseModel(
-      error: map['error'] ?? false,
-      message: map['message'] ?? '',
-      result: LoginResultModel.fromMap(map['loginResult']),
-    );
-  }
+  factory LoginResponseModel.fromJson(json) =>
+      _$LoginResponseModelFromJson(json);
 }

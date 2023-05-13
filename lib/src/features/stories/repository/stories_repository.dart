@@ -3,11 +3,13 @@ import 'dart:io';
 
 import 'package:app_submission_flutter_intermediate/src/common/constants/constants_name.dart';
 import 'package:app_submission_flutter_intermediate/src/common/utils/shared_preference_helper.dart';
+import 'package:app_submission_flutter_intermediate/src/common/utils/util_helper.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/detail_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/post_stories_response_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_model.dart';
 import 'package:app_submission_flutter_intermediate/src/features/stories/models/stories_response_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:http/http.dart' as http;
 
 class StoriesRepository {
@@ -19,9 +21,13 @@ class StoriesRepository {
         'Authorization': 'Bearer $token',
       };
 
-  Future<StoriesResponseModel> getAllStory() async {
+  Future<StoriesResponseModel> getAllStory([
+    int page = 1,
+    int size = 10,
+  ]) async {
+    final withLocation = UtilHelper.getIsPaidApp() ? 1 : 0;
     final url = Uri.parse(
-      storiesEndpoint,
+      '$storiesEndpoint?page=$page&size=$size&location=$withLocation',
     );
     final token = await getToken();
     final response = await http.get(
@@ -31,7 +37,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = StoriesResponseModel.fromMap(json.decode(response.body));
+      final data = StoriesResponseModel.fromJson(json.decode(response.body));
       return data;
     } else if (response.statusCode == HttpStatus.unauthorized) {
       final data = StoriesResponseModel(
@@ -57,7 +63,7 @@ class StoriesRepository {
       ),
     );
     if (response.statusCode == HttpStatus.ok) {
-      final data = DetailStoriesResponseModel.fromMap(
+      final data = DetailStoriesResponseModel.fromJson(
         json.decode(response.body),
       );
       return data;
@@ -65,7 +71,7 @@ class StoriesRepository {
       final data = DetailStoriesResponseModel(
         error: true,
         message: HttpStatus.unauthorized.toString(),
-        dataStory: StoriesModel(
+        dataStory: const StoriesModel(
           id: '',
           name: '',
           description: '',
@@ -85,6 +91,7 @@ class StoriesRepository {
     required List<int> bytes,
     required String fileName,
     required String description,
+    LatLng? latLng,
   }) async {
     final token = await getToken();
     final url = Uri.parse(storiesEndpoint);
@@ -94,9 +101,19 @@ class StoriesRepository {
       bytes,
       filename: fileName,
     );
-    final Map<String, String> fields = {
-      "description": description,
-    };
+    final isAvailaleLocation = latLng != null;
+    Map<String, String> fields;
+    if (isAvailaleLocation && UtilHelper.getIsPaidApp()) {
+      fields = {
+        "description": description,
+        "lat": latLng.latitude.toString(),
+        "lon": latLng.longitude.toString(),
+      };
+    } else {
+      fields = {
+        "description": description,
+      };
+    }
     final Map<String, String> headers = {
       "Content-type": "multipart/form-data",
       'Authorization': 'Bearer $token',
@@ -110,7 +127,7 @@ class StoriesRepository {
     final String responseData = String.fromCharCodes(responseList);
     if (statusCode == HttpStatus.created) {
       final PostStoriesResponseModel uploadResponse =
-          PostStoriesResponseModel.fromJson(
+          PostStoriesResponseModel.fromMap(
         responseData,
       );
       return uploadResponse;
