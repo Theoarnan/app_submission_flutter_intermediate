@@ -148,7 +148,7 @@ class _MapsPageState extends State<MapsPage>
     final place = await Geocoder2.getDataFromCoordinates(
       latitude: latLng.latitude,
       longitude: latLng.longitude,
-      googleMapApiKey: 'AIzaSyAJJfTE-42dwSTG68U-XEfRTDYQKEKYYyg',
+      googleMapApiKey: 'Change YOUR API_KEY_MAP',
     );
     final address =
         '${place.city}, ${place.state}, ${place.postalCode}, ${place.country}';
