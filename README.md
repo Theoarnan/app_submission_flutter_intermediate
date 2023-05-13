@@ -1,16 +1,41 @@
-# app_submission_flutter_intermediate
 
-A new Flutter project.
+# Flutter Intermediate #2
+This is a project for flutter intermediate submission #2.
 
-## Getting Started
+## Demo
+#### Link Video Demo App
+##### Free App:
+https://drive.google.com/file/d/10E8g61kSMa95kMMxo2XVhcJMt9UEOwvw/view?usp=share_link
+##### Paid App:
+https://drive.google.com/file/d/1061WC4vMoARWYVwzap8B6ntvj2kx6cl9/view?usp=share_link
 
-This project is a starting point for a Flutter application.
+## Description
+#### *Keep all previous features on submission 1
+<img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%"><img src="https://cdn-icons-png.flaticon.com/512/541/541415.png"  width="4%" height="4%">
+### Create Story App
+##### *Note New Feature :
+- Add Map & location.
+- Implementation pagination
+- Code generation
+- Build Variant
+  - Free App (Without feature add location on post stories)
+  - Paid App (With feature add location on post stories)
+- Add animation widget
+##### New Page :
+- Maps
+- Setting
+  - About
 
-A few resources to get you started if this is your first Flutter project:
+## New Dependencies
+- [json_annotation](https://pub.dev/packages/json_annotation)
+- [freezed_annotation](https://pub.dev/packages/freezed_annotation)
+- [google_maps_flutter](https://pub.dev/packages/google_maps_flutter)
+- [google_maps_flutter_web](https://pub.dev/packages/google_maps_flutter_web)
+- [location](https://pub.dev/packages/location)
+- [geocoder2](https://pub.dev/packages/geocoder2)
+- [package_info_plus](https://pub.dev/packages/package_info_plus)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Authors
+- [@theoarnan](https://www.github.com/theoarnan)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+
